@@ -1,0 +1,9 @@
+dist
+node_modules
+.dockerignore
+.eslintrc.js
+.prettierrc
+Dockerfile
+nest-cli.json
+project.json
+README.md

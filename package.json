@@ -1,0 +1,26 @@
+{
+  "name": "rootscan-io",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "setup": "pnpm i && docker compose up -d",
+    "api": "nx run block-explorer-indexer:api",
+    "scheduler": "nx run block-explorer-indexer:scheduler",
+    "worker": "nx run block-explorer-indexer:worker",
+    "bull-board": "nx run bull-board:start",
+    "block-explorer": "nx run block-explorer:serve",
+    "docker-down": "docker compose down"
+  },
+  "private": true,
+  "devDependencies": {
+    "nx": "17.3.1"
+  },
+  "engines": {
+    "node": ">=18",
+    "npm": "please-use-pnpm",
+    "yarn": "please-use-pnpm",
+    "pnpm": ">=8.6.0"
+  },
+  "dependencies": {
+  }
+}

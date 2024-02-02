@@ -1,0 +1,56 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Dev File",
+      "program": "${workspaceFolder}/src/index.ts",
+      "preLaunchTask": "npm: build",
+      "runtimeExecutable": "node",
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "smartStep": true,
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Scheduler",
+      "program": "${workspaceFolder}/src/libs/scheduler/index.ts",
+      "preLaunchTask": "npm: build",
+      "runtimeExecutable": "node",
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "smartStep": true,
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run API",
+      "program": "${workspaceFolder}/src/libs/api/index.ts",
+      "preLaunchTask": "npm: build",
+      "runtimeExecutable": "node",
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "smartStep": true,
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Worker",
+      "program": "${workspaceFolder}/src/libs/worker/index.ts",
+      "preLaunchTask": "npm: build",
+      "runtimeExecutable": "node",
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "smartStep": true,
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
+    }
+  ]
+}

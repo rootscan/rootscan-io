@@ -1,0 +1,4 @@
+packages:
+  - 'block-explorer/'
+  - 'block-explorer-indexer/'
+  - 'bull-board/'

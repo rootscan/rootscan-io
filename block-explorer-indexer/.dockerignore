@@ -1,0 +1,10 @@
+build
+node_modules
+.dockerignore
+.gitignore
+Dockerfile
+project.json
+.env.skel
+.eslintrc.cjs
+.prettierrc
+README.md

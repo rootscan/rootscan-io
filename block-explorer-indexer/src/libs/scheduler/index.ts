@@ -1,0 +1,123 @@
+import DB from '@/database';
+import logger from '@/logger';
+import { evmClient, substrateClient } from '@/rpc';
+import queue from '@/workerpool';
+import '@therootnetwork/api-types';
+import express from 'express';
+
+const scheduler = async () => {
+  const api = await substrateClient();
+
+  await queue.add(
+    'CREATE_FIND_PRECOMPILE_TOKENS_TASKS',
+    {},
+    {
+      jobId: 'CREATE_FIND_PRECOMPILE_TOKENS_TASKS'
+    }
+  );
+
+  /** Create repeating jobs first */
+  await queue.add(
+    'FIND_FINALIZED_BLOCKS',
+    {},
+    {
+      jobId: 'FIND_FINALIZED_BLOCKS',
+      repeat: {
+        every: 4000, // Every 4 seconds
+        immediately: true
+      }
+    }
+  );
+
+  await queue.add(
+    'UPDATE_TOKEN_PRICING_DETAILS',
+    {},
+    {
+      jobId: 'UPDATE_TOKEN_PRICING_DETAILS',
+      repeat: {
+        every: 60_000 * 60, // Every 1 hour
+        immediately: true
+      }
+    }
+  );
+
+  await queue.add(
+    'CHECK_FOR_NEWLY_VERIFIED_CONTRACTS',
+    {},
+    {
+      jobId: 'CHECK_FOR_NEWLY_VERIFIED_CONTRACTS',
+      repeat: {
+        every: 60_000 * 5, // Every 5 minutes
+        immediately: true
+      }
+    }
+  );
+
+  await queue.add(
+    'UPDATE_STAKING_VALIDATORS',
+    {},
+    {
+      jobId: 'UPDATE_STAKING_VALIDATORS',
+      repeat: {
+        every: 60_000 * 5, // Every 5 minutes
+        immediately: true
+      }
+    }
+  );
+
+  await queue.add(
+    'REFETCH_NFT_HOLDERS_GEN_TASKS',
+    {},
+    {
+      jobId: 'REFETCH_NFT_HOLDERS_GEN_TASKS',
+      repeat: {
+        every: 60_000 * 15, // Every 15 minutes
+        immediately: true
+      }
+    }
+  );
+
+  /** @dev - Figure out where scheduler has stalled and recreate tasks for missed blocks */
+  const currentBlockLookUp = await DB.Block.findOne().sort('-number').lean();
+  const currentDBBlock = currentBlockLookUp?.number ? currentBlockLookUp?.number - 1 : 0;
+  const currentChainBlock: bigint = await evmClient.getBlockNumber();
+
+  for (let block = Number(currentDBBlock); block < Number(currentChainBlock); block++) {
+    const blockNumber = Number(block);
+    await queue.add(
+      'PROCESS_BLOCK',
+      { blocknumber: blockNumber },
+      {
+        jobId: `BLOCK_${blockNumber}`
+      }
+    );
+  }
+
+  /** Start listening to new blocks */
+  await api.rpc.chain.subscribeNewHeads(async (header) => {
+    logger.info(`Chain is at block: #${header.number}`);
+    const blockNumber = Number(header.number);
+    queue.add(
+      'PROCESS_BLOCK',
+      { blocknumber: blockNumber },
+      {
+        jobId: `BLOCK_${blockNumber}`
+      }
+    );
+  });
+};
+
+const port = process?.env?.SCHEDULER_HEALTH_PORT;
+if (!port) {
+  logger.error(`Missing SCHEDULER_HEALTH_PORT in .env`);
+  process.exit(1);
+}
+const app = express();
+app.get('/', (req, res) => {
+  res.send('ALIVE');
+});
+app.listen(port, () => {
+  logger.info(`🚀 Health API at http://localhost:${port}/`);
+});
+
+scheduler();

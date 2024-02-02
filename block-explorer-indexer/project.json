@@ -1,0 +1,33 @@
+{
+  "name": "block-explorer-indexer",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "block-explorer-indexer/src",
+  "projectType": "application",
+  "targets": {
+    "api": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["pnpm run build", "pnpm run api"],
+        "cwd": "block-explorer-indexer/",
+        "parallel": false
+      }
+    },
+    "scheduler": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["pnpm run build", "pnpm run scheduler"],
+        "cwd": "block-explorer-indexer/",
+        "parallel": false
+      }
+    },
+    "worker": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["pnpm run build", "pnpm run worker"],
+        "cwd": "block-explorer-indexer/",
+        "parallel": false
+      }
+    }
+  },
+  "tags": []
+}

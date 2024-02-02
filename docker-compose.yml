@@ -1,0 +1,36 @@
+version: '3.5'
+
+services:
+  mongodb:
+    container_name: mongodb
+    restart: unless-stopped
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+    ports:
+      - '29011:27017'
+    volumes:
+      - mongodb:/data/db
+    networks:
+      rootscan-dev:
+  redis:
+    container_name: redis
+    image: redis
+    restart: unless-stopped
+    command: redis-server --save 20 1 --loglevel warning --requirepass redis --maxmemory-policy noeviction
+    ports:
+      - '29012:6379'
+    volumes:
+      - redis:/data
+    networks:
+      rootscan-dev:
+
+volumes:
+  redis:
+    name: rootscan-dev-redis
+  mongodb:
+    name: rootscan-dev-mongodb
+networks:
+  rootscan-dev:
+    name: rootscan-dev
