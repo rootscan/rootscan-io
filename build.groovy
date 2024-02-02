@@ -141,7 +141,7 @@ pipeline {
                 stage('dev') {
                     when {
                         anyOf {
-                            branch 'test'
+                            branch 'dev'
                         }
                     }
                     steps {
