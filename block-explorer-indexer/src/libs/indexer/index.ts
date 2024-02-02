@@ -798,6 +798,7 @@ export default class Indexer {
         'PROCESS_BLOCK',
         { blocknumber: blockNumber },
         {
+          priority: 1,
           jobId: `BLOCK_${blockNumber}`
         }
       );

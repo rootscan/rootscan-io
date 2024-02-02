@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getBlocks } from "@/lib/api"
+import { getAddressName } from "@/lib/constants/knownAddresses"
 import { getPaginationData } from "@/lib/utils"
 import { SortDesc } from "lucide-react"
 import Link from "next/link"
@@ -45,14 +46,12 @@ export default async function Page({ searchParams }: { searchParams: any }) {
               <TableHead />
               <TableHead>
                 <div className="flex items-center gap-2">
-                  <SortDesc className="h-5 w-5" /> Block
+                  <SortDesc className="size-5" /> Block
                 </div>
               </TableHead>
               <TableHead>Age</TableHead>
               <TableHead>Validator</TableHead>
-              <TableHead className="text-center">Extrinsics</TableHead>
-              <TableHead className="text-center">Events</TableHead>
-              <TableHead className="text-center">EVM Txs</TableHead>
+              <TableHead className="text-center">Hash</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -82,19 +81,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
                   />
                 </TableCell>
                 <TableCell className="text-center">
-                  <Link href={`/blocks/${block.number}/extrinsics`}>
-                    {block.extrinsicsCount}
-                  </Link>
-                </TableCell>
-                <TableCell className="text-center">
-                  <Link href={`/blocks/${block.number}/events`}>
-                    {block.eventsCount}
-                  </Link>
-                </TableCell>
-                <TableCell className="text-center">
-                  <Link href={`/blocks/${block.number}/evm-transactions`}>
-                    {block.transactionsCount}
-                  </Link>
+                  {getAddressName(block.hash, true)}
                 </TableCell>
               </TableRow>
             ))}

@@ -3,10 +3,11 @@ import Link from "next/link"
 import AddToMetamask from "./add-to-metamask"
 import { BackToTopButton } from "./back-to-top"
 import Container from "./container"
+import { ThemeToggle } from "./theme-toggle"
 
 export default function SiteFooter() {
   return (
-    <div className="flex w-full flex-col rounded-b-2xl bg-black/50 py-4">
+    <div className="flex w-full flex-col rounded-b-2xl bg-white py-4 dark:bg-black/50">
       <Container className="hidden md:block">
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 text-sm">
           <div />
@@ -29,7 +30,7 @@ export default function SiteFooter() {
                 width={190}
                 height={190}
                 unoptimized
-                className="size-8 rounded-lg"
+                className="size-8 rounded-lg invert dark:invert-0"
                 alt="rootscan_logo"
               />
               <span className="text-md font-bold">rootscan</span>
@@ -37,11 +38,9 @@ export default function SiteFooter() {
           </div>
           <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
             <AddToMetamask />
-            <div>Status</div>
-            <div>Feedback</div>
-            {/* <div className="block md:hidden">
-              <ThemeToggle />
-            </div> */}
+            {/* <div>Status</div>
+            <div>Feedback</div> */}
+            <ThemeToggle />
           </div>
         </div>
       </Container>

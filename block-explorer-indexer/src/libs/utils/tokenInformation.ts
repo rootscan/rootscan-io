@@ -79,15 +79,27 @@ export const getTokenDetails = async (contractAddress: Address, forceRefresh = f
 
     // Assets Pallet
     if (lowerCaseContractAddress?.startsWith('0xcccccccc')) {
-      palletData = (await api.query.assets.metadata(nativeId)).toHuman();
+      try {
+        palletData = (await api.query.assets.metadata(nativeId)).toHuman();
+      } catch {
+        /*eslint no-empty: "error"*/
+      }
     }
     // NFT Pallet
     if (lowerCaseContractAddress?.startsWith('0xaaaaaaaa')) {
-      palletData = (await api.query.nft.collectionInfo(nativeId)).toHuman();
+      try {
+        palletData = (await api.query.nft.collectionInfo(nativeId)).toHuman();
+      } catch {
+        /*eslint no-empty: "error"*/
+      }
     }
     // SFT Pallet
     if (lowerCaseContractAddress?.startsWith('0xbbbbbbbb')) {
-      palletData = (await api.query.sft.sftCollectionInfo(nativeId)).toHuman();
+      try {
+        palletData = (await api.query.sft.sftCollectionInfo(nativeId)).toHuman();
+      } catch {
+        /*eslint no-empty: "error"*/
+      }
     }
 
     if (decimals || palletData?.decimals) {

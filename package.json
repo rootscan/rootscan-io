@@ -8,7 +8,7 @@
     "scheduler": "nx run block-explorer-indexer:scheduler",
     "worker": "nx run block-explorer-indexer:worker",
     "bull-board": "nx run bull-board:start",
-    "block-explorer": "nx run block-explorer:serve",
+    "block-explorer": "nx run block-explorer:dev",
     "docker-down": "docker compose down"
   },
   "private": true,

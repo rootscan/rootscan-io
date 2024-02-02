@@ -21,18 +21,20 @@ export default async function Page({ params }) {
         <CardContent>
           <div className="flex max-w-full flex-col gap-6">
             {logs?.map((item, _) => (
-              <div className="grid grid-cols-12" key={_}>
-                <div className="col-span-1">
+              <div className="flex gap-4" key={_}>
+                <div>
                   <Button size="icon">{item.logIndex}</Button>
                 </div>
-                <div className="col-span-11">
+                <div>
                   <div className="flex flex-col gap-6">
                     <CardDetail.Wrapper>
                       <CardDetail.Title>
                         <div>Address</div>
                       </CardDetail.Title>
                       <CardDetail.Content>
+                        <span className="truncate">
                         <AddressDisplay address={item.address} />
+                        </span>
                       </CardDetail.Content>
                     </CardDetail.Wrapper>
                     {/* Event Name */}

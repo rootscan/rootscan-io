@@ -10,6 +10,7 @@ import { SiteHeader } from "@/components/site-header"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { fontLocal } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
+import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
   title: {
@@ -46,15 +47,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
     >
       <body
         className={cn([
-          "min-h-screen bg-background font-local antialiased transition-all duration-100 ease-in-out dark:bg-black",
+          "min-h-screen bg-[#ebebebeb] font-local antialiased transition-all duration-100 ease-in-out dark:bg-white/5",
           fontLocal.variable,
           "font-local",
         ])}
       >
         <QueryProvider>
           {/* Background mounter */}
-          <div className="fixed h-screen w-screen bg-cover bg-main-image blur-[50px] invert dark:invert-0" />
-          {/* <ThemeProvider attribute="class" defaultTheme="dark"> */}
+          {/* <div className="fixed h-screen w-screen bg-cover bg-main-image blur-[50px] invert dark:invert-0" /> */}
+          <ThemeProvider attribute="class" defaultTheme="dark">
           <div className="relative flex min-h-screen flex-col justify-between">
             <SiteHeader />
             <Container className="md:hidden">
@@ -64,7 +65,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <SiteFooter />
           </div>
           <TailwindIndicator />
-          {/* </ThemeProvider> */}
+          </ThemeProvider>
           <ClientProgressBar />
         </QueryProvider>
       </body>

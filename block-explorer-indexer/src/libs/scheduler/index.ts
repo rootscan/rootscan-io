@@ -8,19 +8,12 @@ import express from 'express';
 const scheduler = async () => {
   const api = await substrateClient();
 
-  await queue.add(
-    'CREATE_FIND_PRECOMPILE_TOKENS_TASKS',
-    {},
-    {
-      jobId: 'CREATE_FIND_PRECOMPILE_TOKENS_TASKS'
-    }
-  );
-
   /** Create repeating jobs first */
   await queue.add(
     'FIND_FINALIZED_BLOCKS',
     {},
     {
+      priority: 3,
       jobId: 'FIND_FINALIZED_BLOCKS',
       repeat: {
         every: 4000, // Every 4 seconds
@@ -82,12 +75,23 @@ const scheduler = async () => {
   const currentDBBlock = currentBlockLookUp?.number ? currentBlockLookUp?.number - 1 : 0;
   const currentChainBlock: bigint = await evmClient.getBlockNumber();
 
+  if (currentDBBlock === 0) {
+    await queue.add(
+      'CREATE_FIND_PRECOMPILE_TOKENS_TASKS',
+      {},
+      {
+        jobId: 'CREATE_FIND_PRECOMPILE_TOKENS_TASKS'
+      }
+    );
+  }
+
   for (let block = Number(currentDBBlock); block < Number(currentChainBlock); block++) {
     const blockNumber = Number(block);
     await queue.add(
       'PROCESS_BLOCK',
       { blocknumber: blockNumber },
       {
+        priority: 1,
         jobId: `BLOCK_${blockNumber}`
       }
     );
@@ -101,6 +105,7 @@ const scheduler = async () => {
       'PROCESS_BLOCK',
       { blocknumber: blockNumber },
       {
+        priority: 1,
         jobId: `BLOCK_${blockNumber}`
       }
     );

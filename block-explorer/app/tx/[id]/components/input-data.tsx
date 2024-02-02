@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeftToLine, Blocks } from "lucide-react"
 import { useState } from "react"
 
@@ -49,14 +50,15 @@ export default function InputData({
           </Table>
         </div>
       ) : (
-        <div className="truncate rounded-2xl bg-primary/5">
-          <p className="whitespace-pre-line p-2">
-            {transaction?.functionData?.signature
-              ? `Function: ${transaction?.functionData?.signature} \n\n`
-              : ""}
-            {input}
-          </p>
-        </div>
+        <Textarea
+          value={`${
+            transaction?.functionData?.signature
+              ? `Function: ${transaction?.functionData?.signature} \n ${input}`
+              : input
+          }`}
+          className="w-full rounded-2xl border-0 bg-primary/5"
+          readOnly
+        />
       )}
 
       <div className="flex items-center gap-2">

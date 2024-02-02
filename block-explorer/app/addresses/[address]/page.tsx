@@ -25,7 +25,7 @@ import { getAddress } from "viem"
 
 const getData = async ({ params, searchParams }) => {
   const data = await getNativeTransfersForAddress({
-    address: params.address,
+    address: getAddress(params.address),
     page: searchParams.page,
   })
   return data

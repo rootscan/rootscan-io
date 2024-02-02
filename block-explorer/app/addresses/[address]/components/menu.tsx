@@ -46,7 +46,7 @@ export default function Menu({
               <div className="flex items-center gap-1">
                 <span>{item.title}</span>
                 {item.hasCheckmark ? (
-                  <div className="inline-flex h-4 w-4 rounded-full bg-green-400 text-white dark:text-black">
+                  <div className="inline-flex h-4 w-4 rounded-full bg-green-600 dark:bg-green-400 dark:text-black">
                     <Check className="m-auto h-3 w-3" />
                   </div>
                 ) : null}

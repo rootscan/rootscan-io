@@ -25,6 +25,7 @@ schema.index({ totalSupply: 1 });
 schema.index({ type: 1 });
 schema.index({ assetId: -1, collectionId: -1 });
 schema.index({ assetId: 1, collectionId: 1 });
+schema.index({ contractAddress: 1, type: 1, totalSupply: 1 });
 
 schema.plugin(mongoosePaginate);
 

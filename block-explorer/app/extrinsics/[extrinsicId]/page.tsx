@@ -125,7 +125,7 @@ export default async function Page({ params }) {
           {data?.events && hasParsedEventsAvailableExtrinsics(data?.events) ? (
             <div className="flex flex-col gap-1">
               <span className="text-muted-foreground">⚡ Event(s)</span>
-              <div className="mt-1 rounded-2xl bg-white/5 p-3">
+              <div className="mt-1 rounded-2xl bg-black/5 p-3 dark:bg-white/5">
                 <div className="flex flex-col gap-4">
                   {data?.events?.map((currentEvent, _) => {
                     if (!isAllowedEventInExtrinsic(currentEvent)) {

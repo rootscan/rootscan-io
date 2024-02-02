@@ -23,7 +23,7 @@ export default function AddToMetamask() {
     } catch {}
   }
   return (
-    <Button size="sm" variant="outline" onClick={() => add()}>
+    <Button size="sm" variant="default" onClick={() => add()}>
       <Image
         src="/site-logos/metamask_logo.webp"
         width={50}

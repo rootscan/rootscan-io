@@ -1,5 +1,6 @@
 import AddressDisplay from "@/components/address-display"
 import { getEventComponent } from "@/components/events-components"
+import JsonViewer from "@/components/json-viewer"
 import Timestamp from "@/components/timestamp"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -66,16 +67,14 @@ export default async function Page({ params }) {
           </CardDetail.Wrapper>
           <div className="flex flex-col gap-1">
             <span className="text-muted-foreground">⚡ Event(s)</span>
-            <div className="mt-1 rounded-2xl bg-white/5 p-3">
+            <div className="mt-1 rounded-2xl bg-black/5 p-3 dark:bg-white/5">
               {getEventComponent(data)}
             </div>
           </div>
           <CardDetail.Wrapper>
             <CardDetail.Title>Raw Arguments</CardDetail.Title>
             <CardDetail.Content>
-              <span className="truncate">
-                {data?.args ? JSON.stringify(data?.args) : null}
-              </span>
+              {data?.args ? <JsonViewer json={data?.args} /> : null}
             </CardDetail.Content>
           </CardDetail.Wrapper>
           <CardDetail.Wrapper>

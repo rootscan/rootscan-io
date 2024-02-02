@@ -11,7 +11,7 @@ import { Badge } from "./ui/badge"
 export function SiteHeader() {
   return (
     <Fragment>
-      <header className="z-40 flex w-full flex-col rounded-b-2xl bg-black/50 py-4">
+      <header className="z-40 flex w-full flex-col bg-white py-4 dark:bg-black/50">
         <div className="hidden border-b pb-4 lg:block">
           <div className="container">
             <div className="flex items-center justify-between gap-4">
@@ -34,7 +34,7 @@ export function SiteHeader() {
               width={190}
               height={190}
               unoptimized
-              className="h-8 w-8 rounded-lg"
+              className="size-8 rounded-lg invert dark:invert-0"
               alt="rootscan_logo"
             />
             <span className="text-md font-bold">rootscan</span>

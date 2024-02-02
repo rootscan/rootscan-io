@@ -21,7 +21,7 @@ export default function CodeEditor({ fileName, value }) {
         readOnly
         fontSize={14}
         width="100%"
-        className="rounded-xl bg-white/5"
+        className="rounded-xl bg-black/70 dark:bg-white/5"
       />
     </div>
   )

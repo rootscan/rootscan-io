@@ -6,7 +6,7 @@ import { PublicClient, createPublicClient, http } from 'viem';
 
 export const evmClient: PublicClient = createPublicClient({
   chain: process?.env?.CHAIN_ID === "7668" ? root : porcini,
-  transport: http()
+  transport: http(),
 });
 
 let api;

@@ -8,17 +8,8 @@ import "react18-json-view/src/style.css"
 export default function JsonViewer({ json }) {
   return (
     <Suspense fallback={"Loading..."}>
-      <div className="overflow-x-auto">
-        <ReactJson
-          src={json}
-          theme="a11y"
-          collapsed={true}
-          style={{
-            backgroundColor: "rgb(255,255,255,0.1)",
-            borderRadius: 20,
-            padding: 5,
-          }}
-        />
+      <div className="overflow-x-auto rounded-lg bg-black/5 p-3 dark:bg-white/5">
+        <ReactJson src={json} theme="a11y" collapsed={true} />
       </div>
     </Suspense>
   )

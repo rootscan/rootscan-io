@@ -34,6 +34,7 @@ export const refetchBalancesForAddressesInObject = async (obj: object) => {
       name: jobName,
       data: { address: involvedAddress },
       opts: {
+        priority: 4,
         jobId: `FETCH_BALANCES_${involvedAddress}`
       }
     };

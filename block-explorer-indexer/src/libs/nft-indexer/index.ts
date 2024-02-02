@@ -1,6 +1,6 @@
 import ABIs from '@/constants/abi';
 import logger from '@/logger';
-import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, IToken } from '@/types';
+import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, INFT, IToken } from '@/types';
 import { contractAddressToNativeId, isValidHttpUrl } from '@/utils';
 import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
@@ -23,7 +23,8 @@ export default class NftIndexer {
   async fetchHoldersOfCollection(contractAddress: Address) {
     const collection: IToken | null = await this.DB.Token.findOne({
       contractAddress: getAddress(contractAddress),
-      type: { $in: ['ERC721', 'ERC1155'] }
+      type: { $in: ['ERC721', 'ERC1155'] },
+      totalSupply: { $gt: 0 }
     }).lean();
 
     logger.info(`Refreshing holders for ${collection?.name || '-'} ${contractAddress} [Total Supply: ${collection?.totalSupply}]`);
@@ -79,7 +80,7 @@ export default class NftIndexer {
         }
       }
 
-      //   // Create multicall calls
+      // Create multicall calls
       const q = Array(totalSupply)
         .fill('x')
         .map((x, _) => _);
@@ -158,6 +159,7 @@ export default class NftIndexer {
             tokenId: Number(i)
           },
           {
+            priority: 7,
             jobId: `FIND_NFT_METADATA_${contractAddress}_${i}`
           }
         );
@@ -165,65 +167,80 @@ export default class NftIndexer {
     }
     if (collection?.type === 'ERC721') {
       let lookUpMetadata = false;
-      const amount = await this.DB.Nft.find({ contractAddress: getAddress(contractAddress) }).countDocuments();
+      const amount = await this.DB.Nft.find({ contractAddress: getAddress(contractAddress) })
+        .limit(1)
+        .countDocuments();
       if (amount === 0) {
         lookUpMetadata = true;
       }
-      const calls: { address: Address; abi: Abi; functionName: string; args: number[] }[] = [];
-      for (let i = 0; i < (collection?.totalSupply || 0) + 5; i++) {
-        calls.push({
-          address: getAddress(contractAddress),
-          abi: ABIs.ERC721_ORIGINAL as Abi,
-          functionName: 'ownerOf',
-          args: [i]
-        });
-      }
 
-      const multicall: MulticallResults = await this.client.multicall({
-        contracts: calls,
-        allowFailure: true
-      });
+      let current = 0;
+      const end = Number(collection?.totalSupply);
+      const maxBatch = 1000;
 
-      const ops: IBulkWriteUpdateOp[] = [];
-      let tokenId = 0;
-      for (const result of multicall) {
-        if (result?.status === 'success') {
-          const owner: Address = getAddress(result?.result as string);
-          ops.push({
-            updateOne: {
-              filter: {
-                tokenId: Number(tokenId),
-                contractAddress: getAddress(contractAddress)
-              },
-              update: {
-                $set: {
-                  contractAddress: getAddress(contractAddress),
-                  tokenId: Number(tokenId),
-                  owner
-                }
-              },
-              upsert: true
-            }
+      while (current < end) {
+        const currentEnd = current + maxBatch >= end ? end : current + maxBatch;
+        console.log(`${collection?.contractAddress} [BatchSize: ${maxBatch}] => FROM: ${current} -> ${currentEnd}`);
+        const calls: { address: Address; abi: Abi; functionName: string; args: number[] }[] = [];
+        for (let i = current; i < currentEnd; i++) {
+          calls.push({
+            address: getAddress(contractAddress),
+            abi: ABIs.ERC721_ORIGINAL as Abi,
+            functionName: 'ownerOf',
+            args: [i]
           });
         }
-        /** Create task to lookup the metadata of this NFT */
-        if (lookUpMetadata) {
-          logger.info(`Creating FIND_NFT_METADATA task for ${contractAddress}/${tokenId}`);
-          await queue.add(
-            'FIND_NFT_METADATA',
-            {
-              contractAddress: getAddress(contractAddress),
-              tokenId: Number(tokenId)
-            },
-            {
-              jobId: `FIND_NFT_METADATA_${contractAddress}_${tokenId}`
-            }
-          );
-        }
-        tokenId++;
-      }
 
-      await this.DB.Nft.bulkWrite(ops);
+        const multicall: MulticallResults = await this.client.multicall({
+          contracts: calls,
+          allowFailure: true
+        });
+
+        const ops: IBulkWriteUpdateOp[] = [];
+        let tokenId = current;
+        for (const result of multicall) {
+          if (result?.status === 'success') {
+            if (isAddress(result?.result as string)) {
+              const owner: Address = getAddress(result?.result as string);
+              ops.push({
+                updateOne: {
+                  filter: {
+                    tokenId: Number(tokenId),
+                    contractAddress: getAddress(contractAddress)
+                  },
+                  update: {
+                    $set: {
+                      contractAddress: getAddress(contractAddress),
+                      tokenId: Number(tokenId),
+                      owner
+                    }
+                  },
+                  upsert: true
+                }
+              });
+            }
+            /** Create task to lookup the metadata of this NFT */
+            if (lookUpMetadata) {
+              logger.info(`Creating FIND_NFT_METADATA task for ${contractAddress}/${tokenId}`);
+              await queue.add(
+                'FIND_NFT_METADATA',
+                {
+                  contractAddress: getAddress(contractAddress),
+                  tokenId: Number(tokenId)
+                },
+                {
+                  priority: 7,
+                  jobId: `FIND_NFT_METADATA_${contractAddress}_${tokenId}`
+                }
+              );
+            }
+          }
+          tokenId++;
+        }
+
+        await this.DB.Nft.bulkWrite(ops);
+        current = currentEnd;
+      }
     }
 
     return true;
@@ -236,8 +253,18 @@ export default class NftIndexer {
       const metadataUri = `${lookUpUri.uri}${tokenId}`;
       const res = await fetch(metadataUri);
       if (res?.ok) {
-        const jsonData = await res.json();
-        const { animation_url, image } = jsonData;
+        let jsonData: INFT | undefined = undefined;
+        try {
+          jsonData = await res.json();
+        } catch {
+          /* eslint no-empty: "error" */
+        }
+        if (!jsonData) return true;
+        const animation_url = jsonData?.animation_url;
+        const image = jsonData?.image;
+
+        if (!animation_url || !image) return true;
+
         await this.DB.Nft.updateMany(
           { contractAddress: getAddress(contractAddress), tokenId: Number(tokenId) },
           {
@@ -252,10 +279,10 @@ export default class NftIndexer {
             upsert: true
           }
         );
-      } else if (res.status === 429 || res.status === 500) {
-        throw new Error(`Request got rate limited or failed on server end with response => ${res.status}, should true again.`);
+      } else if (res?.status === 429 || res?.status === 500) {
+        throw new Error(`Request got rate limited or failed on server end with response => ${res?.status}, should true again.`);
       } else {
-        logger.warn(`Failed to fetch metadata with code ${res.status}, no need to retry.`);
+        logger.warn(`Failed to fetch metadata with code ${res?.status}, no need to retry.`);
       }
     }
     return true;
@@ -272,6 +299,7 @@ export default class NftIndexer {
           contractAddress: getAddress(contractAddress)
         },
         {
+          priority: 6,
           jobId: `REFETCH_NFT_HOLDERS_${contractAddress}`
         }
       );

@@ -419,21 +419,21 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
       {
         $or: [
           // Assets Pallet
-          { section: 'assets', method: 'Transferred', 'args.from': address },
-          { section: 'assets', method: 'Transferred', 'args.to': address },
-          { section: 'assets', method: 'ApprovedTransfer', 'args.source': address },
-          { section: 'assets', method: 'Issued', 'args.source': address },
-          { section: 'assets', method: 'Issued', 'args.owner': address },
-          { section: 'assets', method: 'Burned', 'args.owner': address },
+          { section: 'assets', method: 'Transferred', 'args.from': getAddress(address) },
+          { section: 'assets', method: 'Transferred', 'args.to': getAddress(address) },
+          { section: 'assets', method: 'ApprovedTransfer', 'args.source': getAddress(address) },
+          { section: 'assets', method: 'Issued', 'args.source': getAddress(address) },
+          { section: 'assets', method: 'Issued', 'args.owner': getAddress(address) },
+          { section: 'assets', method: 'Burned', 'args.owner': getAddress(address) },
           // Balances Pallet
-          { section: 'balances', method: 'Reserved', 'args.who': address },
-          { section: 'balances', method: 'Transfer', 'args.from': address },
-          { section: 'balances', method: 'Transfer', 'args.to': address },
-          { section: 'balances', method: 'Unreserved', 'args.who': address },
+          { section: 'balances', method: 'Reserved', 'args.who': getAddress(address) },
+          { section: 'balances', method: 'Transfer', 'args.from': getAddress(address) },
+          { section: 'balances', method: 'Transfer', 'args.to': getAddress(address) },
+          { section: 'balances', method: 'Unreserved', 'args.who': getAddress(address) },
           // NFT Transfer
-          { section: 'nft', method: 'Transfer', 'args.previousOwner': address },
-          { section: 'nft', method: 'Transfer', 'args.newOwner': address },
-          { section: 'nft', method: 'Mint', 'args.owner': address }
+          { section: 'nft', method: 'Transfer', 'args.previousOwner': getAddress(address) },
+          { section: 'nft', method: 'Transfer', 'args.newOwner': getAddress(address) },
+          { section: 'nft', method: 'Mint', 'args.owner': getAddress(address) }
         ]
       },
       options
@@ -572,7 +572,7 @@ app.post('/getNft', async (req: Request, res: Response) => {
 
 app.post('/getAddress', async (req: Request, res: Response) => {
   const { address }: { address: Address } = req.body;
-  const data: (IAddress & { rootPriceData?: object | null }) | null = await DB.Address.findOne({ address })
+  const data: (IAddress & { rootPriceData?: object | null }) | null = await DB.Address.findOne({ address: getAddress(address) })
     .populate('isVerifiedContract')
     .lean();
   if (data?.balance?.freeFormatted) {
@@ -585,6 +585,7 @@ app.post('/getAddress', async (req: Request, res: Response) => {
 });
 
 app.post('/getTokenBalances', async (req: Request, res: Response) => {
+  
   const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
   const options = {
     page: page ? Number(page) : 1,

@@ -63,7 +63,7 @@ export default async function Page({ searchParams, params }) {
                       <Tooltip
                         text={`Validators can only pay out the first 256 nominators per era. \n You will not earn rewards if you are 257 or higher nominator.`}
                       >
-                        <AlertTriangle className="h-4 w-4 text-orange-400" />
+                        <AlertTriangle className="size-4 text-orange-400" />
                       </Tooltip>
                     ) : null}
                   </div>

@@ -14,7 +14,7 @@ import { getAddress as getAddressViem } from "viem"
 import Menu from "./components/menu"
 
 const getData = async ({ params }) => {
-  const data = await getAddress({ address: params.address })
+  const data = await getAddress({ address: getAddressViem(params.address) })
   return data
 }
 

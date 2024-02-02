@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function TargetTimeCountdown({
@@ -8,9 +9,13 @@ export default function TargetTimeCountdown({
   fromSeconds?: number
 }) {
   const [count, setCount] = useState<number>(fromSeconds)
+  const router = useRouter()
 
   useEffect(() => {
     const interval = setInterval(() => {
+      if (count <= 0.1) {
+        router.refresh()
+      }
       setCount(count - 0.1 > 0 ? Number(count - 0.1) : fromSeconds)
     }, 100)
 

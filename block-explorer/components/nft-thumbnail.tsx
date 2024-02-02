@@ -12,7 +12,16 @@ export default async function NftThumbnail({ contractAddress, tokenId }) {
   const data = await getData({ contractAddress, tokenId })
   const size = `h-12 w-12`
   if (!data?.image) {
-    return <div className="h-12 w-12 shrink-0 rounded-xl bg-background/50" />
+    return (
+      <div
+        className={cn([
+          size,
+          `grid select-none place-items-center rounded-xl bg-muted text-muted-foreground`,
+        ])}
+      >
+        <div>NFT</div>
+      </div>
+    )
   }
   return (
     <Image

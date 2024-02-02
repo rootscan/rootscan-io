@@ -2,9 +2,12 @@
 
 import DB from '@/database';
 import Indexer from '@/indexer';
+import NftIndexer from '@/nft-indexer';
 import { evmClient, substrateClient } from '@/rpc';
+import { getTokenDetails } from '@/utils/tokenInformation';
 import queue from '@/workerpool';
 import '@therootnetwork/api-types';
+import { Address } from 'viem';
 
 const run = async () => {
   const api = await substrateClient();
@@ -14,14 +17,15 @@ const run = async () => {
   // await findAllEthereumBridgeContractAddresses();
   // await indexer.refetchAllBalances();
   // await indexer.processTransactions(['0x70c62a6dd1e7faa9ac6302bea7e1578e4600260f9af547fd4c65266f5d70aef9']);
-  await indexer.processBlock(BigInt(8149337));
+  await indexer.processBlock(BigInt(9372055));
 
   // const nftIndexer = new NftIndexer(evmClient, api, DB);
 
-  // await nftIndexer.createNftHolderRefreshTasks();
-  // await nftIndexer.fetchHoldersOfCollection('0xBbbbbBbB00008064000000000000000000000000' as Address);
+  // await getTokenDetails('0xaAAaAAAa00003864000000000000000000000000', true);
 
-  // await getTokenDetails('0xAaaAaAAa00003c64000000000000000000000000', true);
+  // await nftIndexer.fetchMetadataOfToken('0xAAAaaAaA00014464000000000000000000000000', 3384);
+  // await nftIndexer.createNftHolderRefreshTasks();
+  // await nftIndexer.fetchHoldersOfCollection('0xaAAaAAAa00003864000000000000000000000000' as Address);
 
   // await updateStakingValidators();
 
@@ -34,6 +38,7 @@ const run = async () => {
       'PROCESS_BLOCK',
       { blocknumber: blockNumber },
       {
+        priority: 1,
         jobId: `BLOCK_${blockNumber}`
       }
     );
