@@ -1,5 +1,9 @@
 # rootscan-io
 
+This repo uses [package-based](https://nx.dev/getting-started/tutorials/package-based-repo-tutorial) nx structure 
+Each folder is separate project.
+
+
 ## Requirements
 
 * docker - to run redis and mongo
