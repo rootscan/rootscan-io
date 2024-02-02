@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import AddressDisplay from "../address-display"
 import TimeAgoDate from "../time-ago-date"
 import Tooltip from "../tooltip"
+import { cn } from "@/lib/utils"
 
 export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
   return (
@@ -17,7 +18,7 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
         {latestBlocks?.map((block: any, _: number) => (
           <Card
             key={block.number}
-            // className={cn([_ === 0 && "duration-300 animate-in fade-in"])}
+            className={cn([_ === 0 && "duration-300 animate-in fade-in"])}
           >
             <CardHeader>
               <CardTitle>
