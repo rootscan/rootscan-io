@@ -2,6 +2,7 @@ import { getContractVerification } from "@/lib/api"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import WalletProvider from "./components/wallet-provider"
 import WriteContract from "./components/write-contract"
+import CustomConnectWallet from "@/components/custom-connectwallet"
 
 const getData = async ({ params }) => {
   const fetchData = await getContractVerification({
@@ -39,7 +40,7 @@ export default async function Page({ params }: { params: any }) {
   return (
     <WalletProvider>
       <div className="flex flex-col gap-4">
-        <ConnectButton />
+       <CustomConnectWallet/>
         <WriteContract data={data} address={params.address} />
       </div>
     </WalletProvider>

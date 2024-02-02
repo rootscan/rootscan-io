@@ -20,16 +20,6 @@ export default function LatestTransactions({
   return (
     <div className="flex flex-col gap-4">
       <SectionTitle>Latest EVM Transactions</SectionTitle>
-      {/* <Link href="/evm-transactions">
-        <div className="rounded-t-2xl p-2">
-          <div className="flex items-center gap-2">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span className="text-sm font-semibold">
-              2500 pending transactions
-            </span>
-          </div>
-        </div
-      </Link> */}
       <div className="flex flex-col gap-4">
         {latestTransactions?.map((transaction, _) => (
           <Card key={transaction?.hash || _}>
