@@ -23,7 +23,7 @@ const wagmiConfig = createConfig({
 export default function WalletProvider({ children }) {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
+      <RainbowKitProvider chains={chains} modalSize="compact">{children}</RainbowKitProvider>
     </WagmiConfig>
   )
 }
