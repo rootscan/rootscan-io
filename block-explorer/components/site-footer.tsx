@@ -1,10 +1,11 @@
+import { Github } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import AddToMetamask from "./add-to-metamask"
 import { BackToTopButton } from "./back-to-top"
 import Container from "./container"
 import { ThemeToggle } from "./theme-toggle"
-import { Github } from "lucide-react"
+import { Button } from "./ui/button"
 
 export default function SiteFooter() {
   return (
@@ -39,8 +40,14 @@ export default function SiteFooter() {
           </div>
           <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
             <AddToMetamask />
-            {/* <div>Status</div>
-            <div>Feedback</div> */}
+            <Link
+              href="https://github.com/rootscan/rootscan-io"
+              target="_blank"
+            >
+              <Button variant="ghost" size="icon">
+                <Github />
+              </Button>
+            </Link>
             <ThemeToggle />
           </div>
         </div>
