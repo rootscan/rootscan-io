@@ -1,8 +1,6 @@
 import { Address } from "viem"
 
-let knownAddressNames: { [key: Address]: string } = {
-  "0x04e9F2dbd715C439D80A9B6E0b5B1F0D570e395f": "Batek",
-}
+let knownAddressNames: { [key: Address]: string } = {}
 
 export const getAddressName = (
   address: Address,
