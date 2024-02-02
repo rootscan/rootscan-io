@@ -1,17 +1,17 @@
 "use client"
 
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar"
-import { Fragment, Suspense } from "react"
+import { useTheme } from "next-themes"
 
 export default function ClientProgressBar() {
+  const { theme } = useTheme()
   return (
-    <Suspense fallback={<Fragment/>}>
-      <ProgressBar
-        height="4px"
-        color={"#ffff"}
-        options={{ showSpinner: true }}
-        shallowRouting
-      />
-    </Suspense>
+    <ProgressBar
+      key={theme}
+      height="4px"
+      color={theme === "dark" ? "#ffff" : "#000"}
+      options={{ showSpinner: true }}
+      shallowRouting
+    />
   )
 }
