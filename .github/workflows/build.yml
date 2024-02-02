@@ -31,3 +31,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: build projects
+        run: pnpm nx run-many --target=build
