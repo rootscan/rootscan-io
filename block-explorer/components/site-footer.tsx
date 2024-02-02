@@ -4,6 +4,7 @@ import AddToMetamask from "./add-to-metamask"
 import { BackToTopButton } from "./back-to-top"
 import Container from "./container"
 import { ThemeToggle } from "./theme-toggle"
+import { Github } from "lucide-react"
 
 export default function SiteFooter() {
   return (

@@ -7,7 +7,7 @@ import { Fragment, Suspense } from "react"
 export default function ClientProgressBar() {
   const { theme } = useTheme()
   return (
-    <Suspense fallback={<Fragment />}>
+    <Suspense fallback={<Fragment />} key={theme}>
       <ProgressBar
         key={theme}
         height="4px"
