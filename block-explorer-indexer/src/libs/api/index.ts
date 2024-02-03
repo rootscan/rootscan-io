@@ -6,6 +6,7 @@ import express, { Request, Response } from 'express';
 import helmet from 'helmet';
 import moment from 'moment';
 import { Address, Hash, getAddress } from 'viem';
+import { processError } from './utils';
 const app = express();
 
 /** @dev Middlewares */
@@ -40,9 +41,13 @@ app.use((req, res, next) => {
 });
 
 app.post('/getBlock', async (req: Request, res: Response) => {
-  const { number }: { number: number } = req.body;
-  const data = await DB.Block.findOne({ number: Number(number) }).lean();
-  return res.json(data);
+  try {
+    const { number }: { number: number } = req.body;
+    const data = await DB.Block.findOne({ number: Number(number) }).lean();
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
 });
 
 app.post('/getBlocks', async (req: Request, res: Response) => {
@@ -60,7 +65,7 @@ app.post('/getBlocks', async (req: Request, res: Response) => {
     const data = await DB.Block.paginate({}, options);
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -79,7 +84,7 @@ app.post('/getEvents', async (req: Request, res: Response) => {
     const data = await DB.Event.paginate(query ? query : {}, options);
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -91,7 +96,7 @@ app.post('/getEvent', async (req: Request, res: Response) => {
       .lean();
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -113,7 +118,7 @@ app.post('/getExtrinsic', async (req: Request, res: Response) => {
     }
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -136,7 +141,7 @@ app.post('/getToken', async (req: Request, res: Response) => {
     }
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -235,7 +240,7 @@ app.post('/getTokenHolders', async (req: Request, res: Response) => {
     }
     return res.json(holders);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -245,7 +250,7 @@ app.post('/getExtrinsicsInBlock', async (req: Request, res: Response) => {
     const data = await DB.Extrinsic.find({ block: Number(number) }).lean();
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -269,7 +274,7 @@ app.post('/getExtrinsicsForAddress', async (req: Request, res: Response) => {
 
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -287,7 +292,7 @@ app.post('/getNftsForAddress', async (req: Request, res: Response) => {
     const data = await DB.Nft.paginate({ owner: getAddress(address), contractAddress: getAddress(contractAddress) }, options);
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -339,7 +344,7 @@ app.post('/getNftCollectionsForAddress', async (req: Request, res: Response) => 
 
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -358,7 +363,7 @@ app.post('/getTransactions', async (req: Request, res: Response) => {
     const data = await DB.EvmTransaction.paginate({}, options);
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -377,7 +382,7 @@ app.post('/getTransactionsInBlock', async (req: Request, res: Response) => {
     const data = await DB.EvmTransaction.paginate({ blockNumber: block }, options);
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -398,7 +403,7 @@ app.post('/getEVMTransactionsForWallet', async (req: Request, res: Response) => 
 
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -441,7 +446,7 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
 
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -463,7 +468,7 @@ app.post('/getTokens', async (req: Request, res: Response) => {
     const data = await DB.Token.paginate(query, options);
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -481,7 +486,7 @@ app.post('/getExtrinsics', async (req: Request, res: Response) => {
     const data = await DB.Extrinsic.paginate({ section: { $ne: 'timestamp' }, method: { $ne: 'set' } }, options);
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
@@ -546,262 +551,309 @@ app.post('/getTokenTransfersFromAddress', async (req: Request, res: Response) =>
 
     return res.json(data);
   } catch (e) {
-    console.log(e);
+    processError(e, res);
   }
 });
 
 app.post('/getTransaction', async (req: Request, res: Response) => {
-  const { hash }: { hash: Hash } = req.body;
+  try {
+    const { hash }: { hash: Hash } = req.body;
 
-  const data: (IEVMTransaction & { xrpPriceData?: object }) | null = await DB.EvmTransaction.findOne({ hash })
-    .populate('fromLookup toLookup')
-    .lean();
-  const xrpPrice = await DB.Token.findOne({ contractAddress: '0xCCCCcCCc00000002000000000000000000000000' }).lean();
+    const data: (IEVMTransaction & { xrpPriceData?: object }) | null = await DB.EvmTransaction.findOne({ hash })
+      .populate('fromLookup toLookup')
+      .lean();
+    const xrpPrice = await DB.Token.findOne({ contractAddress: '0xCCCCcCCc00000002000000000000000000000000' }).lean();
 
-  if (data && xrpPrice?.priceData) {
-    data.xrpPriceData = xrpPrice?.priceData;
+    if (data && xrpPrice?.priceData) {
+      data.xrpPriceData = xrpPrice?.priceData;
+    }
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
   }
-  return res.json(data);
 });
 
 app.post('/getNft', async (req: Request, res: Response) => {
-  const { contractAddress, tokenId }: { contractAddress: Address; tokenId: number } = req.body;
+  try {
+    const { contractAddress, tokenId }: { contractAddress: Address; tokenId: number } = req.body;
 
-  const data = await DB.Nft.findOne({ contractAddress: getAddress(contractAddress), tokenId: Number(tokenId) }).lean();
-  return res.json(data);
+    const data = await DB.Nft.findOne({ contractAddress: getAddress(contractAddress), tokenId: Number(tokenId) }).lean();
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
 });
 
 app.post('/getAddress', async (req: Request, res: Response) => {
-  const { address }: { address: Address } = req.body;
-  const data: (IAddress & { rootPriceData?: object | null }) | null = await DB.Address.findOne({ address: getAddress(address) })
-    .populate('isVerifiedContract')
-    .lean();
-  if (data?.balance?.freeFormatted) {
-    const rootPriceData = await DB.Token.findOne({ contractAddress: getAddress('0xcCcCCccC00000001000000000000000000000000') })
-      .select('priceData')
+  try {
+    const { address }: { address: Address } = req.body;
+    const data: (IAddress & { rootPriceData?: object | null }) | null = await DB.Address.findOne({ address: getAddress(address) })
+      .populate('isVerifiedContract')
       .lean();
-    data.rootPriceData = rootPriceData?.priceData;
+    if (data?.balance?.freeFormatted) {
+      const rootPriceData = await DB.Token.findOne({ contractAddress: getAddress('0xcCcCCccC00000001000000000000000000000000') })
+        .select('priceData')
+        .lean();
+      data.rootPriceData = rootPriceData?.priceData;
+    }
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
   }
-  return res.json(data);
 });
 
 app.post('/getTokenBalances', async (req: Request, res: Response) => {
-  
-  const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
-  const options = {
-    page: page ? Number(page) : 1,
-    limit: limit ? limit : 25,
-    allowDiskUse: true,
-    populate: 'tokenDetails',
-    lean: true
-  };
-  const data = await DB.Balance.paginate({ address: getAddress(address) }, options);
+  try {
+    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const options = {
+      page: page ? Number(page) : 1,
+      limit: limit ? limit : 25,
+      allowDiskUse: true,
+      populate: 'tokenDetails',
+      lean: true
+    };
+    const data = await DB.Balance.paginate({ address: getAddress(address) }, options);
 
-  return res.json(data);
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
 });
 
 app.post('/getAddresses', async (req: Request, res: Response) => {
-  const { page, limit }: { page: number; limit: number } = req.body;
-  const options = {
-    page: page ? Number(page) : 1,
-    limit: limit ? limit : 25,
-    allowDiskUse: true,
-    skipFullCount: true,
-    sort: '-balance.free',
-    lean: true
-  };
+  try {
+    const { page, limit }: { page: number; limit: number } = req.body;
+    const options = {
+      page: page ? Number(page) : 1,
+      limit: limit ? limit : 25,
+      allowDiskUse: true,
+      skipFullCount: true,
+      sort: '-balance.free',
+      lean: true
+    };
 
-  const data: { docs?: ({ xrpBalance?: number } & IAddress)[] } = await DB.Address.paginate({}, options);
+    const data: { docs?: ({ xrpBalance?: number } & IAddress)[] } = await DB.Address.paginate({}, options);
 
-  if (data?.docs) {
-    const addresses = data?.docs?.map((a) => a.address);
+    if (data?.docs) {
+      const addresses = data?.docs?.map((a) => a.address);
 
-    const xrpBalances: IBalance[] = await DB.Balance.find({
-      address: { $in: addresses },
-      contractAddress: '0xCCCCcCCc00000002000000000000000000000000'
-    })
-      .select('address balance')
-      .lean();
+      const xrpBalances: IBalance[] = await DB.Balance.find({
+        address: { $in: addresses },
+        contractAddress: '0xCCCCcCCc00000002000000000000000000000000'
+      })
+        .select('address balance')
+        .lean();
 
-    for (const record of data.docs) {
-      const xrpBalance = xrpBalances.find((a) => a.address == record.address);
-      if (xrpBalance) {
-        record.xrpBalance = xrpBalance?.balance;
+      for (const record of data.docs) {
+        const xrpBalance = xrpBalances.find((a) => a.address == record.address);
+        if (xrpBalance) {
+          record.xrpBalance = xrpBalance?.balance;
+        }
       }
     }
-  }
 
-  return res.json(data);
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
 });
 
 app.post('/getBridgeTransactions', async (req: Request, res: Response) => {
-  const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
-  const options = {
-    page: page ? Number(page) : 1,
-    limit: limit ? limit : 25,
-    populate: 'xrplProcessingOk bridgeErc20Token bridgeErc721Token',
-    allowDiskUse: true,
-    skipFullCount: true,
-    sort: '-block',
-    lean: true
-  };
+  try {
+    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const options = {
+      page: page ? Number(page) : 1,
+      limit: limit ? limit : 25,
+      populate: 'xrplProcessingOk bridgeErc20Token bridgeErc721Token',
+      allowDiskUse: true,
+      skipFullCount: true,
+      sort: '-block',
+      lean: true
+    };
 
-  const genPartialKey = (key: string, isLowerCase: boolean) => {
-    if (!address) return {};
+    const genPartialKey = (key: string, isLowerCase: boolean) => {
+      if (!address) return {};
 
-    return { [key]: isLowerCase ? address.toLowerCase() : getAddress(address) };
-  };
+      return { [key]: isLowerCase ? address.toLowerCase() : getAddress(address) };
+    };
 
-  const data = await DB.Extrinsic.paginate(
-    {
-      $or: [
-        // {
-        //   method: 'withdrawXrp',
-        //   section: 'xrplBridge'
-        // },
-        {
-          method: 'submitTransaction',
-          section: 'xrplBridge',
-          ...genPartialKey('args.transaction.payment.address', true)
-        },
-        {
-          section: 'ethBridge',
-          method: 'submitEvent',
-          ...genPartialKey('args.to', false)
-        }
-      ]
-    },
-    options
-  );
+    const data = await DB.Extrinsic.paginate(
+      {
+        $or: [
+          // {
+          //   method: 'withdrawXrp',
+          //   section: 'xrplBridge'
+          // },
+          {
+            method: 'submitTransaction',
+            section: 'xrplBridge',
+            ...genPartialKey('args.transaction.payment.address', true)
+          },
+          {
+            section: 'ethBridge',
+            method: 'submitEvent',
+            ...genPartialKey('args.to', false)
+          }
+        ]
+      },
+      options
+    );
 
-  return res.json(data);
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
 });
 
 app.post('/getVerifiedContracts', async (req: Request, res: Response) => {
-  const { page, limit }: { page: number; limit: number } = req.body;
-  const options = {
-    page: page ? Number(page) : 1,
-    limit: limit ? limit : 25,
-    sort: '-deployedBlock',
-    allowDiskUse: true,
-    lean: true
-  };
+  try {
+    const { page, limit }: { page: number; limit: number } = req.body;
+    const options = {
+      page: page ? Number(page) : 1,
+      limit: limit ? limit : 25,
+      sort: '-deployedBlock',
+      allowDiskUse: true,
+      lean: true
+    };
 
-  const data = await DB.VerifiedContract.paginate({}, options);
+    const data = await DB.VerifiedContract.paginate({}, options);
 
-  return res.json(data);
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
 });
 
 app.post('/getStakingValidators', async (req: Request, res: Response) => {
-  const { page, limit }: { page: number; limit: number } = req.body;
-  const options = {
-    page: page ? Number(page) : 1,
-    limit: limit ? limit : 25,
-    allowDiskUse: true,
-    sort: '-nominators',
-    lean: true
-  };
+  try {
+    const { page, limit }: { page: number; limit: number } = req.body;
+    const options = {
+      page: page ? Number(page) : 1,
+      limit: limit ? limit : 25,
+      allowDiskUse: true,
+      sort: '-nominators',
+      lean: true
+    };
 
-  const data: { docs: (IStakingValidator & { blocksValidated?: number })[] } = await DB.StakingValidator.paginate({}, options);
+    const data: { docs: (IStakingValidator & { blocksValidated?: number })[] } = await DB.StakingValidator.paginate({}, options);
 
-  const addresses = data?.docs?.map((a) => getAddress(a.validator));
-  const aggPipe = await DB.Block.aggregate([
-    {
-      $match: {
-        'evmBlock.miner': {
-          $in: addresses
-        },
-        timestamp: {
-          $gte: moment().subtract('1', 'days').milliseconds()
+    const addresses = data?.docs?.map((a) => getAddress(a.validator));
+    const aggPipe = await DB.Block.aggregate([
+      {
+        $match: {
+          'evmBlock.miner': {
+            $in: addresses
+          },
+          timestamp: {
+            $gte: moment().subtract('1', 'days').milliseconds()
+          }
+        }
+      },
+      {
+        $group: {
+          _id: '$evmBlock.miner',
+          count: {
+            $sum: 1
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          address: '$_id',
+          count: 1
         }
       }
-    },
-    {
-      $group: {
-        _id: '$evmBlock.miner',
-        count: {
-          $sum: 1
-        }
-      }
-    },
-    {
-      $project: {
-        _id: 0,
-        address: '$_id',
-        count: 1
-      }
-    }
-  ]);
+    ]);
 
-  for (const address of data.docs) {
-    const lookUp = aggPipe.find((a) => a.address === address.validator);
-    if (lookUp) {
-      address.blocksValidated = lookUp.count;
+    for (const address of data.docs) {
+      const lookUp = aggPipe.find((a) => a.address === address.validator);
+      if (lookUp) {
+        address.blocksValidated = lookUp.count;
+      }
     }
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
   }
-  return res.json(data);
 });
 
 app.post('/getDex', async (req: Request, res: Response) => {
-  const { page, limit }: { page: number; limit: number } = req.body;
-  const options = {
-    page: page ? Number(page) : 1,
-    limit: limit ? limit : 25,
-    allowDiskUse: true,
-    skipFullCount: true,
-    sort: '-blockNumber',
-    populate: 'swapFromToken swapToToken',
-    lean: true
-  };
-  const data = await DB.Event.paginate(
-    {
-      $or: [
-        {
-          method: 'Swap',
-          section: 'dex'
-        }
-      ]
-    },
-    options
-  );
+  try {
+    const { page, limit }: { page: number; limit: number } = req.body;
+    const options = {
+      page: page ? Number(page) : 1,
+      limit: limit ? limit : 25,
+      allowDiskUse: true,
+      skipFullCount: true,
+      sort: '-blockNumber',
+      populate: 'swapFromToken swapToToken',
+      lean: true
+    };
+    const data = await DB.Event.paginate(
+      {
+        $or: [
+          {
+            method: 'Swap',
+            section: 'dex'
+          }
+        ]
+      },
+      options
+    );
 
-  return res.json(data);
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
 });
 
 app.post('/getRootPrice', async (req: Request, res: Response) => {
-  const data = await DB.Token.findOne({ contractAddress: '0xcCcCCccC00000001000000000000000000000000' }).lean();
-  return res.json(data?.priceData);
+  try {
+    const data = await DB.Token.findOne({ contractAddress: '0xcCcCCccC00000001000000000000000000000000' }).lean();
+    return res.json(data?.priceData);
+  } catch (e) {
+    processError(e, res);
+  }
 });
 
 app.post('/getChainSummary', async (req: Request, res: Response) => {
-  const addresses = await DB.Address.find().estimatedDocumentCount();
-  const signedExtrinsics = await DB.Extrinsic.find({ isSigned: true }).estimatedDocumentCount();
-  const evmTransactions = await DB.EvmTransaction.find().estimatedDocumentCount();
-  return res.json({ addresses, signedExtrinsics, evmTransactions });
+  try {
+    const addresses = await DB.Address.find().estimatedDocumentCount();
+    const signedExtrinsics = await DB.Extrinsic.find({ isSigned: true }).estimatedDocumentCount();
+    const evmTransactions = await DB.EvmTransaction.find().estimatedDocumentCount();
+    return res.json({ addresses, signedExtrinsics, evmTransactions });
+  } catch (e) {
+    processError(e, res);
+  }
 });
 
 app.get('/getRequiredComponents', async (req: Request, res: Response) => {
-  const events = await DB.Event.aggregate([
-    {
-      $group: {
-        _id: '$section',
-        methods: {
-          $addToSet: '$method'
+  try {
+    const events = await DB.Event.aggregate([
+      {
+        $group: {
+          _id: '$section',
+          methods: {
+            $addToSet: '$method'
+          }
         }
       }
-    }
-  ]);
-  const extrinsics = await DB.Extrinsic.aggregate([
-    {
-      $group: {
-        _id: '$section',
-        methods: {
-          $addToSet: '$method'
+    ]);
+    const extrinsics = await DB.Extrinsic.aggregate([
+      {
+        $group: {
+          _id: '$section',
+          methods: {
+            $addToSet: '$method'
+          }
         }
       }
-    }
-  ]);
-  return res.json({ events, extrinsics });
+    ]);
+    return res.json({ events, extrinsics });
+  } catch (e) {
+    processError(e, res);
+  }
 });
 
 app.get('/ready', async (req: Request, res: Response) => {

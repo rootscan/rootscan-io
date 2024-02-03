@@ -70,6 +70,22 @@ const scheduler = async () => {
     }
   );
 
+  await queue.add(
+    'INGEST_KNOWN_ADDRESSES',
+    {},
+    {
+      jobId: 'INGEST_KNOWN_ADDRESSES'
+    }
+  );
+
+  await queue.add(
+    'FIND_ETH_BRIDGE_CONTRACT_ADDRESSES',
+    {},
+    {
+      jobId: 'FIND_ETH_BRIDGE_CONTRACT_ADDRESSES'
+    }
+  );
+
   /** @dev - Figure out where scheduler has stalled and recreate tasks for missed blocks */
   const currentBlockLookUp = await DB.Block.findOne().sort('-number').lean();
   const currentDBBlock = currentBlockLookUp?.number ? currentBlockLookUp?.number - 1 : 0;
