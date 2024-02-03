@@ -28,6 +28,7 @@ export default function NftPlayer({ animation_url, image }) {
           src={image}
           width={300}
           height={300}
+          priority
           unoptimized
           className="rounded-sm"
           alt="image"

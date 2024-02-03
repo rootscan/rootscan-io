@@ -53,6 +53,8 @@ export default async function Layout({
                     src={generateAvatarURL(address)}
                     width={50}
                     height={50}
+                    priority
+                    unoptimized
                     className="rounded-[5px]"
                     alt="jazz"
                   />

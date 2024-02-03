@@ -7,6 +7,7 @@ export default function Loader() {
         src="/site-logos/rootscan-logo.png"
         width={190}
         height={190}
+        priority
         unoptimized
         className="size-8 rounded-lg"
         alt="rootscan_logo"

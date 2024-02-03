@@ -28,6 +28,7 @@ export default async function NftThumbnail({ contractAddress, tokenId }) {
       src={data?.image}
       width={250}
       height={250}
+      priority
       alt="nft_image"
       unoptimized
       className={cn([size, "shrink-0 rounded-xl"])}
