@@ -1,7 +1,13 @@
 import { checkForNewlyVerifiedContracts } from '@/contract-verification';
 import DB from '@/database';
 import Indexer from '@/indexer';
-import { createFindPrecompiledTokensTasks, findAllKnownAddresses, findPrecompiledTokens, updateStakingValidators } from '@/indexer/tasks/prepopulate';
+import {
+  createFindPrecompiledTokensTasks,
+  findAllEthereumBridgeContractAddresses,
+  findAllKnownAddresses,
+  findPrecompiledTokens,
+  updateStakingValidators
+} from '@/indexer/tasks/prepopulate';
 import logger from '@/logger';
 import NftIndexer from '@/nft-indexer';
 import { updateTokenPricingDetails } from '@/price-fetcher';
@@ -43,6 +49,9 @@ const start = async () => {
         break;
       case 'INGEST_KNOWN_ADDRESSES':
         await findAllKnownAddresses();
+        break;
+      case 'FIND_ETH_BRIDGE_CONTRACT_ADDRESSES':
+        await findAllEthereumBridgeContractAddresses();
         break;
       case 'FIND_NFT_METADATA':
         await nftIndexer.fetchMetadataOfToken(job.data.contractAddress, job.data.tokenId);
