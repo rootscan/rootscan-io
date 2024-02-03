@@ -14,17 +14,30 @@ import {
 } from "@/lib/api"
 
 const getData = async () => {
-  const { docs: latestBlocks } = await getBlocks({ page: 1, limit: 5 })
-  const { docs: latestTransactions } = await getTransactions({
-    page: 1,
-    limit: 5,
-  })
-  const { docs: latestExtrinsics } = await getExtrinsics({
-    page: 1,
-    limit: 5,
-  })
-  const chainSummary = await getChainSummary({})
-  return { latestExtrinsics, latestBlocks, latestTransactions, chainSummary }
+  const [
+    latestBlocksBase,
+    latestTransactionsBase,
+    latestExtrinsicsBase,
+    chainSummary,
+  ] = await Promise.all([
+    getBlocks({ page: 1, limit: 5 }),
+    getTransactions({
+      page: 1,
+      limit: 5,
+    }),
+    getExtrinsics({
+      page: 1,
+      limit: 5,
+    }),
+    getChainSummary({}),
+  ])
+
+  return {
+    latestExtrinsics: latestExtrinsicsBase?.docs || [],
+    latestBlocks: latestBlocksBase?.docs || [],
+    latestTransactions: latestTransactionsBase?.docs || [],
+    chainSummary,
+  }
 }
 
 export default async function IndexPage() {
