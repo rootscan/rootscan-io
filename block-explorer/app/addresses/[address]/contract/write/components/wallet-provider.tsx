@@ -2,8 +2,14 @@
 import "@rainbow-me/rainbowkit/styles.css"
 
 import { root } from "@/lib/viem-client"
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit"
-import { configureChains, createConfig, WagmiConfig } from "wagmi"
+import {
+  RainbowKitProvider,
+  darkTheme,
+  getDefaultWallets,
+  lightTheme,
+} from "@rainbow-me/rainbowkit"
+import { useTheme } from "next-themes"
+import { WagmiConfig, configureChains, createConfig } from "wagmi"
 import { publicProvider } from "wagmi/providers/public"
 
 const { chains, publicClient } = configureChains([root], [publicProvider()])
@@ -21,9 +27,16 @@ const wagmiConfig = createConfig({
 })
 
 export default function WalletProvider({ children }) {
+  const { theme } = useTheme()
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
+      <RainbowKitProvider
+        chains={chains}
+        theme={theme === "dark" ? darkTheme() : lightTheme()}
+        modalSize="compact"
+      >
+        {children}
+      </RainbowKitProvider>
     </WagmiConfig>
   )
 }

@@ -1,7 +1,3 @@
-import "@/styles/globals.css"
-import { Metadata, Viewport } from "next"
-
-import ClientProgressBar from "@/components/client-progressbar"
 import Container from "@/components/container"
 import QueryProvider from "@/components/layouts/query-provider"
 import MainSearch from "@/components/main-search"
@@ -11,6 +7,15 @@ import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 import { fontLocal } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
+import "@/styles/globals.css"
+import { Metadata, Viewport } from "next"
+import dynamic from "next/dynamic"
+const ClientProgressBar = dynamic(
+  () => import("../components/client-progressbar"),
+  {
+    ssr: false,
+  }
+)
 
 export const metadata: Metadata = {
   title: {
