@@ -33,10 +33,10 @@ export const CopyButton = ({
       {...props}
     >
       {hasCopied ? (
-        <Check className="h-4 w-4" />
+        <Check className="size-4" />
       ) : (
         <Copy
-          className="h-4 w-4"
+          className="size-4"
           onClick={() => {
             copyToClipboardWithMeta(value)
             setHasCopied(true)
