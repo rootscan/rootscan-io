@@ -74,7 +74,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <OnlyMainnet>
+                  <OnlyMainnet fallback={"-"}>
                     {token?.priceData ? (
                       <div className="flex items-center gap-2">
                         <span className="text-primary/80">
