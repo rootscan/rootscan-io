@@ -1,5 +1,6 @@
 import Breadcrumbs from "@/components/breadcrumbs"
 import Container from "@/components/container"
+import OnlyMainnet from "@/components/layouts/only-mainnet"
 import TokenDisplay from "@/components/token-display"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import CardDetail from "@/components/ui/card-detail"
@@ -71,9 +72,11 @@ export default async function Layout({ params, children }) {
               <CardDetail.Wrapper>
                 <CardDetail.Title>Price</CardDetail.Title>
                 <CardDetail.Content>
-                  {data?.priceData?.price
-                    ? formatNumberDollars(data?.priceData?.price)
-                    : "-"}
+                  <OnlyMainnet fallback={"-"}>
+                    {data?.priceData?.price
+                      ? formatNumberDollars(data?.priceData?.price)
+                      : "-"}
+                  </OnlyMainnet>
                 </CardDetail.Content>
               </CardDetail.Wrapper>
             </CardContent>
@@ -81,11 +84,13 @@ export default async function Layout({ params, children }) {
               <CardDetail.Wrapper>
                 <CardDetail.Title>Fully Diluted Market Cap</CardDetail.Title>
                 <CardDetail.Content>
-                  {data?.priceData?.fully_diluted_market_cap
-                    ? formatNumberDollars(
-                        data?.priceData?.fully_diluted_market_cap
-                      )
-                    : "-"}
+                  <OnlyMainnet fallback={"-"}>
+                    {data?.priceData?.fully_diluted_market_cap
+                      ? formatNumberDollars(
+                          data?.priceData?.fully_diluted_market_cap
+                        )
+                      : "-"}
+                  </OnlyMainnet>
                 </CardDetail.Content>
               </CardDetail.Wrapper>
             </CardContent>
