@@ -8,6 +8,7 @@ def redeployProjects(String deploymentsString, String namespace, String link) {
     Collection deployments = deploymentsString.split(' ')
     deployments.each { project ->
         def workloadPath = "${link}:${namespace}:${project}"
+        echo "Deploying ${project} in ${namespace}"
         rancherRedeploy alwaysPull: true, images: '', credential: 'rancher', workload: workloadPath
     }
 }
