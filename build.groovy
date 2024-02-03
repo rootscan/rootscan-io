@@ -151,10 +151,6 @@ pipeline {
                         }
                     }
                 }
-            }
-        }
-        stage('Deploy') {
-            parallel {
                 stage('prod') {
                     when {
                         anyOf {
