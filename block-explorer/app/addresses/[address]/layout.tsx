@@ -1,6 +1,7 @@
 import AddressDisplay from "@/components/address-display"
 import Breadcrumbs from "@/components/breadcrumbs"
 import Container from "@/components/container"
+import OnlyMainnet from "@/components/layouts/only-mainnet"
 import TokenDisplay from "@/components/token-display"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -88,18 +89,20 @@ export default async function Layout({
                         amount={data?.balance?.free || 0}
                         hideCopyButton
                       />
-                      {data?.balance?.freeFormatted &&
-                      data?.rootPriceData?.price ? (
-                        <span className="text-xs text-muted-foreground">
-                          {formatNumberDollars(
-                            Number(data?.balance?.freeFormatted) *
-                              data.rootPriceData.price,
-                            2
-                          )}{" "}
-                          @ ({formatNumberDollars(data.rootPriceData.price)}/
-                          Root)
-                        </span>
-                      ) : null}
+                      <OnlyMainnet>
+                        {data?.balance?.freeFormatted &&
+                        data?.rootPriceData?.price ? (
+                          <span className="text-xs text-muted-foreground">
+                            {formatNumberDollars(
+                              Number(data?.balance?.freeFormatted) *
+                                data.rootPriceData.price,
+                              2
+                            )}{" "}
+                            @ ({formatNumberDollars(data.rootPriceData.price)}/
+                            Root)
+                          </span>
+                        ) : null}
+                      </OnlyMainnet>
                     </div>
                   ) : (
                     <div className="flex flex-wrap items-center gap-2">
