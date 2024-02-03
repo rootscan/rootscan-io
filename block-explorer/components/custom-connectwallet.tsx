@@ -43,13 +43,13 @@ export default function CustomConnectWallet() {
 
               if (chain.unsupported) {
                 return (
-                  <button
+                  <Button
                     onClick={openChainModal}
                     type="button"
                     variant="outline"
                   >
                     Wrong network
-                  </button>
+                  </Button>
                 )
               }
 
