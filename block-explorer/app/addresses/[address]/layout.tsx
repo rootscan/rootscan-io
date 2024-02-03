@@ -102,19 +102,23 @@ export default async function Layout({
                       ) : null}
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Free</span>
-                      <span>
-                        {data?.balance?.freeFormatted
-                          ? data?.balance?.freeFormatted
-                          : "0"}{" "}
-                      </span>
-                      <span className="text-muted-foreground">Reserved</span>
-                      <span>
-                        {data?.balance?.reservedFormatted
-                          ? data?.balance?.reservedFormatted
-                          : "0"}
-                      </span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-muted-foreground">Free</span>
+                        <span>
+                          {data?.balance?.freeFormatted
+                            ? data?.balance?.freeFormatted
+                            : "0"}{" "}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-muted-foreground">Reserved</span>
+                        <span>
+                          {data?.balance?.reservedFormatted
+                            ? data?.balance?.reservedFormatted
+                            : "0"}
+                        </span>
+                      </div>
                     </div>
                   )}
                 </CardDetail.Content>
