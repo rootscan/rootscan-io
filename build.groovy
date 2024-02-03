@@ -153,5 +153,23 @@ pipeline {
                 }
             }
         }
+        stage('Deploy') {
+            parallel {
+                stage('prod') {
+                    when {
+                        anyOf {
+                            // TODO: change to prod branch later
+                            branch 'dev'
+                        }
+                    }
+                    steps {
+                        script {
+                            redeployProjects(APPS, 'rootscan-oprod-porcini', '/project/local:p-cq7nh/workload/deployment')
+                            redeployProjects(APPS, 'rootscan-oprod-root', '/project/local:p-cq7nh/workload/deployment')
+                        }
+                    }
+                }
+            }
+        }
     }
 }
