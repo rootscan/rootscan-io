@@ -60,12 +60,10 @@ export const MobileMenu = () => {
       </div>
       <div
         className={cn([
-          open
-            ? "absolute left-0 top-[64px] !m-0 w-full duration-300 animate-in fade-in"
-            : "hidden",
+          open ? "absolute left-0 top-[64px] !m-0 w-full" : "hidden",
         ])}
       >
-        <Card>
+        <Card className="rounded-b-2xl rounded-t-none">
           <CardHeader className="pb-0" />
           <CardContent>
             <div className="flex flex-col gap-4">
