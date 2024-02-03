@@ -1,4 +1,5 @@
 import Container from "@/components/container"
+import OnlyMainnet from "@/components/layouts/only-mainnet"
 import Pagination from "@/components/pagination"
 import SectionTitle from "@/components/section-title"
 import TokenLogo from "@/components/token-logo"
@@ -73,33 +74,35 @@ export default async function Page({ searchParams }: { searchParams: any }) {
                   </Link>
                 </TableCell>
                 <TableCell>
-                  {token?.priceData ? (
-                    <div className="flex items-center gap-2">
-                      <span className="text-primary/80">
-                        {token?.priceData?.price
-                          ? formatNumberDollars(token?.priceData?.price)
-                          : "-"}
-                      </span>
-                      <span
-                        className={cn([
-                          token?.priceData?.percent_change_24h < 0
-                            ? "text-red-400"
-                            : "text-green-400",
-                          "flex items-center gap-1",
-                        ])}
-                      >
-                        {token?.priceData?.percent_change_24h < 0 ? (
-                          <ChevronDown className="h-4 w-4" />
-                        ) : (
-                          <ChevronUp className="h-4 w-4" />
-                        )}
-                        {token?.priceData?.percent_change_24h
-                          ? token?.priceData?.percent_change_24h.toFixed(2)
-                          : "-"}
-                        %
-                      </span>
-                    </div>
-                  ) : null}
+                  <OnlyMainnet>
+                    {token?.priceData ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-primary/80">
+                          {token?.priceData?.price
+                            ? formatNumberDollars(token?.priceData?.price)
+                            : "-"}
+                        </span>
+                        <span
+                          className={cn([
+                            token?.priceData?.percent_change_24h < 0
+                              ? "text-red-400"
+                              : "text-green-400",
+                            "flex items-center gap-1",
+                          ])}
+                        >
+                          {token?.priceData?.percent_change_24h < 0 ? (
+                            <ChevronDown className="h-4 w-4" />
+                          ) : (
+                            <ChevronUp className="h-4 w-4" />
+                          )}
+                          {token?.priceData?.percent_change_24h
+                            ? token?.priceData?.percent_change_24h.toFixed(2)
+                            : "-"}
+                          %
+                        </span>
+                      </div>
+                    ) : null}
+                  </OnlyMainnet>
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline">{token?.type}</Badge>
