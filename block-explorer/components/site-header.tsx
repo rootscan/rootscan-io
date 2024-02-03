@@ -3,6 +3,7 @@ import Link from "next/link"
 import { Fuel } from "lucide-react"
 import Image from "next/image"
 import { Fragment } from "react"
+import OnlyMainnet from "./layouts/only-mainnet"
 import MainSearch from "./main-search"
 import { Navigation } from "./navigation"
 import RootPrice from "./root-price"
@@ -16,8 +17,10 @@ export function SiteHeader() {
           <div className="container">
             <div className="flex items-center justify-between gap-4">
               <div className="flex select-none items-center gap-2 text-xs text-primary/80">
-                <RootPrice />
-                <Fuel className="h-4 w-4 text-muted-foreground" />{" "}
+                <OnlyMainnet>
+                  <RootPrice />
+                </OnlyMainnet>
+                <Fuel className="size-4 text-muted-foreground" />{" "}
                 <span className="text-muted-foreground">EVM Gas:</span> 7500
                 Gwei
               </div>
