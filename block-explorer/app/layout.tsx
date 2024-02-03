@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     default: `Rootscan`,
     template: `%s - Rootscan`,
   },
-  description: `Rootscan is a Block Explorer for The Root Network`,
+  description: `Rootscan is a Block Explorer tailored for The Root Network, an innovative decentralized network.`,
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
