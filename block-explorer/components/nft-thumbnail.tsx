@@ -1,6 +1,6 @@
 import { getNft } from "@/lib/api"
 import { cn } from "@/lib/utils"
-import Image from "next/image"
+import SkeletonImage from "./skeleton-image"
 
 const getData = async ({ contractAddress, tokenId }) => {
   if (!contractAddress) return null
@@ -24,7 +24,7 @@ export default async function NftThumbnail({ contractAddress, tokenId }) {
     )
   }
   return (
-    <Image
+    <SkeletonImage
       src={data?.image}
       width={250}
       height={250}

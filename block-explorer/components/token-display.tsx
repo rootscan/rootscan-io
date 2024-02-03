@@ -24,7 +24,7 @@ export default async function TokenDisplay({
   return (
     <div
       className={cn([
-        "inline-flex items-center gap-2 truncate",
+        "flex items-center gap-2 truncate",
         className ? className : "",
       ])}
     >

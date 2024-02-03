@@ -37,7 +37,7 @@ export default function AddressDisplay({
   return (
     <div
       className={cn([
-        "inline-flex items-center gap-[5px] truncate",
+        "relative flex items-center gap-[5px] truncate",
         className ? className : "",
       ])}
     >
@@ -55,9 +55,7 @@ export default function AddressDisplay({
       ) : null}
 
       <Tooltip text={address} disabled={!useShortenedAddress}>
-        <Link href={`/addresses/${address}`} className="truncate">
-          {name}
-        </Link>
+        <Link href={`/addresses/${address}`} className="truncate">{name}</Link>
       </Tooltip>
 
       {!hideCopyButton || !address ? <CopyButton value={address} /> : null}
