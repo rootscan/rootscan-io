@@ -453,6 +453,7 @@ app.post('/getTokens', async (req: Request, res: Response) => {
       limit: limit ? limit : 25,
       allowDiskUse: true,
       skipFullCount: true,
+      sort: 'assetId collectionId',
       lean: true
     };
     const query: { type?: string } = {};
