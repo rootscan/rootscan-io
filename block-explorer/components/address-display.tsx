@@ -47,17 +47,15 @@ export default function AddressDisplay({
         </Tooltip>
       ) : null}
       {isFuturepass ? (
-        <div>
-          <Tooltip text="Futurepass">
-            <Logo className="size-4" />
-          </Tooltip>
-        </div>
+        <Tooltip text="Futurepass">
+          <Logo className="size-4" />
+        </Tooltip>
       ) : null}
-
-      <Tooltip text={address} disabled={!useShortenedAddress}>
-        <Link href={`/addresses/${address}`} className="truncate">{name}</Link>
-      </Tooltip>
-
+      <Link href={`/addresses/${address}`} className="truncate">
+        <Tooltip text={address} disabled={!useShortenedAddress}>
+          {name}
+        </Tooltip>
+      </Link>
       {!hideCopyButton || !address ? <CopyButton value={address} /> : null}
     </div>
   )

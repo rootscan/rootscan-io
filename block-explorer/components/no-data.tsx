@@ -1,6 +1,6 @@
 export default function NoData() {
   return (
-    <div className="select-none py-10 text-center text-muted-foreground">
+    <div className="grid h-[33vh] select-none place-items-center rounded-xl py-10 text-center text-muted-foreground">
       There is no data available.
     </div>
   )

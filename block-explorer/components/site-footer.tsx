@@ -21,8 +21,9 @@ export default function SiteFooter() {
       </Container>
       <div className="hidden h-[1px] w-full border-b md:block" />
       <Container>
-        <p className="py-4 text-xs">
-          Rootscan is a Block Explorer for The Root Network.
+        <p className="max-w-md py-4 text-xs">
+          Rootscan is a Block Explorer tailored for The Root Network, an
+          innovative decentralized network.
         </p>
         <div className="flex flex-wrap items-center justify-between gap-4 text-sm">
           <div className="flex flex-col gap-2">
@@ -31,6 +32,7 @@ export default function SiteFooter() {
                 src="/site-logos/rootscan-logo.png"
                 width={190}
                 height={190}
+                priority
                 unoptimized
                 className="size-8 rounded-lg invert dark:invert-0"
                 alt="rootscan_logo"

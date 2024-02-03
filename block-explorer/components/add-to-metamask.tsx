@@ -29,6 +29,7 @@ export default function AddToMetamask() {
         width={50}
         height={50}
         unoptimized
+        priority
         className="mr-2 size-5"
         alt="metamask_logo"
       />

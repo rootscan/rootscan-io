@@ -26,7 +26,7 @@ export default async function Page({ params, searchParams }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <Tooltip text="Back to collection">
+        <Tooltip text="Back to collection" asChild>
           <Link href={`/addresses/${params.address}/nft-inventory`}>
             <Button size="pagination" variant="outline">
               <ChevronLeft />

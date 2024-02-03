@@ -1,5 +1,5 @@
 import { ROOT_TOKEN, XRP_TOKEN } from "@/lib/constants/tokens"
-import { ArrowRight, ChevronRight, ExternalLink } from "lucide-react"
+import { ChevronRight, ExternalLink } from "lucide-react"
 import Link from "next/link"
 import { Fragment } from "react"
 import AddressDisplay from "../address-display"
@@ -236,14 +236,12 @@ export const components = {
   // "nftPeg.Erc721Withdraw": "",
   // "nftPeg.Erc721Deposit": "",
   "assets.Transferred": ({ args, token }) => (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       Transfer of
       <TokenDisplay token={token} amount={args?.amount} />
       from
-      <AddressDisplay
-        address={args?.from}
-        useShortenedAddress
-      /> <ArrowRight />{" "}
+      <AddressDisplay address={args?.from} useShortenedAddress />{" "}
+      <ChevronRight className="size-4 text-muted-foreground" />{" "}
       <AddressDisplay address={args?.to} useShortenedAddress />
     </div>
   ),

@@ -1,5 +1,6 @@
 import AddressDisplay from "@/components/address-display"
 import { CopyButton } from "@/components/copy-button"
+import OnlyMainnet from "@/components/layouts/only-mainnet"
 import NftThumbnail from "@/components/nft-thumbnail"
 import NoData from "@/components/no-data"
 import TestnetWarning from "@/components/testnet-warning"
@@ -341,15 +342,17 @@ export default async function Page({ params }: { params: { id: Hash } }) {
               <div className="flex items-center gap-2">
                 <span className="truncate">{transaction.transactionFee} </span>
                 <TokenDisplay token={XRP_TOKEN} hideCopyButton />
-                {transaction?.xrpPriceData?.price ? (
-                  <Badge variant="outline">
-                    {formatNumberDollars(
-                      transaction.transactionFee *
-                        transaction?.xrpPriceData?.price,
-                      2
-                    )}
-                  </Badge>
-                ) : null}
+                <OnlyMainnet>
+                  {transaction?.xrpPriceData?.price ? (
+                    <Badge variant="outline">
+                      {formatNumberDollars(
+                        transaction.transactionFee *
+                          transaction?.xrpPriceData?.price,
+                        2
+                      )}
+                    </Badge>
+                  ) : null}
+                </OnlyMainnet>
               </div>
             </div>
             <div className="flex flex-col gap-1">

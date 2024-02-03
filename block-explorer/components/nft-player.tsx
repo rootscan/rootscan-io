@@ -3,6 +3,7 @@
 import { PlayCircle, StopCircle } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
+import SkeletonImage from "./skeleton-image"
 
 export default function NftPlayer({ animation_url, image }) {
   const [showVideo, setShowVideo] = useState<boolean>(false)
@@ -24,10 +25,11 @@ export default function NftPlayer({ animation_url, image }) {
         </div>
       ) : null}
       {image && !showVideo ? (
-        <Image
+        <SkeletonImage
           src={image}
           width={300}
           height={300}
+          priority
           unoptimized
           className="rounded-sm"
           alt="image"
