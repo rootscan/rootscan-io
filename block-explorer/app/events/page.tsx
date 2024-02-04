@@ -6,6 +6,11 @@ import PaginationSuspense from "@/components/pagination-suspense"
 import SectionTitle from "@/components/section-title"
 import { getEvents } from "@/lib/api"
 import { getPaginationData } from "@/lib/utils"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Events",
+}
 
 const getData = async ({ searchParams }) => {
   const data = await getEvents({ page: searchParams?.page })

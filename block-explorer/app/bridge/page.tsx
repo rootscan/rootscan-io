@@ -6,7 +6,10 @@ import PaginationSuspense from "@/components/pagination-suspense"
 import SectionTitle from "@/components/section-title"
 import { getBridgeTransactions } from "@/lib/api"
 import { getPaginationData } from "@/lib/utils"
-
+import { Metadata } from "next"
+export const metadata: Metadata = {
+  title: "Bridge",
+}
 const getData = async ({ searchParams }) => {
   let data = await getBridgeTransactions({ page: searchParams?.page || 1 })
 

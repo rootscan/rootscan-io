@@ -30,9 +30,8 @@ export default async function TokenDisplay({
     >
       {!isNaN(amount) ? (
         <div>
-          {/* TODO - Add proper support for wei numbers */}
           {amount
-            ? formatNumber(Number(formatUnits(amount, token?.decimals)))
+            ? formatNumber(Number(formatUnits(BigInt(amount), token?.decimals)))
             : "0"}
         </div>
       ) : null}

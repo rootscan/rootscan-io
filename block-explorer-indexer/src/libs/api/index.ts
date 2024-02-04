@@ -133,10 +133,8 @@ app.post('/getToken', async (req: Request, res: Response) => {
         const holders = await DB.Balance.find({ contractAddress: getAddress(contractAddress) }).countDocuments();
         data.holders = holders;
       } else if (data?.type === 'ERC721' || data?.type === 'ERC1155') {
-        const holders = await DB.Nft.find({ contractAddress: getAddress(contractAddress) })
-          .distinct('owner')
-          .countDocuments();
-        data.holders = holders;
+        const holders = await DB.Nft.find({ contractAddress: getAddress(contractAddress) }).distinct('owner')
+        data.holders = holders?.length;
       }
     }
     return res.json(data);

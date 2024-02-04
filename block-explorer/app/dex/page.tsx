@@ -16,7 +16,12 @@ import {
 import { getDex } from "@/lib/api"
 import { getPaginationData } from "@/lib/utils"
 import { SortDesc } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
+
+export const metadata: Metadata = {
+  title: "DEX",
+}
 
 const getData = async ({ searchParams }: { searchParams: any }) => {
   const data = await getDex({

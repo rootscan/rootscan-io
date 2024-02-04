@@ -5,6 +5,11 @@ import SectionTitle from "@/components/section-title"
 import TransactionsTable from "@/components/transactions-table"
 import { getTransactions } from "@/lib/api"
 import { getPaginationData } from "@/lib/utils"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "EVM Transactions",
+}
 
 const getData = async ({ searchParams }: { searchParams: any }) => {
   const data = await getTransactions({

@@ -20,7 +20,7 @@ const ClientProgressBar = dynamic(
 export const metadata: Metadata = {
   title: {
     default: `Rootscan`,
-    template: `%s - Rootscan`,
+    template: `%s • Rootscan`,
   },
   description: `Rootscan is a Block Explorer tailored for The Root Network, an innovative decentralized network.`,
   icons: {

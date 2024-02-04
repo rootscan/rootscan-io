@@ -6,6 +6,11 @@ import PaginationSuspense from "@/components/pagination-suspense"
 import SectionTitle from "@/components/section-title"
 import { getExtrinsics } from "@/lib/api"
 import { getPaginationData } from "@/lib/utils"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Extrinsics",
+}
 
 const getData = async ({
   searchParams,
@@ -23,7 +28,7 @@ export default async function Page({
 }) {
   const data = await getData({ searchParams })
   const extrinsics = data?.docs;
-  
+
   return (
     <Container>
       <div className="flex flex-col gap-4">
