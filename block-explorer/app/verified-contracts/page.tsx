@@ -13,6 +13,11 @@ import {
 } from "@/components/ui/table"
 import { getVerifiedContracts } from "@/lib/api"
 import { getPaginationData } from "@/lib/utils"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Verified Contracts",
+}
 
 const getData = async ({ searchParams, params }) => {
   let data = await getVerifiedContracts({ page: searchParams?.page || 1 })

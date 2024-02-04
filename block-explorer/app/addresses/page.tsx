@@ -16,6 +16,11 @@ import { getAddresses } from "@/lib/api"
 import { ROOT_TOKEN, XRP_TOKEN } from "@/lib/constants/tokens"
 import { getPaginationData } from "@/lib/utils"
 import { SortDesc } from "lucide-react"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Addresses",
+}
 
 const getData = async ({ searchParams }) => {
   const data: any = await getAddresses({ page: searchParams?.page })

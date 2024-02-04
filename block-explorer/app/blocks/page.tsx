@@ -17,8 +17,13 @@ import { getBlocks } from "@/lib/api"
 import { getAddressName } from "@/lib/constants/knownAddresses"
 import { getPaginationData } from "@/lib/utils"
 import { SortDesc } from "lucide-react"
+import { Metadata } from "next"
 import Link from "next/link"
 import { Fragment, Suspense } from "react"
+
+export const metadata: Metadata = {
+  title: 'Blocks'
+}
 
 const getData = async ({ searchParams }: { searchParams: any }) => {
   let data = await getBlocks({

@@ -19,6 +19,11 @@ import millify from "millify"
 import Link from "next/link"
 import { Suspense } from "react"
 import SubMenu from "./components/submenu"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Tokens",
+}
 
 const getData = async ({ searchParams }: { searchParams: any }) => {
   const data = await getTokens({

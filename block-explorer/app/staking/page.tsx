@@ -17,7 +17,12 @@ import { getStakingValidators } from "@/lib/api"
 import { ROOT_TOKEN } from "@/lib/constants/tokens"
 import { getPaginationData } from "@/lib/utils"
 import { AlertTriangle } from "lucide-react"
+import { Metadata } from "next"
 import { Fragment, Suspense } from "react"
+
+export const metadata: Metadata = {
+  title: "Staking",
+}
 
 const getData = async ({ searchParams, params }) => {
   let data = await getStakingValidators({ page: searchParams?.page || 1 })
