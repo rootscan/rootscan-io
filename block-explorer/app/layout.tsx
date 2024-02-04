@@ -52,7 +52,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     >
       <body
         className={cn([
-          "min-h-screen bg-[#ebebebeb] font-local antialiased transition-all duration-100 ease-in-out dark:bg-white/5",
+          "min-h-screen bg-[#ebebebeb] font-local antialiased dark:bg-white/5",
           fontLocal.variable,
           "font-local",
         ])}

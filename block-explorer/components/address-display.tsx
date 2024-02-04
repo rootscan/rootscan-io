@@ -36,26 +36,21 @@ export default function AddressDisplay({
 
   return (
     <div
-      className={cn([
-        "relative flex items-center gap-[5px] truncate",
-        className ? className : "",
-      ])}
+      className={cn(["flex items-center gap-2", className ? className : ""])}
     >
       {isContract ? (
-        <Tooltip text="EVM Contract">
+        <Tooltip text="EVM Contract" asChild>
           <FileText className="size-4 text-muted-foreground" />
         </Tooltip>
       ) : null}
       {isFuturepass ? (
-        <Tooltip text="Futurepass">
+        <Tooltip text="Futurepass" asChild>
           <Logo className="size-4" />
         </Tooltip>
       ) : null}
-      <Link href={`/addresses/${address}`} className="truncate">
-        <Tooltip text={address} disabled={!useShortenedAddress}>
-          {name}
-        </Tooltip>
-      </Link>
+      <Tooltip text={address} disabled={!useShortenedAddress} asChild>
+        <Link href={`/addresses/${address}`}>{name}</Link>
+      </Tooltip>
       {!hideCopyButton || !address ? <CopyButton value={address} /> : null}
     </div>
   )

@@ -1,14 +1,4 @@
-import { JetBrains_Mono as FontMono, Inter as FontSans } from "next/font/google"
 import localFont from "next/font/local"
-export const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-})
-
-export const fontMono = FontMono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
 
 export const fontLocal = localFont({
   src: [
@@ -17,19 +7,19 @@ export const fontLocal = localFont({
       weight: "100",
     },
     {
-      path: "../public/fonts/ObjektivMk1_Trial_Lt.ttf",
+      path: "../public/fonts/ObjektivMk1-Thin.woff2",
       weight: "200",
     },
     {
-      path: "../public/fonts/ObjektivMk1_Trial_Lt.ttf",
+      path: "../public/fonts/ObjektivMk1-Thin.woff2",
       weight: "300",
     },
     {
-      path: "../public/fonts/ObjektivMk1_Trial_Md.ttf",
+      path: "../public/fonts/ObjektivMk1-Medium.woff2",
       weight: "400",
     },
     {
-      path: "../public/fonts/ObjektivMk1_Trial_Md.ttf",
+      path: "../public/fonts/ObjektivMk1-Medium.woff2",
       weight: "500",
     },
     {

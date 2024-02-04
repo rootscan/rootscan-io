@@ -36,7 +36,7 @@ export default async function TokenDisplay({
             : "0"}
         </div>
       ) : null}
-      <Tooltip text={token?.contractAddress}>
+      <Tooltip text={token?.contractAddress} asChild>
         <div className="inline-flex items-center gap-1">
           {hasLogo ? (
             <div

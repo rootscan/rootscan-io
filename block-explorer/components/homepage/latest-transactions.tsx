@@ -50,39 +50,36 @@ export default function LatestTransactions({
                   </Link>
                 </div>
               </div>
-              <div className="flex flex-row items-center">
-                <div className="flex flex-row items-center">
-                  <div className="mr-2 hidden size-8 md:block">
-                    <Image
-                      src={generateAvatarURL(transaction.from)}
-                      width={50}
-                      height={50}
-                      priority
-                      unoptimized
-                      className="rounded-[5px]"
-                      alt="jazz"
-                    />
-                  </div>
-                  <AddressDisplay
-                    address={getAddress(transaction.from)}
-                    nameTag={transaction?.fromLookup?.nameTag}
-                    rnsName={transaction?.fromLookup?.rns}
-                    isContract={transaction?.fromLookup?.isContract}
-                    useShortenedAddress
-                  />
-                </div>
+              <div className="flex items-center justify-between gap-2 md:justify-start">
+                <Image
+                  src={generateAvatarURL(transaction.from)}
+                  width={50}
+                  height={50}
+                  priority
+                  unoptimized
+                  className="hidden rounded-[5px] lg:block lg:size-10"
+                  alt="jazz"
+                />
+                <AddressDisplay
+                  address={getAddress(transaction.from)}
+                  nameTag={transaction?.fromLookup?.nameTag}
+                  rnsName={transaction?.fromLookup?.rns}
+                  isContract={transaction?.fromLookup?.isContract}
+                  useShortenedAddress
+                />
+
                 <ChevronRight className="mx-1 size-4 shrink-0 text-muted-foreground" />
-                <div className="mr-2 hidden size-8 md:block">
-                  <Image
-                    src={generateAvatarURL(transaction.to)}
-                    width={50}
-                    height={50}
-                    priority
-                    unoptimized
-                    className="rounded-[5px]"
-                    alt="jazz"
-                  />
-                </div>
+
+                <Image
+                  src={generateAvatarURL(transaction.to)}
+                  width={50}
+                  height={50}
+                  priority
+                  unoptimized
+                  className="hidden rounded-[5px] lg:block lg:size-10"
+                  alt="jazz"
+                />
+
                 <AddressDisplay
                   address={getAddress(transaction.to)}
                   nameTag={transaction?.toLookup?.nameTag}

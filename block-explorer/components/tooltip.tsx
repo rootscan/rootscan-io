@@ -11,7 +11,7 @@ export default function Tooltip({
   children,
   text,
   disabled,
-  asChild
+  asChild,
 }: {
   children: ReactNode
   text: string
@@ -24,7 +24,7 @@ export default function Tooltip({
   return (
     <TooltipShad delayDuration={0}>
       <TooltipTrigger asChild={asChild}>{children}</TooltipTrigger>
-      <TooltipContent>
+      <TooltipContent className="z-100">
         <p className="whitespace-pre-line">{text}</p>
       </TooltipContent>
     </TooltipShad>
