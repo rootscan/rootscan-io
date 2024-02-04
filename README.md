@@ -1,4 +1,8 @@
-# rootscan-io
+![image (9)](https://github.com/rootscan/rootscan-io/assets/23193015/42011581-be3d-43f6-bce7-457a3e09db59)
+
+![GitHub CI](https://github.com/rootscan/rootscan-io/actions/workflows/build.yml/badge.svg)
+
+# Rootscan
 
 This repo uses [package-based](https://nx.dev/getting-started/tutorials/package-based-repo-tutorial) nx structure 
 Each folder is separate project.
