@@ -1,4 +1,5 @@
 import AddressDisplay from "@/components/address-display"
+import { CopyButton } from "@/components/copy-button"
 import { getEventComponent } from "@/components/events-components"
 import JsonViewer from "@/components/json-viewer"
 import Timestamp from "@/components/timestamp"
@@ -80,7 +81,10 @@ export default async function Page({ params }) {
           <CardDetail.Wrapper>
             <CardDetail.Title>Hash</CardDetail.Title>
             <CardDetail.Content>
-              <span className="truncate">{data?.hash}</span>
+              <div className="flex items-center gap-2">
+                <span className="truncate">{data?.hash}</span>
+                <CopyButton value={data?.hash}/>
+              </div>
             </CardDetail.Content>
           </CardDetail.Wrapper>
           <CardDetail.Wrapper>

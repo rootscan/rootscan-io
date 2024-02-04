@@ -67,6 +67,7 @@ export default async function Page({ params, searchParams }) {
                   <AddressDisplay
                     address={token?.contractAddress}
                     useShortenedAddress
+                    isContract
                   />
                 </TableCell>
                 <TableCell>
