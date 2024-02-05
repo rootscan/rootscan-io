@@ -32,5 +32,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - uses: snyk/actions/setup@master
+      - uses: actions/setup-go@v1
+        with:
+          go-version: '1.13'
+      - name: Snyk monitor
+        run: snyk test --all-projects
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
       - name: build projects
         run: pnpm nx run-many --target=build
