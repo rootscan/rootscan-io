@@ -3,6 +3,7 @@ import logger from '@/logger';
 import { getTokenMetadata } from '@/token-data';
 import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, INFT, IToken } from '@/types';
 import { contractAddressToNativeId, isValidHttpUrl } from '@/utils';
+import { getTokenDetails } from '@/utils/tokenInformation';
 import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
 import { Models } from 'mongoose';
@@ -22,6 +23,8 @@ export default class NftIndexer {
   }
 
   async fetchHoldersOfCollection(contractAddress: Address) {
+    await getTokenDetails(getAddress(contractAddress), true);
+
     const collection: IToken | null = await this.DB.Token.findOne({
       contractAddress: getAddress(contractAddress),
       type: { $in: ['ERC721', 'ERC1155'] },
@@ -193,14 +196,14 @@ export default class NftIndexer {
         const ops: IBulkWriteUpdateOp[] = [];
         let tokenId = current;
         const currentChainId = await this.client.getChainId();
-        const metadata = await getTokenMetadata(
-          getAddress(contractAddress),
-          Number(tokenId),
-          Number(currentChainId) === 7668 ? 'root' : 'porcini'
-        );
         for (const result of multicall) {
           if (result?.status === 'success') {
             if (isAddress(result?.result as string)) {
+              const metadata = await getTokenMetadata(
+                getAddress(contractAddress),
+                Number(tokenId),
+                Number(currentChainId) === 7668 ? 'root' : 'porcini'
+              );
               const owner: Address = getAddress(result?.result as string);
               ops.push({
                 updateOne: {
