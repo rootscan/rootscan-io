@@ -142,13 +142,13 @@ pipeline {
                 stage('dev') {
                     when {
                         anyOf {
-                            branch 'disabled'
+                            branch 'dev'
                         }
                     }
                     steps {
                         script {
-                            redeployProjects(APPS, 'rootscan-dev-porcini', '/project/local:p-hqnwb/workload/deployment')
-                            redeployProjects(APPS, 'rootscan-dev-root', '/project/local:p-wttvz/workload/deployment')
+                            redeployProjects(APPS, 'rootscan-odev-porcini', '/project/local:p-cq7nh/workload/deployment')
+                            redeployProjects(APPS, 'rootscan-odev-root', '/project/local:p-cq7nh/workload/deployment')
                         }
                     }
                 }
