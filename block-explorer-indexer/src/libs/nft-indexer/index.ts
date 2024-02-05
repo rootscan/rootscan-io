@@ -3,6 +3,7 @@ import logger from '@/logger';
 import { getTokenMetadata } from '@/token-data';
 import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, INFT, IToken } from '@/types';
 import { contractAddressToNativeId, isValidHttpUrl } from '@/utils';
+import { getTokenDetails } from '@/utils/tokenInformation';
 import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
 import { Models } from 'mongoose';
@@ -22,6 +23,8 @@ export default class NftIndexer {
   }
 
   async fetchHoldersOfCollection(contractAddress: Address) {
+    await getTokenDetails(getAddress(contractAddress), true);
+
     const collection: IToken | null = await this.DB.Token.findOne({
       contractAddress: getAddress(contractAddress),
       type: { $in: ['ERC721', 'ERC1155'] },
