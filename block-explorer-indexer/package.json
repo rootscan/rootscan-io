@@ -8,7 +8,7 @@
     "api": "node build/libs/api/index.js",
     "worker": "node build/libs/worker/index.js",
     "scheduler": "node build/libs/scheduler/index.js",
-    "build": "tsc -p ./tsconfig.json && tsc-alias -p ./tsconfig.json && cp -R ./src/libs/bullboard/views build/libs/bullboard",
+    "build": "tsc -p ./tsconfig.json && tsc-alias -p ./tsconfig.json",
     "alias": "tsc-alias -p ./tsconfig.json",
     "dev": "tsx watch src/index.ts",
     "format": "prettier --config .prettierrc src/**/*.ts --write",
@@ -26,8 +26,6 @@
     "tsc-alias": "^1.8.8"
   },
   "dependencies": {
-    "@bull-board/api": "^5.14.0",
-    "@bull-board/express": "^5.14.0",
     "@mother/mongoose-cursor-pagination": "^0.0.6",
     "@polkadot/api": "^10.9.1",
     "@therootnetwork/api": "^1.0.6",
@@ -35,6 +33,7 @@
     "@therootnetwork/evm": "^1.0.4",
     "bignumber.js": "^9.1.2",
     "bullmq": "^4.14.2",
+    "commander": "^12.0.0",
     "connect-ensure-login": "^0.1.1",
     "cors": "^2.8.5",
     "cross-fetch": "^4.0.0",

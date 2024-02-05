@@ -1,0 +1,22 @@
+{
+  "name": "token-data",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json && tsc-alias -p ./tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^12.0.0",
+    "tsc-alias": "^1.8.8",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "viem": "^2.7.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16"
+  }
+}

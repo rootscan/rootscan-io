@@ -1,5 +1,6 @@
 import ABIs from '@/constants/abi';
 import logger from '@/logger';
+import { getTokenMetadata } from '@/token-data';
 import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, INFT, IToken } from '@/types';
 import { contractAddressToNativeId, isValidHttpUrl } from '@/utils';
 import queue from '@/workerpool';
@@ -107,6 +108,7 @@ export default class NftIndexer {
       for (const result of multicall) {
         if (result?.status === 'success') {
           const address = addressesArray[index] as Address;
+          if (!isAddress(address)) continue;
           const data = result?.result as bigint[];
           let tokenId = 0;
           for (const quantity of data) {
@@ -130,7 +132,7 @@ export default class NftIndexer {
                 }
               });
             } else if (Number(quantity) === 0) {
-              const hadBalance = currentBalances.find((a) => getAddress(a.owner) === getAddress(address));
+              const hadBalance = currentBalances.find((a) => getAddress(a?.owner) === getAddress(address));
               if (hadBalance) {
                 ops.push({
                   deleteOne: {
@@ -166,14 +168,6 @@ export default class NftIndexer {
       }
     }
     if (collection?.type === 'ERC721') {
-      let lookUpMetadata = false;
-      const amount = await this.DB.Nft.find({ contractAddress: getAddress(contractAddress) })
-        .limit(1)
-        .countDocuments();
-      if (amount === 0) {
-        lookUpMetadata = true;
-      }
-
       let current = 0;
       const end = Number(collection?.totalSupply);
       const maxBatch = 1000;
@@ -198,6 +192,12 @@ export default class NftIndexer {
 
         const ops: IBulkWriteUpdateOp[] = [];
         let tokenId = current;
+        const currentChainId = await this.client.getChainId();
+        const metadata = await getTokenMetadata(
+          getAddress(contractAddress),
+          Number(tokenId),
+          Number(currentChainId) === 7668 ? 'root' : 'porcini'
+        );
         for (const result of multicall) {
           if (result?.status === 'success') {
             if (isAddress(result?.result as string)) {
@@ -212,27 +212,13 @@ export default class NftIndexer {
                     $set: {
                       contractAddress: getAddress(contractAddress),
                       tokenId: Number(tokenId),
-                      owner
+                      owner,
+                      ...metadata
                     }
                   },
                   upsert: true
                 }
               });
-            }
-            /** Create task to lookup the metadata of this NFT */
-            if (lookUpMetadata) {
-              logger.info(`Creating FIND_NFT_METADATA task for ${contractAddress}/${tokenId}`);
-              await queue.add(
-                'FIND_NFT_METADATA',
-                {
-                  contractAddress: getAddress(contractAddress),
-                  tokenId: Number(tokenId)
-                },
-                {
-                  priority: 7,
-                  jobId: `FIND_NFT_METADATA_${contractAddress}_${tokenId}`
-                }
-              );
             }
           }
           tokenId++;

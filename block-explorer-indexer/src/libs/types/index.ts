@@ -70,6 +70,7 @@ export interface INFT {
   owner: Address;
   image?: string;
   animation_url?: string;
+  attributes?: object;
 }
 
 export interface INativeBalance {
