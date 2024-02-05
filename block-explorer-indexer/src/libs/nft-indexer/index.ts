@@ -107,6 +107,7 @@ export default class NftIndexer {
       for (const result of multicall) {
         if (result?.status === 'success') {
           const address = addressesArray[index] as Address;
+          if (!isAddress(address)) continue;
           const data = result?.result as bigint[];
           let tokenId = 0;
           for (const quantity of data) {
@@ -130,7 +131,7 @@ export default class NftIndexer {
                 }
               });
             } else if (Number(quantity) === 0) {
-              const hadBalance = currentBalances.find((a) => getAddress(a.owner) === getAddress(address));
+              const hadBalance = currentBalances.find((a) => getAddress(a?.owner) === getAddress(address));
               if (hadBalance) {
                 ops.push({
                   deleteOne: {
