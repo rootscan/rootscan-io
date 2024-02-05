@@ -24,7 +24,7 @@ const schema = new Schema<IBlock, Mongoose.Model<IBlock>>({
 
 schema.index({ number: 1 }, { unique: true });
 schema.index({ timestamp: 1 });
-
+schema.index({ number: -1 });
 schema.index({ isFinalized: 1 });
 schema.index({ isFinalized: 1, number: 1 });
 schema.index({ 'evmBlock.miner': 1 });
