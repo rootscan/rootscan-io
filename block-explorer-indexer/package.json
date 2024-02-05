@@ -50,7 +50,6 @@
     "mongoose-paginate-v2": "^1.7.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "token-data": "*",
     "tslib": "^2.6.2",
     "tsx": "^3.12.7",
     "typescript": "^5.0.0",
