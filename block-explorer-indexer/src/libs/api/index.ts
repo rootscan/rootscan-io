@@ -738,12 +738,19 @@ app.post('/getStakingValidators', async (req: Request, res: Response) => {
     const addresses = data?.docs?.map((a) => getAddress(a.validator));
     const aggPipe = await DB.Block.aggregate([
       {
+        $sort:
+          {
+            number: -1
+          }
+      },
+      { // 86400 seconds / 4 second block time = 21600
+        $limit:
+          21600
+      },
+      {
         $match: {
           'evmBlock.miner': {
             $in: addresses
-          },
-          timestamp: {
-            $gte: moment().subtract('1', 'days').milliseconds()
           }
         }
       },
