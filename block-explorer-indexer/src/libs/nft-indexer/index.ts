@@ -279,7 +279,9 @@ export default class NftIndexer {
 
   async createNftHolderRefreshTasks() {
     logger.info(`Creating Nft Holder refresh tasks`);
-    const collections = await this.DB.Token.find({ type: { $in: ['ERC721', 'ERC1155'] } }).distinct('contractAddress');
+    const collections = await this.DB.Token.find({ type: { $in: ['ERC721', 'ERC1155'] }, totalSupply: { $gt: 0 } }).distinct(
+      'contractAddress'
+    );
     for (const contractAddress of collections) {
       logger.info(`Creating REFETCH_NFT_HOLDERS task for ${contractAddress}`);
       await queue.add(
