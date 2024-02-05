@@ -10,7 +10,8 @@ const schema = new Schema<INFT, Mongoose.Model<INFT>>({
   amount: { type: Number },
   image: { type: String },
   type: { type: String },
-  animation_url: { type: String }
+  animation_url: { type: String },
+  attributes: { type: Object }
 });
 
 schema.index({ contractAddress: 1, tokenId: 1 });
