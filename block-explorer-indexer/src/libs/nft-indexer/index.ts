@@ -196,14 +196,14 @@ export default class NftIndexer {
         const ops: IBulkWriteUpdateOp[] = [];
         let tokenId = current;
         const currentChainId = await this.client.getChainId();
-        const metadata = await getTokenMetadata(
-          getAddress(contractAddress),
-          Number(tokenId),
-          Number(currentChainId) === 7668 ? 'root' : 'porcini'
-        );
         for (const result of multicall) {
           if (result?.status === 'success') {
             if (isAddress(result?.result as string)) {
+              const metadata = await getTokenMetadata(
+                getAddress(contractAddress),
+                Number(tokenId),
+                Number(currentChainId) === 7668 ? 'root' : 'porcini'
+              );
               const owner: Address = getAddress(result?.result as string);
               ops.push({
                 updateOne: {
