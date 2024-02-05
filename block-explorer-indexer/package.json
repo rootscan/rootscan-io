@@ -26,6 +26,7 @@
     "tsc-alias": "^1.8.8"
   },
   "dependencies": {
+    "token-data": "*",
     "@bull-board/api": "^5.14.0",
     "@bull-board/express": "^5.14.0",
     "@mother/mongoose-cursor-pagination": "^0.0.6",

@@ -23,7 +23,7 @@
     "rootDir": "src",
     "outDir": "build",
     "paths": {
-      "@/*": ["./src/libs/*"],
+      "@/*": ["./src/libs/*"]
     }
   }
 }

@@ -5,6 +5,7 @@ import { contractAddressToNativeId, isValidHttpUrl } from '@/utils';
 import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
 import { Models } from 'mongoose';
+import { getTokenMetadata } from 'token-data';
 import { Abi, Address, MulticallResults, PublicClient, getAddress, isAddress } from 'viem';
 export default class NftIndexer {
   client: PublicClient;
@@ -199,6 +200,13 @@ export default class NftIndexer {
 
         const ops: IBulkWriteUpdateOp[] = [];
         let tokenId = current;
+        const currentChainId = await this.client.getChainId();
+        const metadata = await getTokenMetadata(
+          getAddress(contractAddress),
+          Number(tokenId),
+          Number(currentChainId) === 7668 ? 'root' : 'porcini'
+        );
+        console.log(metadata);
         for (const result of multicall) {
           if (result?.status === 'success') {
             if (isAddress(result?.result as string)) {
