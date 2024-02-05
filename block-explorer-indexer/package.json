@@ -8,7 +8,7 @@
     "api": "node build/libs/api/index.js",
     "worker": "node build/libs/worker/index.js",
     "scheduler": "node build/libs/scheduler/index.js",
-    "build": "tsc -p ./tsconfig.json && tsc-alias -p ./tsconfig.json && cp -R ./src/libs/bullboard/views build/libs/bullboard",
+    "build": "tsc -p ./tsconfig.json && tsc-alias -p ./tsconfig.json",
     "alias": "tsc-alias -p ./tsconfig.json",
     "dev": "tsx watch src/index.ts",
     "format": "prettier --config .prettierrc src/**/*.ts --write",
