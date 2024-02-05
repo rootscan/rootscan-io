@@ -73,13 +73,13 @@ export default class NftIndexer {
 
       for (const evmEvent of evmEvents) {
         const event = evmEvent?.events?.find((a) => ['Transfer', 'TransferSingle', 'TransferBatch'].includes(a.eventName));
-        if (event?.from) {
+        if (isAddress(event?.from)) {
           addresses.add(getAddress(event.from));
         }
-        if (event?.to) {
+        if (isAddress(event?.to)) {
           addresses.add(getAddress(event.to));
         }
-        if (event?.operator) {
+        if (isAddress(event?.operator)) {
           addresses.add(getAddress(event.operator));
         }
       }
