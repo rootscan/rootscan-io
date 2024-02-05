@@ -6,7 +6,7 @@ export const getTokenMetadata = async (
   tokenId: number,
   network: "root" | "porcini"
 ) => {
-  const fileDir = `./blockchains/${network}/${getAddress(
+  const fileDir = `./src/libs/token-data/blockchains/${network}/${getAddress(
     contractAddress
   )}.json`;
   const readData = await fs.readFile(fileDir, "utf-8");

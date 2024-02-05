@@ -26,7 +26,6 @@
     "tsc-alias": "^1.8.8"
   },
   "dependencies": {
-    "token-data": "*",
     "@bull-board/api": "^5.14.0",
     "@bull-board/express": "^5.14.0",
     "@mother/mongoose-cursor-pagination": "^0.0.6",
@@ -36,6 +35,7 @@
     "@therootnetwork/evm": "^1.0.4",
     "bignumber.js": "^9.1.2",
     "bullmq": "^4.14.2",
+    "commander": "^12.0.0",
     "connect-ensure-login": "^0.1.1",
     "cors": "^2.8.5",
     "cross-fetch": "^4.0.0",
@@ -52,6 +52,7 @@
     "mongoose-paginate-v2": "^1.7.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "token-data": "*",
     "tslib": "^2.6.2",
     "tsx": "^3.12.7",
     "typescript": "^5.0.0",

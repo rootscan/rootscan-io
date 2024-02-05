@@ -1,11 +1,11 @@
 import ABIs from '@/constants/abi';
 import logger from '@/logger';
+import { getTokenMetadata } from '@/token-data';
 import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, INFT, IToken } from '@/types';
 import { contractAddressToNativeId, isValidHttpUrl } from '@/utils';
 import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
 import { Models } from 'mongoose';
-import { getTokenMetadata } from 'token-data';
 import { Abi, Address, MulticallResults, PublicClient, getAddress, isAddress } from 'viem';
 export default class NftIndexer {
   client: PublicClient;
@@ -206,7 +206,6 @@ export default class NftIndexer {
           Number(tokenId),
           Number(currentChainId) === 7668 ? 'root' : 'porcini'
         );
-        console.log(metadata);
         for (const result of multicall) {
           if (result?.status === 'success') {
             if (isAddress(result?.result as string)) {
@@ -221,27 +220,13 @@ export default class NftIndexer {
                     $set: {
                       contractAddress: getAddress(contractAddress),
                       tokenId: Number(tokenId),
-                      owner
+                      owner,
+                      ...metadata
                     }
                   },
                   upsert: true
                 }
               });
-            }
-            /** Create task to lookup the metadata of this NFT */
-            if (lookUpMetadata) {
-              logger.info(`Creating FIND_NFT_METADATA task for ${contractAddress}/${tokenId}`);
-              await queue.add(
-                'FIND_NFT_METADATA',
-                {
-                  contractAddress: getAddress(contractAddress),
-                  tokenId: Number(tokenId)
-                },
-                {
-                  priority: 7,
-                  jobId: `FIND_NFT_METADATA_${contractAddress}_${tokenId}`
-                }
-              );
             }
           }
           tokenId++;

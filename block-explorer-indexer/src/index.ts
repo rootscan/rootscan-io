@@ -21,11 +21,11 @@ const run = async () => {
 
   const nftIndexer = new NftIndexer(evmClient, api, DB);
 
-  await getTokenDetails('0xBBBbbBbB00007864000000000000000000000000', true);
+  await getTokenDetails('0xaAaaAaaa00000c64000000000000000000000000', true);
 
   // await nftIndexer.fetchMetadataOfToken('0xAAAaaAaA00014464000000000000000000000000', 3384);
   // await nftIndexer.createNftHolderRefreshTasks();
-  await nftIndexer.fetchHoldersOfCollection('0xBBBbbBbB00007864000000000000000000000000' as Address);
+  await nftIndexer.fetchHoldersOfCollection('0xaAaaAaaa00000c64000000000000000000000000' as Address);
 
   // await updateStakingValidators();
 
