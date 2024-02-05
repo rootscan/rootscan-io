@@ -168,14 +168,6 @@ export default class NftIndexer {
       }
     }
     if (collection?.type === 'ERC721') {
-      let lookUpMetadata = false;
-      const amount = await this.DB.Nft.find({ contractAddress: getAddress(contractAddress) })
-        .limit(1)
-        .countDocuments();
-      if (amount === 0) {
-        lookUpMetadata = true;
-      }
-
       let current = 0;
       const end = Number(collection?.totalSupply);
       const maxBatch = 1000;
