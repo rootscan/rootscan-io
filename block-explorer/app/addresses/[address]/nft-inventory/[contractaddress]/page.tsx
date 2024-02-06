@@ -42,6 +42,7 @@ export default async function Page({ params, searchParams }) {
               key={`${item.contractAddress}_${item.tokenId}_${_}`}
               className="p-0"
             >
+              
               <CardHeader className="p-0">
                 <NftPlayer
                   animation_url={item?.animation_url}
