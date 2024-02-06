@@ -1,23 +1,14 @@
-import { program } from "commander";
-import {
-  Abi,
-  Address,
-  PublicClient,
-  createPublicClient,
-  defineChain,
-  getAddress,
-  http,
-  isAddress,
-  parseAbi,
-} from "viem";
+import { program } from 'commander';
+import { Address, PublicClient, createPublicClient, defineChain, getAddress, http, isAddress } from 'viem';
 
-import ERC1155_ABI from "./abi/erc1155.json";
-import ERC721_ABI from "./abi/erc721.json";
-import fs from "node:fs/promises";
+import fs from 'node:fs/promises';
+import ERC1155_ABI from './abi/erc1155.json';
+import ERC721_ABI from './abi/erc721.json';
 
-program.option("--network"); // 0
-program.option("--contractaddress"); // 1
-program.option("--type"); // 2
+program.option('--network'); // 0
+program.option('--contractaddress'); // 1
+program.option('--type'); // 2
+program.option('--totalsupply'); //4
 
 program.parse();
 
@@ -29,7 +20,7 @@ if (!options?.network || !options?.contractaddress || !options?.type) {
 }
 
 const network = program?.args?.[0]?.toLowerCase();
-if (network !== "porcini" && network !== "root") {
+if (network !== 'porcini' && network !== 'root') {
   console.error(`Network can only be root or porcini`);
   process.exit(1);
 }
@@ -43,108 +34,123 @@ if (!isAddress(contractAddress)) {
 }
 
 const tokenType = program?.args?.[2]?.toLowerCase();
-if (tokenType !== "erc721" && tokenType !== "erc1155") {
+if (tokenType !== 'erc721' && tokenType !== 'erc1155') {
   console.error(`Provided type can obly be erc721 or erc1155`);
   process.exit(1);
 }
 
+const predefinedTotalSupply = program?.args?.[3] ? Number(program?.args?.[3]) : null;
+if (tokenType === 'erc1155') {
+  if (!predefinedTotalSupply) {
+    console.error(`Type is erc1155 please provide --totalsupply`);
+    process.exit(1);
+  }
+}
+
 console.log({ network, contractAddress, tokenType });
 
-const WS_URL =
-  network === "root"
-    ? "wss://root.rootnet.live/archive/ws"
-    : "wss://porcini.rootnet.app/archive/ws";
-const HTTP_URL =
-  network === "root"
-    ? "https://root.rootnet.live/archive"
-    : "https://porcini.rootnet.app/archive";
+const WS_URL = network === 'root' ? 'wss://root.rootnet.live/archive/ws' : 'wss://porcini.rootnet.app/archive/ws';
+const HTTP_URL = network === 'root' ? 'https://root.rootnet.live/archive' : 'https://porcini.rootnet.app/archive';
 
 export const root = defineChain({
   id: 7668,
-  name: "TRN - Mainnet",
-  network: "trn-mainnet",
+  name: 'TRN - Mainnet',
+  network: 'trn-mainnet',
   nativeCurrency: {
     decimals: 18,
-    name: "Ripple",
-    symbol: "XRP",
+    name: 'Ripple',
+    symbol: 'XRP'
   },
   contracts: {
     multicall3: {
-      address: "0xc9C2E2429AeC354916c476B30d729deDdC94988d",
-      blockCreated: 9218338,
-    },
+      address: '0xc9C2E2429AeC354916c476B30d729deDdC94988d',
+      blockCreated: 9218338
+    }
   },
   rpcUrls: {
     default: {
       http: [HTTP_URL],
-      webSocket: [WS_URL],
+      webSocket: [WS_URL]
     },
     public: {
       http: [HTTP_URL],
-      webSocket: [WS_URL],
-    },
-  },
+      webSocket: [WS_URL]
+    }
+  }
 });
 
 export const porcini = defineChain({
   id: 7672,
-  name: "TRN - Porcini",
-  network: "trn-porcini",
+  name: 'TRN - Porcini',
+  network: 'trn-porcini',
   nativeCurrency: {
     decimals: 18,
-    name: "Ripple",
-    symbol: "XRP",
+    name: 'Ripple',
+    symbol: 'XRP'
   },
   contracts: {
     multicall3: {
-      address: "0xc9c2e2429aec354916c476b30d729deddc94988d",
-      blockCreated: 10555692,
-    },
+      address: '0xc9c2e2429aec354916c476b30d729deddc94988d',
+      blockCreated: 10555692
+    }
   },
   rpcUrls: {
     default: {
       http: [HTTP_URL],
-      webSocket: [WS_URL],
+      webSocket: [WS_URL]
     },
     public: {
       http: [HTTP_URL],
-      webSocket: [WS_URL],
-    },
-  },
+      webSocket: [WS_URL]
+    }
+  }
 });
 
 export const evmClient: PublicClient = createPublicClient({
-  chain: network === "root" ? root : porcini,
-  transport: http(),
+  chain: network === 'root' ? root : porcini,
+  transport: http()
 });
 
 const detectedUriUrl = async () => {
-  if (tokenType === "erc721") {
+  if (tokenType === 'erc721') {
     const data = (await evmClient.readContract({
       address: contractAddress as Address,
       abi: ERC721_ABI,
-      functionName: "tokenURI",
-      args: [1],
+      functionName: 'tokenURI',
+      args: [1]
     })) as string;
     if (!data) {
-      throw new Error("Unable to determine uri for contract");
+      throw new Error('Unable to determine uri for contract');
     }
     const uri = data.substring(0, data?.length - 1);
     return uri;
   }
-  if (tokenType === "erc1155") {
-    return "https://";
+  if (tokenType === 'erc1155') {
+    const data = (await evmClient.readContract({
+      address: contractAddress as Address,
+      abi: ERC1155_ABI,
+      functionName: 'uri',
+      args: [1]
+    })) as string;
+    if (!data) {
+      throw new Error('Unable to determine uri for contract');
+    }
+    const uri = data.substring(0, data?.length - 1);
+    return uri;
   }
 };
 
 const getTotalSupply = async () => {
+  if (tokenType === 'erc1155') {
+    return Number(predefinedTotalSupply);
+  }
   const data = (await evmClient.readContract({
     address: contractAddress as Address,
-    abi: ERC721_ABI,
-    functionName: "totalSupply",
+    abi: tokenType === 'erc721' ? ERC721_ABI : ERC1155_ABI,
+    functionName: 'totalSupply'
   })) as string;
   if (!data) {
-    throw new Error("Unable to determine totalSupply for contract");
+    throw new Error('Unable to determine totalSupply for contract');
   }
   return Number(data);
 };
@@ -168,7 +174,7 @@ const run = async () => {
 
   let data: any = [];
   if (exists) {
-    const readData = await fs.readFile(fileDir, "utf-8");
+    const readData = await fs.readFile(fileDir, 'utf-8');
     data = structuredClone(JSON.parse(readData));
   }
 
@@ -196,7 +202,6 @@ const run = async () => {
     }
 
     await fs.writeFile(fileDir, JSON.stringify(data, null, 2));
-
   }
 };
 
