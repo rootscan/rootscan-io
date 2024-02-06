@@ -1,11 +1,12 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import { Address, getAddress } from 'viem';
 
 let localCache: any = {};
 
 export const getTokenMetadata = async (contractAddress: Address, tokenId: number, network: 'root' | 'porcini') => {
   if (!localCache[getAddress(contractAddress)]) {
-    const fileDir = `./src/libs/token-data/blockchains/${network}/${getAddress(contractAddress)}.json`;
+    const fileDir = path.resolve(__dirname, `blockchains`, network, `${getAddress(contractAddress)}.json`);
     const readData = await fs.readFile(fileDir, 'utf-8').catch(() => {
       return null;
     });

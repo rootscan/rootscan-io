@@ -27,13 +27,13 @@ export default class NftIndexer {
 
     const collection: IToken | null = await this.DB.Token.findOne({
       contractAddress: getAddress(contractAddress),
-      type: { $in: ['ERC721', 'ERC1155'] },
-      totalSupply: { $gt: 0 }
+      type: { $in: ['ERC721', 'ERC1155'] }
     }).lean();
 
     logger.info(`Refreshing holders for ${collection?.name || '-'} ${contractAddress} [Total Supply: ${collection?.totalSupply}]`);
 
     if (!collection) throw new Error('Collection does not exist.');
+    if (!collection?.totalSupply || collection?.totalSupply === 0) return true;
 
     if (collection?.type === 'ERC1155') {
       const nativeId = contractAddressToNativeId(contractAddress);
@@ -281,7 +281,7 @@ export default class NftIndexer {
 
   async createNftHolderRefreshTasks() {
     logger.info(`Creating Nft Holder refresh tasks`);
-    const collections = await this.DB.Token.find({ type: { $in: ['ERC721', 'ERC1155'] }, totalSupply: { $gt: 0 } }).distinct(
+    const collections = await this.DB.Token.find({ type: { $in: ['ERC721', 'ERC1155'] } }).distinct(
       'contractAddress'
     );
     for (const contractAddress of collections) {
