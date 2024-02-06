@@ -1,11 +1,14 @@
 import { Github } from "lucide-react"
+import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
-import AddToMetamask from "./add-to-metamask"
 import { BackToTopButton } from "./back-to-top"
 import Container from "./container"
 import { ThemeToggle } from "./theme-toggle"
 import { Button } from "./ui/button"
+const AddToMetamask = dynamic(() => import("./add-to-metamask"), {
+  ssr: false,
+})
 
 export default function SiteFooter() {
   return (

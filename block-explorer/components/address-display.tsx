@@ -44,7 +44,7 @@ export default function AddressDisplay({
         </Tooltip>
       ) : null}
       {isFuturepass ? (
-        <Tooltip text="Futurepass" asChild>
+        <Tooltip text="Futurepass">
           <Logo className="size-4" />
         </Tooltip>
       ) : null}

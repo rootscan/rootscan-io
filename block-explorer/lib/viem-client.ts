@@ -1,15 +1,6 @@
 import { createPublicClient, defineChain, http } from "viem"
 export const CHAIN_ID = Number(process?.env?.CHAIN_ID)
 
-const WS_URL =
-  CHAIN_ID === 7668
-    ? "wss://root.rootnet.live/archive/ws"
-    : "wss://porcini.rootnet.app/archive/ws"
-const HTTP_URL =
-  CHAIN_ID === 7668
-    ? "https://root.rootnet.live/archive"
-    : "https://porcini.rootnet.app/archive"
-
 export const root = defineChain({
   id: 7668,
   name: "TRN - Mainnet",
@@ -27,12 +18,12 @@ export const root = defineChain({
   },
   rpcUrls: {
     default: {
-      http: [HTTP_URL],
-      webSocket: [WS_URL],
+      http: ["https://root.rootnet.live/archive"],
+      webSocket: ["wss://root.rootnet.live/archive/ws"],
     },
     public: {
-      http: [HTTP_URL],
-      webSocket: [WS_URL],
+      http: ["https://root.rootnet.live/archive"],
+      webSocket: ["wss://root.rootnet.live/archive/ws"],
     },
   },
 })
@@ -54,12 +45,12 @@ export const porcini = defineChain({
   },
   rpcUrls: {
     default: {
-      http: [HTTP_URL],
-      webSocket: [WS_URL],
+      http: ["https://porcini.rootnet.app/archive"],
+      webSocket: ["wss://porcini.rootnet.app/archive/ws"],
     },
     public: {
-      http: [HTTP_URL],
-      webSocket: [WS_URL],
+      http: ["https://porcini.rootnet.app/archive"],
+      webSocket: ["wss://porcini.rootnet.app/archive/ws"],
     },
   },
 })
