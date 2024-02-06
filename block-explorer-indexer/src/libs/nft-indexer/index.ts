@@ -34,6 +34,7 @@ export default class NftIndexer {
 
     if (!collection) throw new Error('Collection does not exist.');
     if (!collection?.totalSupply || collection?.totalSupply === 0) return true;
+    const currentChainId = await this.client.getChainId();
 
     if (collection?.type === 'ERC1155') {
       const nativeId = contractAddressToNativeId(contractAddress);
@@ -116,6 +117,11 @@ export default class NftIndexer {
           let tokenId = 0;
           for (const quantity of data) {
             if (Number(quantity) > 0) {
+              const metadata = await getTokenMetadata(
+                getAddress(contractAddress),
+                Number(tokenId),
+                Number(currentChainId) === 7668 ? 'root' : 'porcini'
+              );
               ops.push({
                 updateOne: {
                   filter: {
@@ -128,7 +134,10 @@ export default class NftIndexer {
                       tokenId: Number(tokenId),
                       contractAddress: getAddress(contractAddress),
                       owner: getAddress(address),
-                      amount: Number(quantity)
+                      amount: Number(quantity),
+                      attributes: metadata?.attributes,
+                      image: metadata?.image || null,
+                      animation_url: metadata?.animation_url || null
                     }
                   },
                   upsert: true
@@ -155,20 +164,6 @@ export default class NftIndexer {
       }
 
       await this.DB.Nft.bulkWrite(ops);
-
-      for (let i = 0; i < totalSupply; i++) {
-        await queue.add(
-          'FIND_NFT_METADATA',
-          {
-            contractAddress: getAddress(contractAddress),
-            tokenId: Number(i)
-          },
-          {
-            priority: 7,
-            jobId: `FIND_NFT_METADATA_${contractAddress}_${i}`
-          }
-        );
-      }
     }
     if (collection?.type === 'ERC721') {
       let current = 0;
@@ -195,7 +190,6 @@ export default class NftIndexer {
 
         const ops: IBulkWriteUpdateOp[] = [];
         let tokenId = current;
-        const currentChainId = await this.client.getChainId();
         for (const result of multicall) {
           if (result?.status === 'success') {
             if (isAddress(result?.result as string)) {
@@ -281,9 +275,7 @@ export default class NftIndexer {
 
   async createNftHolderRefreshTasks() {
     logger.info(`Creating Nft Holder refresh tasks`);
-    const collections = await this.DB.Token.find({ type: { $in: ['ERC721', 'ERC1155'] } }).distinct(
-      'contractAddress'
-    );
+    const collections = await this.DB.Token.find({ type: { $in: ['ERC721', 'ERC1155'] } }).distinct('contractAddress');
     for (const contractAddress of collections) {
       logger.info(`Creating REFETCH_NFT_HOLDERS task for ${contractAddress}`);
       await queue.add(

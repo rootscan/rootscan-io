@@ -23,7 +23,7 @@ const run = async () => {
 
   // await nftIndexer.fetchMetadataOfToken('0xAAAaaAaA00014464000000000000000000000000', 3384);
   // await nftIndexer.createNftHolderRefreshTasks();
-  await nftIndexer.fetchHoldersOfCollection('0xAAAaaAAA00006C64000000000000000000000000' as Address);
+  await nftIndexer.fetchHoldersOfCollection('0xaAAaAAAa00003864000000000000000000000000' as Address);
 
   // await updateStakingValidators();
 
