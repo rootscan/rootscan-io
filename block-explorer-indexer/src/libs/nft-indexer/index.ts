@@ -216,7 +216,9 @@ export default class NftIndexer {
                       contractAddress: getAddress(contractAddress),
                       tokenId: Number(tokenId),
                       owner,
-                      ...metadata
+                      attributes: metadata?.attributes,
+                      image: metadata?.image || null,
+                      animation_url: metadata?.animation_url || null
                     }
                   },
                   upsert: true
