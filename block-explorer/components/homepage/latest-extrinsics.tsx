@@ -14,13 +14,13 @@ export default function LatestExtrinsics({
   latestExtrinsics: any
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <Link href="/extrinsics">
           <SectionTitle>Extrinsics</SectionTitle>
         </Link>
       </div>
-      <div className="group flex flex-col gap-4">
+      <div className="group flex flex-col gap-6">
         {latestExtrinsics?.map((extrinsic: any, _: number) => (
           <Card
             key={extrinsic?.extrinsicId}

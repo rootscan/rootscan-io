@@ -18,13 +18,13 @@ export default function LatestTransactions({
   latestTransactions: any
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <Link href="/evm-transactions">
           <SectionTitle>EVM Txs</SectionTitle>
         </Link>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         {latestTransactions?.map((transaction, _) => (
           <Card key={transaction?.hash || _}>
             <CardContent className="flex flex-col gap-4 pt-6">

@@ -17,13 +17,13 @@ import Tooltip from "../tooltip"
 
 export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <Link href="/blocks">
           <SectionTitle>Blocks</SectionTitle>
         </Link>
       </div>
-      <div className="group flex flex-col gap-4 overflow-x-hidden lg:flex-row">
+      <div className="group flex flex-col gap-6 overflow-x-hidden lg:flex-row">
         <Carousel>
           <CarouselContent>
             {latestBlocks?.map((block: any, _: number) => (
@@ -31,7 +31,7 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
                 key={block.number}
                 className={cn([
                   "basis-1/1 md:basis-1/2 lg:basis-1/4",
-                  _ === 0 && "animate-block",
+                  _ === 0 && "animate-block w-full",
                 ])}
               >
                 <Card>

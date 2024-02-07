@@ -22,6 +22,7 @@ export default async function TokenLogo({
       width={width}
       height={height}
       alt="token_logo"
+      unoptimized
       priority
       quality={100}
       className={cn(["shrink-0 rounded-full", className ? className : ""])}
