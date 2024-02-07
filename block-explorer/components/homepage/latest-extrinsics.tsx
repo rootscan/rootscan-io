@@ -6,6 +6,7 @@ import Link from "next/link"
 import SectionTitle from "@/components/section-title"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import AddressDisplay from "../address-display"
+import TimeAgoDate from "../time-ago-date"
 
 export default function LatestExtrinsics({
   latestExtrinsics,
@@ -23,12 +24,18 @@ export default function LatestExtrinsics({
           >
             <CardHeader>
               <CardTitle>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <FunctionSquare className="text-muted-foreground" />
-                    <Link href={`/extrinsics/${extrinsic?.extrinsicId}`}>
-                      <span>{extrinsic?.extrinsicId}</span>
-                    </Link>
+                <div className="flex items-center gap-4">
+                  <FunctionSquare className="size-6 text-muted-foreground" />
+                  <Link
+                    href={`/extrinsics/${extrinsic?.extrinsicId}`}
+                    className="shrink-0"
+                  >
+                    <span>{extrinsic?.extrinsicId}</span>
+                  </Link>
+                  <div className="ml-auto flex items-center">
+                    <span className="text-xs text-muted-foreground">
+                      <TimeAgoDate date={extrinsic?.timestamp * 1000} />
+                    </span>
                   </div>
                 </div>
               </CardTitle>

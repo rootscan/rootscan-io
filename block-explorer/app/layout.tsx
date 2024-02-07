@@ -43,16 +43,10 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html
-      lang="en"
-      className="dark"
-      style={{
-        colorScheme: "dark",
-      }}
-    >
+    <html lang="en">
       <body
         className={cn([
-          "min-h-screen bg-[#ebebebeb] font-local antialiased dark:bg-white/5",
+          "min-h-screen bg-[#ebebebeb] antialiased dark:bg-white/5",
           fontLocal.variable,
           "font-local",
         ])}
