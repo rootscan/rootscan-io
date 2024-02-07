@@ -49,7 +49,9 @@ export default function AddressDisplay({
         </Tooltip>
       ) : null}
       <Tooltip text={address} disabled={!useShortenedAddress} asChild>
-        <Link href={`/addresses/${address}`}>{name}</Link>
+        <Link href={`/addresses/${address}`} className="truncate">
+          {name}
+        </Link>
       </Tooltip>
       {!hideCopyButton || !address ? <CopyButton value={address} /> : null}
     </div>

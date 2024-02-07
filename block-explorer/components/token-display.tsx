@@ -36,7 +36,7 @@ export default async function TokenDisplay({
         </div>
       ) : null}
       <Tooltip text={token?.contractAddress} asChild>
-        <div className="inline-flex items-center gap-1">
+        <div className="inline-flex items-center gap-1 truncate">
           {hasLogo ? (
             <div
               className={cn([
@@ -55,6 +55,7 @@ export default async function TokenDisplay({
             address={token?.contractAddress}
             nameTag={`${token?.name} ${token?.symbol ? `(${token?.symbol})` : ""}`}
             hideCopyButton={hideCopyButton}
+            className="truncate"
           />
         </div>
       </Tooltip>
