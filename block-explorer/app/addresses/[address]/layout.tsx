@@ -142,7 +142,6 @@ export default async function Layout({
                   )}
                 </CardDetail.Content>
               </CardDetail.Wrapper>
-
               {tags?.length ? (
                 <CardDetail.Wrapper>
                   <CardDetail.Title>Tags</CardDetail.Title>

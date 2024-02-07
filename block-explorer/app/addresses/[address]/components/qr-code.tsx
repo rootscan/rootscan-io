@@ -23,19 +23,21 @@ export default function QrCode({ address }: { address: Address }) {
         </div>
       </HoverCardTrigger>
       <HoverCardContent className="w-full">
-        <Canvas
-          text={getAddress(address)}
-          options={{
-            errorCorrectionLevel: "M",
-            margin: 3,
-            scale: 4,
-            width: 150,
-            color: {
-              dark: "#0000",
-              light: "#FFFF",
-            },
-          }}
-        />
+        <div className="rounded-lg">
+          <Canvas
+            text={getAddress(address)}
+            options={{
+              errorCorrectionLevel: "M",
+              margin: 3,
+              scale: 4,
+              width: 150,
+              color: {
+                dark: "#0000",
+                light: "#FFFF",
+              },
+            }}
+          />
+        </div>
       </HoverCardContent>
     </HoverCard>
   )

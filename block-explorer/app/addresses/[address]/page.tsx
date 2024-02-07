@@ -307,6 +307,15 @@ const BalancesTransfer = ({ tx, address }) => {
   )
 }
 const BalancesUnreserved = ({ tx, address }) => {
+  // ;<div className="flex flex-wrap items-center gap-2">
+  //   {args?.amount ? (
+  //     <TokenDisplay token={ROOT_TOKEN} amount={args?.amount} />
+  //   ) : (
+  //     <TokenDisplay token={ROOT_TOKEN} amount={0} />
+  //   )}
+  //   moved from reserved to free on
+  //   <AddressDisplay address={args?.who} useShortenedAddress />
+  // </div>
   return (
     <TableRow>
       <TableCell className="max-w-[150px] truncate">
@@ -318,24 +327,24 @@ const BalancesUnreserved = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge address={address} from={tx?.args?.from} to={tx?.args?.to} />
+        <InOutBadge address={address} from={"0x000000000"} to={address} />
       </TableCell>
-      <TableCell>{tx?.args?.assetId}</TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
-      <TableCell>{tx?.name}</TableCell>
       <TableCell>
-        {tx?.type === "ERC20" ? tx?.formattedAmount : tx?.tokenId}
+        {tx?.args?.amount ? (
+          <TokenDisplay token={ROOT_TOKEN} amount={tx?.args?.amount} />
+        ) : (
+          <TokenDisplay token={ROOT_TOKEN} amount={0} />
+        )}
       </TableCell>
-      <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.from} useShortenedAddress />
-      </TableCell>
+      <TableCell className="max-w-[150px] truncate">-</TableCell>
       <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.to} useShortenedAddress />
+        <AddressDisplay address={tx?.args?.who} useShortenedAddress />
       </TableCell>
     </TableRow>
   )
