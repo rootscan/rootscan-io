@@ -109,21 +109,33 @@ export default async function Layout({
                       </OnlyMainnet>
                     </div>
                   ) : (
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-col gap-2">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-muted-foreground">Free</span>
                         <span>
-                          {data?.balance?.freeFormatted
-                            ? data?.balance?.freeFormatted
-                            : "0"}{" "}
+                          {data?.balance?.freeFormatted ? (
+                            <TokenDisplay
+                              token={ROOT_TOKEN}
+                              amount={data?.balance?.free || 0}
+                              hideCopyButton
+                            />
+                          ) : (
+                            "0"
+                          )}{" "}
                         </span>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-muted-foreground">Reserved</span>
                         <span>
-                          {data?.balance?.reservedFormatted
-                            ? data?.balance?.reservedFormatted
-                            : "0"}
+                          {data?.balance?.reservedFormatted ? (
+                            <TokenDisplay
+                              token={ROOT_TOKEN}
+                              amount={data?.balance?.reserved || 0}
+                              hideCopyButton
+                            />
+                          ) : (
+                            "0"
+                          )}
                         </span>
                       </div>
                     </div>
