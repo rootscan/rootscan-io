@@ -13,6 +13,7 @@ import { generateAvatarURL } from "@cfx-kit/wallet-avatar"
 import Image from "next/image"
 import { getAddress as getAddressViem } from "viem"
 import Menu from "./components/menu"
+import QrCode from "./components/qr-code"
 
 const getData = async ({ params }) => {
   const data = await getAddress({ address: getAddressViem(params.address) })
@@ -75,7 +76,10 @@ export default async function Layout({
               <CardDetail.Wrapper>
                 <CardDetail.Title>Address</CardDetail.Title>
                 <CardDetail.Content>
-                  <AddressDisplay address={address} className="truncate" />
+                  <div className="flex items-center gap-2">
+                    <AddressDisplay address={address} className="truncate" />
+                    <QrCode address={address} />
+                  </div>
                 </CardDetail.Content>
               </CardDetail.Wrapper>
               <CardDetail.Wrapper>
