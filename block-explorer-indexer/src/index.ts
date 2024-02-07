@@ -4,8 +4,6 @@ import DB from '@/database';
 import Indexer from '@/indexer';
 import NftIndexer from '@/nft-indexer';
 import { evmClient, substrateClient } from '@/rpc';
-import { getTokenDetails } from '@/utils/tokenInformation';
-import queue from '@/workerpool';
 import '@therootnetwork/api-types';
 import { Address } from 'viem';
 
@@ -23,24 +21,11 @@ const run = async () => {
 
   // await nftIndexer.fetchMetadataOfToken('0xAAAaaAaA00014464000000000000000000000000', 3384);
   // await nftIndexer.createNftHolderRefreshTasks();
-  await nftIndexer.fetchHoldersOfCollection('0xaAAaAAAa00003864000000000000000000000000' as Address);
+  await nftIndexer.fetchHoldersOfCollection('0xBBbbbBbb00004864000000000000000000000000' as Address);
 
   // await updateStakingValidators();
 
   // await indexer.checkFinalizedBlocks();
-
-  await api.rpc.chain.subscribeNewHeads(async (header) => {
-    console.log(`Chain is at block: #${header.number}`);
-    const blockNumber = Number(header.number);
-    await queue.add(
-      'PROCESS_BLOCK',
-      { blocknumber: blockNumber },
-      {
-        priority: 1,
-        jobId: `BLOCK_${blockNumber}`
-      }
-    );
-  });
 };
 
 run();

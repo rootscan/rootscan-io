@@ -2,9 +2,8 @@ import DB from '@/database';
 import logger from '@/logger';
 import { IAddress, IBalance, IEVMTransaction, IEvent, IExtrinsic, INFT, IStakingValidator, IToken, TTokenType } from '@/types';
 import cors from 'cors';
-import express, { Request, Response } from 'express';
+import express, { Next, Request, Response } from 'express';
 import helmet from 'helmet';
-import moment from 'moment';
 import { Address, Hash, getAddress } from 'viem';
 import { processError } from './utils';
 const app = express();
@@ -15,27 +14,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors('*'));
 app.use(helmet());
 
-const getDurationInMilliseconds = (start) => {
-  const NS_PER_SEC = 1e9;
-  const NS_TO_MS = 1e6;
-  const diff = process.hrtime(start);
-
-  return (diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS;
-};
-
-app.use((req, res, next) => {
-  // logger.info(`${req.method} ${req.originalUrl} [STARTED]`);
-  const start = process.hrtime();
-
+app.use((req: Request, res: Response, next: Next) => {
   res.on('finish', () => {
-    const durationInMilliseconds = getDurationInMilliseconds(start);
-    logger.info(`[${req.method}] ${req.originalUrl} [${JSON.stringify(req.body)}] took ${durationInMilliseconds} ms`);
+    logger.info(`[${req.method}] ${req.originalUrl} [${JSON.stringify(req.body)}]`);
   });
-
-  // res.on('close', () => {
-  //   const durationInMilliseconds = getDurationInMilliseconds(start);
-  //   logger.info(`${req.method} ${req.originalUrl} [CLOSED] ${durationInMilliseconds} ms`);
-  // });
 
   next();
 });
@@ -53,7 +35,6 @@ app.post('/getBlock', async (req: Request, res: Response) => {
 app.post('/getBlocks', async (req: Request, res: Response) => {
   try {
     const { page, limit }: { page: number; limit: number } = req.body;
-    logger.info(`${new Date().toLocaleString()} getBlocks => ${page}, ${limit}`);
     const options = {
       page: page ? Number(page) : 1,
       limit: limit ? limit : 25,
@@ -109,7 +90,7 @@ app.post('/getExtrinsic', async (req: Request, res: Response) => {
       .populate('proxyFeeToken')
       .lean();
 
-    const events = await DB.Event.find({ extrinsicId: String(extrinsicId) })
+    const events = await DB.Event.find({ extrinsicId: String(data?.extrinsicId) })
       .populate('token swapFromToken swapToToken nftCollection')
       .lean();
 
@@ -133,7 +114,7 @@ app.post('/getToken', async (req: Request, res: Response) => {
         const holders = await DB.Balance.find({ contractAddress: getAddress(contractAddress) }).countDocuments();
         data.holders = holders;
       } else if (data?.type === 'ERC721' || data?.type === 'ERC1155') {
-        const holders = await DB.Nft.find({ contractAddress: getAddress(contractAddress) }).distinct('owner')
+        const holders = await DB.Nft.find({ contractAddress: getAddress(contractAddress) }).distinct('owner');
         data.holders = holders?.length;
       }
     }
@@ -738,14 +719,13 @@ app.post('/getStakingValidators', async (req: Request, res: Response) => {
     const addresses = data?.docs?.map((a) => getAddress(a.validator));
     const aggPipe = await DB.Block.aggregate([
       {
-        $sort:
-          {
-            number: -1
-          }
+        $sort: {
+          number: -1
+        }
       },
-      { // 86400 seconds / 4 second block time = 21600
-        $limit:
-          21600
+      {
+        // 86400 seconds / 4 second block time = 21600
+        $limit: 21600
       },
       {
         $match: {
