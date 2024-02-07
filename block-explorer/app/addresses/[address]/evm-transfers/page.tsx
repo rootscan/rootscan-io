@@ -1,8 +1,10 @@
 import AddressDisplay from "@/components/address-display"
 import InOutBadge from "@/components/in-out-badge"
+import NftThumbnail from "@/components/nft-thumbnail"
 import NoData from "@/components/no-data"
 import PaginationSuspense from "@/components/pagination-suspense"
 import TimeAgoDate from "@/components/time-ago-date"
+import TokenDisplay from "@/components/token-display"
 import { Badge } from "@/components/ui/badge"
 import {
   Table,
@@ -68,14 +70,28 @@ export default async function Page({ params, searchParams }) {
                   <TimeAgoDate date={tx?.timestamp} />
                 </TableCell>
                 <TableCell>
-                  <AddressDisplay
-                    address={tx?.address}
-                    nameTag={tx?.name}
+                  <TokenDisplay
+                    token={{
+                      name: tx?.name,
+                      symbol: tx?.symbol,
+                      type: tx?.type,
+                      contractAddress: tx?.address,
+                    }}
                     hideCopyButton
                   />
                 </TableCell>
                 <TableCell>
-                  {tx?.type === "ERC20" ? tx.formattedAmount : tx?.tokenId}
+                  {tx?.type === "ERC20" ? (
+                    tx.formattedAmount
+                  ) : (
+                    <div className="flex items-center gap-2" key={_}>
+                      <NftThumbnail
+                        contractAddress={tx?.nftCollection?.contractAddress}
+                        tokenId={tx?.tokenId}
+                      />
+                      {tx?.tokenId}
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell className="max-w-[150px] truncate">
                   <AddressDisplay address={tx.from} useShortenedAddress />
