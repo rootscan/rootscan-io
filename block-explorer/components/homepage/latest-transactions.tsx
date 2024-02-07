@@ -28,7 +28,7 @@ export default function LatestTransactions({
         {latestTransactions?.map((transaction, _) => (
           <Card key={transaction?.hash || _}>
             <CardContent className="flex flex-col gap-4 pt-6">
-              <div className="flex flex-col justify-between gap-4">
+              <div className="flex flex-col flex-wrap justify-between gap-4">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="flex flex-wrap items-center gap-4">
                     {transaction?.toLookup?.isContract ? (
@@ -47,12 +47,12 @@ export default function LatestTransactions({
                     <TimeAgoDate date={transaction?.timestamp} />
                   </span>
                 </div>
-                <div className="flex min-w-0 items-center gap-4">
-                  <ArrowLeftRight className="shrink-0 text-muted-foreground" />
-                  <Link href={`/tx/${transaction.hash}`} className="truncate">
-                    <span className="truncate">{transaction.hash}</span>
-                  </Link>
-                </div>
+              </div>
+              <div className="flex min-w-0 items-center gap-4 truncate">
+                <ArrowLeftRight className="shrink-0 text-muted-foreground" />
+                <Link href={`/tx/${transaction.hash}`} className="truncate">
+                  <span className="truncate">{transaction.hash}</span>
+                </Link>
               </div>
               <div className="flex items-center justify-between gap-2 md:justify-start">
                 <Image
