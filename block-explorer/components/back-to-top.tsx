@@ -13,7 +13,7 @@ export const BackToTopButton = () => {
   return (
     <Button variant="ghost" size="icon" onClick={() => scrollToTop()}>
       <span className="sr-only">Back to Top</span>
-      <ArrowUp className="h-5 w-5" />
+      <ArrowUp className="size-5" />
     </Button>
   )
 }

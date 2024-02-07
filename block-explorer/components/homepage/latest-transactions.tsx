@@ -19,7 +19,11 @@ export default function LatestTransactions({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <SectionTitle>Latest EVM Transactions</SectionTitle>
+      <div className="flex items-center justify-between">
+        <Link href="/evm-transactions">
+          <SectionTitle>EVM Txs</SectionTitle>
+        </Link>
+      </div>
       <div className="flex flex-col gap-4">
         {latestTransactions?.map((transaction, _) => (
           <Card key={transaction?.hash || _}>
@@ -57,7 +61,7 @@ export default function LatestTransactions({
                   height={50}
                   priority
                   unoptimized
-                  className="hidden rounded-[5px] lg:block lg:size-10"
+                  className="hidden rounded-[5px] md:block md:size-10"
                   alt="jazz"
                 />
                 <AddressDisplay
@@ -76,7 +80,7 @@ export default function LatestTransactions({
                   height={50}
                   priority
                   unoptimized
-                  className="hidden rounded-[5px] lg:block lg:size-10"
+                  className="hidden rounded-[5px] md:block md:size-10"
                   alt="jazz"
                 />
 
@@ -92,11 +96,6 @@ export default function LatestTransactions({
           </Card>
         ))}
       </div>
-      <Link href="/evm-transactions" className="text-center">
-        <span className="text-sm font-medium text-primary/80 hover:text-primary">
-          View all EVM Transactions
-        </span>
-      </Link>
     </div>
   )
 }

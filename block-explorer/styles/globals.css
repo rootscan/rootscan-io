@@ -55,13 +55,16 @@
   border-color: rgb(144 144 144 / 13%);
 }
 
-/* a {
-  color: inherit;
-  text-decoration: underline 0.15em rgba(255, 255, 255, 0);
-  text-underline-offset: 5px;
-  transition: text-decoration-color 300ms;
+@keyframes left-enter {
+  0% {
+    margin-left: -196px;
+  }
+  to {
+    margin-left: 0;
+  }
 }
 
-a:hover {
-  text-decoration-color: rgba(255, 255, 255, 1);
-} */
+.animate-block {
+  animation-duration: 0.4s;
+  animation-name: left-enter;
+}

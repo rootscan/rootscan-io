@@ -10,7 +10,7 @@ export default function TransactionStatusBadge({
     return (
       <Badge variant="destructive">
         <div className="flex items-center gap-1">
-          <AlertCircle className="h-4 w-4" /> Reverted
+          <AlertCircle className="size-4" /> Reverted
         </div>
       </Badge>
     )
@@ -18,7 +18,7 @@ export default function TransactionStatusBadge({
     return (
       <Badge variant="success">
         <div className="flex items-center gap-1">
-          <Check className="h-4 w-4" /> Success
+          <Check className="size-4" /> Success
         </div>
       </Badge>
     )
@@ -27,7 +27,7 @@ export default function TransactionStatusBadge({
       <Badge variant="info">
         {" "}
         <div className="flex items-center gap-1">
-          <Clock className="h-4 w-4" /> Pending
+          <Clock className="size-4" /> Pending
         </div>
       </Badge>
     )

@@ -24,7 +24,7 @@ export default function SiteFooter() {
       </Container>
       <div className="hidden h-[1px] w-full border-b md:block" />
       <Container>
-        <p className="max-w-md py-4 text-xs">
+        <p className="max-w-md pb-8 text-xs">
           Rootscan is a Block Explorer tailored for The Root Network, an
           innovative decentralized network.
         </p>

@@ -20,6 +20,7 @@ export default function TargetTimeCountdown({
     }, 100)
 
     return () => clearInterval(interval)
+    // eslint-disable-next-line
   }, [count])
 
   return (

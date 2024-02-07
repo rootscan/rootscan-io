@@ -15,7 +15,11 @@ export default function LatestExtrinsics({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <SectionTitle>Latest Extrinsics</SectionTitle>
+      <div className="flex items-center justify-between">
+        <Link href="/extrinsics">
+          <SectionTitle>Extrinsics</SectionTitle>
+        </Link>
+      </div>
       <div className="group flex flex-col gap-4">
         {latestExtrinsics?.map((extrinsic: any, _: number) => (
           <Card
@@ -68,11 +72,6 @@ export default function LatestExtrinsics({
           </Card>
         ))}
       </div>
-      <Link href="/extrinsics" className="text-center">
-        <span className="text-sm font-medium text-primary/80 hover:text-primary">
-          View all Extrinsics
-        </span>
-      </Link>
     </div>
   )
 }

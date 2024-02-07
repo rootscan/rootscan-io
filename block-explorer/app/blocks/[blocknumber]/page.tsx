@@ -9,6 +9,9 @@ import Link from "next/link"
 
 export default async function Page({ params }: { params: any }) {
   const { blocknumber } = params
+  if (Number(blocknumber) < 0) {
+    throw new Error("There is no block lower than 0.")
+  }
   const block = await getBlock({ number: blocknumber })
 
   if (!block) return <NoData />
@@ -20,12 +23,12 @@ export default async function Page({ params }: { params: any }) {
         <div className="absolute right-6 top-6 text-xs">
           {block?.isFinalized ? (
             <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-green-300" />
+              <div className="size-2 rounded-full bg-green-300" />
               Finalized
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-orange-300" />
+              <div className="size-2 rounded-full bg-orange-300" />
               Unfinalized
             </div>
           )}

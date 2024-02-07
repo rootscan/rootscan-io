@@ -36,7 +36,7 @@ export function SiteHeader() {
               src="/site-logos/rootscan-logo.png"
               width={190}
               height={190}
-              unoptimized
+              quality={100}
               className="size-8 rounded-lg invert dark:invert-0"
               alt="rootscan_logo"
             />

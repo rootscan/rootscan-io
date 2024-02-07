@@ -96,13 +96,13 @@ export default async function IndexPage() {
           })}
         </section>
         <section className="grid grid-cols-12 gap-6">
-          <div className="col-span-full lg:col-span-3">
+          <div className="col-span-full">
             <LatestBlocks latestBlocks={latestBlocks} />
           </div>
-          <div className="col-span-full lg:col-span-6">
+          <div className="col-span-full lg:col-span-8">
             <LatestTransactions latestTransactions={latestTransactions} />
           </div>
-          <div className="col-span-full lg:col-span-3">
+          <div className="col-span-full lg:col-span-4">
             <LatestExtrinsics latestExtrinsics={latestExtrinsics} />
           </div>
         </section>

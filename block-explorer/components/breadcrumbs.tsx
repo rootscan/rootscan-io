@@ -35,7 +35,7 @@ export default function Breadcrumbs() {
               <span className="capitalize">
                 {isAddress(item) || item?.startsWith("0x")
                   ? getShortenedHash(item)
-                  : item?.replaceAll("-", " ")}
+                  : paths.includes('extrinsics') || paths.includes('events') ? item : item?.replaceAll("-", " ")}
               </span>
             </Link>
           </Fragment>

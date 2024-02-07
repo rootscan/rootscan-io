@@ -37,7 +37,7 @@ export default function TransactionsTable({
           <TableHead>Method</TableHead>
           <TableHead>
             <div className="flex items-center gap-2">
-              <SortDesc className="h-5 w-5" /> Block
+              <SortDesc className="size-5" /> Block
             </div>
           </TableHead>
           <TableHead className="text-center">Timestamp</TableHead>
@@ -66,7 +66,7 @@ export default function TransactionsTable({
                 >
                   {tx.status === "reverted" ? (
                     <Tooltip text="Reverted">
-                      <AlertCircle className="h-4 w-4   text-red-500" />
+                      <AlertCircle className="size-4   text-red-500" />
                     </Tooltip>
                   ) : null}
                   <span className="truncate">{getShortenedHash(tx.hash)}</span>

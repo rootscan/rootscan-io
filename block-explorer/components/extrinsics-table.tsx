@@ -29,7 +29,7 @@ export default function ExtrinsicsTable({ extrinsics }) {
           <TableHead>Extrinsic ID</TableHead>
           <TableHead>
             <div className="flex items-center gap-2">
-              <SortDesc className="h-5 w-5" /> Block
+              <SortDesc className="size-5" /> Block
             </div>
           </TableHead>
           <TableHead>Timestamp</TableHead>

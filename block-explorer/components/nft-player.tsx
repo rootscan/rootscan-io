@@ -39,7 +39,7 @@ export default function NftPlayer({ animation_url, image }) {
           loop
           width="100%"
           height="100%"
-          className="aspect-square h-full w-full"
+          className="aspect-square size-full"
           autoPlay
           muted
           playsInline
@@ -47,7 +47,7 @@ export default function NftPlayer({ animation_url, image }) {
           <source src={animation_url} />
         </video>
       ) : (
-        <div className="grid h-full w-full select-none place-items-center bg-muted text-muted-foreground">
+        <div className="grid size-full select-none place-items-center bg-muted text-muted-foreground">
           <div>NFT</div>
         </div>
       )}

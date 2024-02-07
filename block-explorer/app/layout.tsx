@@ -51,10 +51,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
           "font-local",
         ])}
       >
-        <QueryProvider>
-          {/* Background mounter */}
-          {/* <div className="fixed h-screen w-screen bg-cover bg-main-image blur-[50px] invert dark:invert-0" /> */}
-          <ThemeProvider attribute="class" defaultTheme="dark">
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          <QueryProvider>
+            {/* Background mounter */}
+            {/* <div className="fixed h-screen w-screen bg-cover bg-main-image blur-[50px] invert dark:invert-0" /> */}
             <div className="relative flex min-h-screen flex-col justify-between">
               <SiteHeader />
               <Container className="md:hidden">
@@ -65,8 +65,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </div>
             <TailwindIndicator />
             <ClientProgressBar />
-          </ThemeProvider>
-        </QueryProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
       {/* <RefreshProvider /> */}
     </html>

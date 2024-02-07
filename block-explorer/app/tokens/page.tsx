@@ -61,7 +61,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
             {tokens.map((token: any) => (
               <TableRow key={token.contractAddress}>
                 <TableCell className="lg:max-w-8">
-                  <div className="h-8 w-8">
+                  <div className="size-8">
                     <TokenLogo
                       contractAddress={token.contractAddress}
                       width={250}
@@ -96,9 +96,9 @@ export default async function Page({ searchParams }: { searchParams: any }) {
                           ])}
                         >
                           {token?.priceData?.percent_change_24h < 0 ? (
-                            <ChevronDown className="h-4 w-4" />
+                            <ChevronDown className="size-4" />
                           ) : (
-                            <ChevronUp className="h-4 w-4" />
+                            <ChevronUp className="size-4" />
                           )}
                           {token?.priceData?.percent_change_24h
                             ? token?.priceData?.percent_change_24h.toFixed(2)

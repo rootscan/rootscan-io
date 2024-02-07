@@ -30,7 +30,7 @@ export default function MainSearch() {
 
     if (value?.includes("-")) {
       const splitted = value?.split("-")
-      if (splitted?.length === 2) {
+      if (splitted?.length === 2 || splitted?.length === 3) {
         if (!isNaN(Number(splitted[0])) && !isNaN(Number(splitted[1]))) {
           return router.push(`/extrinsics/${value}`)
         }

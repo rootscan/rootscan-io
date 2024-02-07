@@ -44,7 +44,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
               <TableHead>Extrinsic ID</TableHead>
               <TableHead>
                 <div className="flex items-center gap-2">
-                  <SortDesc className="h-5 w-5" /> Timestamp
+                  <SortDesc className="size-5" /> Timestamp
                 </div>
               </TableHead>
               <TableHead>Trader</TableHead>
