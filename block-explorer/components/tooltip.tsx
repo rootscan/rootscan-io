@@ -24,7 +24,7 @@ export default function Tooltip({
   return (
     <TooltipShad delayDuration={0}>
       <TooltipTrigger asChild={asChild}>{children}</TooltipTrigger>
-      <TooltipContent className="z-100">
+      <TooltipContent className="!z-20">
         <p className="whitespace-pre-line">{text}</p>
       </TooltipContent>
     </TooltipShad>

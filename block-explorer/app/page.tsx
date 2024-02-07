@@ -4,6 +4,7 @@ import Container from "@/components/container"
 import LatestBlocks from "@/components/homepage/latest-blocks"
 import LatestExtrinsics from "@/components/homepage/latest-extrinsics"
 import LatestTransactions from "@/components/homepage/latest-transactions"
+import SparklineChart from "@/components/sparkline-chart"
 import TargetTimeCountdown from "@/components/target-time-countdown"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -47,25 +48,18 @@ export default async function IndexPage() {
   return (
     <Container>
       <div className="flex flex-col gap-6">
-        {/* <Alert>
-          <RocketIcon className="h-4 w-4" />
-          <AlertTitle>Heads up!</AlertTitle>
-          <AlertDescription>
-            This Block Explorer is currently under development.
-          </AlertDescription>
-        </Alert> */}
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[
             { title: "Target Block Time", value: "4s", icon: Clock },
             {
               title: "Signed Extrinsics",
               value: chainSummary?.signedExtrinsics,
-              icon: Pencil,
+              icon: Pencil
             },
             {
               title: "Total Transactions",
               value: chainSummary?.evmTransactions,
-              icon: ArrowLeftRight,
+              icon: ArrowLeftRight
             },
             {
               title: "Wallet Addresses",
@@ -75,23 +69,25 @@ export default async function IndexPage() {
           ].map((stat, _) => {
             const Icon = stat.icon
             return (
-              <Card key={_}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                  <Icon className="size-5 text-muted-foreground" />
-                  <CardTitle className="text-xs uppercase text-muted-foreground">
-                    {stat.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {stat?.title === "Target Block Time" ? (
-                      <TargetTimeCountdown />
-                    ) : (
-                      stat.value
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              <div key={_}>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+                    <Icon className="size-5 text-muted-foreground" />
+                    <CardTitle className="text-xs uppercase text-muted-foreground">
+                      {stat.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      {stat?.title === "Target Block Time" ? (
+                        <TargetTimeCountdown />
+                      ) : (
+                        stat.value
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             )
           })}
         </section>

@@ -111,7 +111,7 @@ export default async function Layout({
                   ) : (
                     <div className="flex flex-col gap-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-muted-foreground">Free</span>
+                        <span className="text-muted-foreground">Available</span>
                         <span>
                           {data?.balance?.freeFormatted ? (
                             <TokenDisplay
