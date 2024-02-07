@@ -1,8 +1,8 @@
 import ABIs from '@/constants/abi';
 import logger from '@/logger';
 import { getTokenMetadata } from '@/token-data';
-import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, INFT, IToken } from '@/types';
-import { contractAddressToNativeId, isValidHttpUrl } from '@/utils';
+import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, IToken } from '@/types';
+import { contractAddressToNativeId } from '@/utils';
 import { getTokenDetails } from '@/utils/tokenInformation';
 import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
@@ -166,7 +166,6 @@ export default class NftIndexer {
                 Number(tokenId),
                 Number(currentChainId) === 7668 ? 'root' : 'porcini'
               );
-              console.log(`${address},${tokenId}`);
               ops.push({
                 updateOne: {
                   filter: {
@@ -273,45 +272,7 @@ export default class NftIndexer {
     return true;
   }
 
-  async fetchMetadataOfToken(contractAddress: Address, tokenId: number) {
-    logger.info(`Looking up metadata for ${contractAddress} tokenId: ${tokenId}`);
-    const lookUpUri: IToken | null = await this.DB.Token.findOne({ contractAddress: getAddress(contractAddress) }).lean();
-    if (lookUpUri?.uri && isValidHttpUrl(lookUpUri?.uri)) {
-      const metadataUri = `${lookUpUri.uri}${tokenId}`;
-      const res = await fetch(metadataUri);
-      if (res?.ok) {
-        let jsonData: INFT | undefined = undefined;
-        try {
-          jsonData = await res.json();
-        } catch {
-          /* eslint no-empty: "error" */
-        }
-        if (!jsonData) return true;
-        const animation_url = jsonData?.animation_url;
-        const image = jsonData?.image;
-
-        if (!animation_url || !image) return true;
-
-        await this.DB.Nft.updateMany(
-          { contractAddress: getAddress(contractAddress), tokenId: Number(tokenId) },
-          {
-            $set: {
-              contractAddress: getAddress(contractAddress),
-              tokenId: Number(tokenId),
-              animation_url,
-              image
-            }
-          },
-          {
-            upsert: true
-          }
-        );
-      } else if (res?.status === 429 || res?.status === 500) {
-        throw new Error(`Request got rate limited or failed on server end with response => ${res?.status}, should true again.`);
-      } else {
-        logger.warn(`Failed to fetch metadata with code ${res?.status}, no need to retry.`);
-      }
-    }
+  async fetchMetadataOfToken() {
     return true;
   }
 

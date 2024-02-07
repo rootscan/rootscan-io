@@ -54,7 +54,7 @@ const start = async () => {
         await findAllEthereumBridgeContractAddresses();
         break;
       case 'FIND_NFT_METADATA':
-        await nftIndexer.fetchMetadataOfToken(job.data.contractAddress, job.data.tokenId);
+        await nftIndexer.fetchMetadataOfToken();
         break;
       case 'REFETCH_NFT_HOLDERS':
         await nftIndexer.fetchHoldersOfCollection(job.data.contractAddress);
