@@ -62,18 +62,52 @@ export default class NftIndexer {
         }
       }
 
-      const evmEvents = await this.DB.EvmTransaction.find({
-        $or: [
-          { 'events.eventName': 'Transfer', 'events.type': 'ERC1155', 'events.address': getAddress(contractAddress) },
-          { 'events.eventName': 'TransferSingle', 'events.type': 'ERC1155', 'events.address': getAddress(contractAddress) },
-          { 'events.eventName': 'TransferBatch', 'events.type': 'ERC1155', 'events.address': getAddress(contractAddress) }
-        ]
-      })
-        .select('events')
-        .lean();
+      const evmEvents = await this.DB.EvmTransaction.aggregate([
+        {
+          $match: {
+            $or: [
+              {
+                'events.eventName': 'Transfer',
+                'events.type': 'ERC1155',
+                'events.address': getAddress(contractAddress)
+              },
+              {
+                'events.eventName': 'TransferSingle',
+                'events.type': 'ERC1155',
+                'events.address': getAddress(contractAddress)
+              },
+              {
+                'events.eventName': 'TransferBatch',
+                'events.type': 'ERC1155',
+                'events.address': getAddress(contractAddress)
+              }
+            ]
+          }
+        },
+        {
+          $unwind: '$events'
+        },
+        {
+          $match: {
+            'events.address': getAddress(contractAddress)
+          }
+        },
+        {
+          $replaceRoot: {
+            newRoot: '$events'
+          }
+        },
+        {
+          $project: {
+            from: 1,
+            to: 1,
+            operator: 1
+          }
+        }
+      ]);
 
       for (const evmEvent of evmEvents) {
-        const event = evmEvent?.events?.find((a) => ['Transfer', 'TransferSingle', 'TransferBatch'].includes(a.eventName));
+        const event = evmEvent?.events;
         if (isAddress(event?.from)) {
           addresses.add(getAddress(event.from));
         }
@@ -107,12 +141,22 @@ export default class NftIndexer {
       });
 
       const ops: (IBulkWriteUpdateOp | IBulkWriteDeleteOp)[] = [];
-      const currentBalances = await this.DB.Nft.find({ contractAddress: getAddress(contractAddress) }).lean();
+      const currentBalances = await this.DB.Nft.find({ contractAddress: getAddress(contractAddress), amount: { $gt: 0 } })
+        .select('owner tokenId amount')
+        .lean();
+
+      let balCache: any = {};
+      for (const bal of currentBalances) {
+        if (!balCache[getAddress(bal?.owner)]) {
+          balCache[getAddress(bal?.owner)] = [];
+        }
+
+        balCache[getAddress(bal?.owner)].push(Number(bal?.tokenId));
+      }
       let index = 0;
       for (const result of multicall) {
         if (result?.status === 'success') {
           const address = addressesArray[index] as Address;
-          if (!isAddress(address)) continue;
           const data = result?.result as bigint[];
           let tokenId = 0;
           for (const quantity of data) {
@@ -122,6 +166,7 @@ export default class NftIndexer {
                 Number(tokenId),
                 Number(currentChainId) === 7668 ? 'root' : 'porcini'
               );
+              console.log(`${address},${tokenId}`);
               ops.push({
                 updateOne: {
                   filter: {
@@ -143,19 +188,16 @@ export default class NftIndexer {
                   upsert: true
                 }
               });
-            } else if (Number(quantity) === 0) {
-              const hadBalance = currentBalances.find((a) => getAddress(a?.owner) === getAddress(address));
-              if (hadBalance) {
-                ops.push({
-                  deleteOne: {
-                    filter: {
-                      contractAddress: getAddress(contractAddress),
-                      tokenId: Number(tokenId),
-                      owner: getAddress(address)
-                    }
+            } else if (Number(quantity) === 0 && balCache?.[getAddress(address)]?.includes(Number(tokenId))) {
+              ops.push({
+                deleteOne: {
+                  filter: {
+                    contractAddress: getAddress(contractAddress),
+                    tokenId: Number(tokenId),
+                    owner: getAddress(address)
                   }
-                });
-              }
+                }
+              });
             }
             tokenId++;
           }
