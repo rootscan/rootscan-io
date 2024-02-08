@@ -54,7 +54,7 @@ export default function LatestTransactions({
                   <span className="truncate">{transaction.hash}</span>
                 </Link>
               </div>
-              <div className="flex items-center justify-between gap-2 md:justify-start">
+              <div className="flex flex-wrap items-center gap-2 md:justify-start">
                 <Image
                   src={generateAvatarURL(transaction.from)}
                   width={50}
