@@ -12,10 +12,12 @@ const run = async () => {
 
   const indexer = new Indexer(evmClient, api, DB);
 
+
+
   // await findAllEthereumBridgeContractAddresses();
   // await indexer.refetchAllBalances();
   // await indexer.processTransactions(['0x70c62a6dd1e7faa9ac6302bea7e1578e4600260f9af547fd4c65266f5d70aef9']);
-  // await indexer.processBlock(BigInt(9372055));
+  await indexer.processBlock(BigInt(10698563));
 
   const nftIndexer = new NftIndexer(evmClient, api, DB);
 

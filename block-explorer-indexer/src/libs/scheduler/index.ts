@@ -114,17 +114,20 @@ const scheduler = async () => {
   }
 
   /** Start listening to new blocks */
-  await api.rpc.chain.subscribeNewHeads(async (header) => {
-    logger.info(`Chain is at block: #${header.number}`);
-    const blockNumber = Number(header.number);
-    queue.add(
-      'PROCESS_BLOCK',
-      { blocknumber: blockNumber },
-      {
-        priority: 1,
-        jobId: `BLOCK_${blockNumber}`
-      }
-    );
+  evmClient.watchBlockNumber({
+    emitMissed: true,
+    emitOnBegin: true,
+    onBlockNumber: async (blockNumber) => {
+      logger.info(`Chain is on block ${Number(blockNumber)}`);
+      await queue.add(
+        'PROCESS_BLOCK',
+        { blocknumber: Number(blockNumber) },
+        {
+          priority: 1,
+          jobId: `BLOCK_${Number(blockNumber)}`
+        }
+      );
+    }
   });
 };
 
