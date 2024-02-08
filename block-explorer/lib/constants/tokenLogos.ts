@@ -33,6 +33,7 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     // TNL Gear
     "0xaaaAAaaA00006864000000000000000000000000": "token-tnl.png",
     "0x5BF788cf0065f6524Daac8BcfCF5eC77f07B5F25": "token-tnl.png",
+    "0xAaaAAAaa00000464000000000000000000000000": "token-tnl.png",
     // FIFA
     "0xaAAaAAAa00003864000000000000000000000000": "token-fifa.png",
     "0xAaaAaAAa00003c64000000000000000000000000": "token-fifa.png",
@@ -46,7 +47,6 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0xAAAaaAAa00001864000000000000000000000000": "token-fv.png",
     // Partybear
     "0xaAaaAaaA00004464000000000000000000000000": "token-pb.png",
-    "0xAaaAAAaa00000464000000000000000000000000": "token-pb.png",
     // Partybear Accessories
     "0xBbBBBBbb00006064000000000000000000000000": "token-pb.png",
     "0xbbbbbBbb00004C64000000000000000000000000": "token-pb.png",

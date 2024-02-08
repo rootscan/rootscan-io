@@ -13,6 +13,7 @@ export default function Breadcrumbs() {
 
   const remaps: any = {
     "/tx": "/evm-transactions",
+    "/token": "/tokens"
   }
 
   return (
