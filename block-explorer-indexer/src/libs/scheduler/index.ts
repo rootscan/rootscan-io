@@ -113,56 +113,63 @@ const scheduler = async () => {
     );
   }
 
-  const missingBlocks = await DB.Block.aggregate([
-    {
-      $sort: {
-        number: -1
-      }
-    },
-    {
-      $limit: 100_000
-    },
-    {
-      $group: {
-        _id: '_',
-        mbs: {
-          $push: '$number'
+  if (currentDBBlock !== 0) {
+    const missingBlocks = await DB.Block.aggregate(
+      [
+        {
+          $sort: {
+            number: -1
+          }
         },
-        first: {
-          $last: '$number'
+        {
+          $limit: 100_000
         },
-        last: {
-          $first: '$number'
-        }
-      }
-    },
-    {
-      $project: {
-        numbers: {
-          $setDifference: [
-            {
-              $range: ['$first', '$last']
+        {
+          $group: {
+            _id: '_',
+            mbs: {
+              $push: '$number'
             },
-            '$mbs'
-          ]
+            first: {
+              $last: '$number'
+            },
+            last: {
+              $first: '$number'
+            }
+          }
+        },
+        {
+          $project: {
+            numbers: {
+              $setDifference: [
+                {
+                  $range: ['$first', '$last']
+                },
+                '$mbs'
+              ]
+            }
+          }
         }
-      }
-    }
-  ]);
-
-  const misBlocks = missingBlocks?.[0]?.numbers || [];
-
-  for (const missingBlock of misBlocks) {
-    const blockNumber = Number(missingBlock);
-    logger.info(`Detected missing block => ${blockNumber}`);
-    await queue.add(
-      'PROCESS_BLOCK',
-      { blocknumber: blockNumber },
+      ],
       {
-        priority: 1,
-        jobId: `BLOCK_${blockNumber}`
+        allowDiskUse: true
       }
     );
+
+    const misBlocks = missingBlocks?.[0]?.numbers || [];
+
+    for (const missingBlock of misBlocks) {
+      const blockNumber = Number(missingBlock);
+      logger.info(`Detected missing block => ${blockNumber}`);
+      await queue.add(
+        'PROCESS_BLOCK',
+        { blocknumber: blockNumber },
+        {
+          priority: 1,
+          jobId: `BLOCK_${blockNumber}`
+        }
+      );
+    }
   }
 
   /** Start listening to new blocks */
