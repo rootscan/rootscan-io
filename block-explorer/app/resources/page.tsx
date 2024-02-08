@@ -106,6 +106,8 @@ export default function Page() {
                       src={item?.logo}
                       width={500}
                       height={500}
+                      unoptimized
+                      priority
                       alt="logo"
                       className="aspect-square w-full rounded-lg"
                     />
