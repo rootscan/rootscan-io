@@ -4,7 +4,6 @@ import Container from "@/components/container"
 import LatestBlocks from "@/components/homepage/latest-blocks"
 import LatestExtrinsics from "@/components/homepage/latest-extrinsics"
 import LatestTransactions from "@/components/homepage/latest-transactions"
-import SparklineChart from "@/components/sparkline-chart"
 import TargetTimeCountdown from "@/components/target-time-countdown"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -13,6 +12,7 @@ import {
   getExtrinsics,
   getTransactions,
 } from "@/lib/api"
+import { formatNumber } from "@/lib/utils"
 
 const getData = async () => {
   const [
@@ -54,12 +54,12 @@ export default async function IndexPage() {
             {
               title: "Signed Extrinsics",
               value: chainSummary?.signedExtrinsics,
-              icon: Pencil
+              icon: Pencil,
             },
             {
               title: "Total Transactions",
               value: chainSummary?.evmTransactions,
-              icon: ArrowLeftRight
+              icon: ArrowLeftRight,
             },
             {
               title: "Wallet Addresses",
@@ -82,7 +82,7 @@ export default async function IndexPage() {
                       {stat?.title === "Target Block Time" ? (
                         <TargetTimeCountdown />
                       ) : (
-                        stat.value
+                        formatNumber(stat.value)
                       )}
                     </div>
                   </CardContent>
