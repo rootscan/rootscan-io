@@ -1,14 +1,17 @@
-import { CHAIN_ID } from "@/lib/viem-client"
-import { ReactNode } from "react"
+"use server"
 
-export default function OnlyMainnet({
+import { CHAIN_ID } from "@/lib/viem-client"
+import { Fragment, ReactNode } from "react"
+
+// @ts-ignore
+export default async function OnlyMainnet({
   children,
   fallback,
 }: {
   children: ReactNode
   fallback?: ReactNode
 }) {
-  if (Number(CHAIN_ID) !== 7668) return fallback ? fallback : null
+  if (Number(CHAIN_ID) !== 7668) return fallback ? fallback : <Fragment />
 
-  return children
+  return <Fragment>{children}</Fragment>
 }

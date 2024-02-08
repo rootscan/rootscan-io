@@ -45,7 +45,7 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
                           </Link>
                         </div>
                         {block?.isFinalized ? (
-                          <span className="text-right text-xs text-muted-foreground">
+                          <span className="line-clamp-1 truncate text-right text-xs text-muted-foreground">
                             <TimeAgoDate date={block.timestamp} />
                           </span>
                         ) : (

@@ -9,7 +9,7 @@ export default function TimeAgoDate({ date }) {
   return (
     <Suspense fallback={<Skeleton className="h-5 w-24" />}>
       <Tooltip text={new Date(date)?.toUTCString()}>
-        <TimeAgo date={date} />
+        <TimeAgo date={date} className="truncate" />
       </Tooltip>
     </Suspense>
   )
