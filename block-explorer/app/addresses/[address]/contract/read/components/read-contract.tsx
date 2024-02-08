@@ -3,7 +3,7 @@
 import { Accordion } from "@/components/ui/accordion"
 import ReadItem from "./read-item"
 
-export default function ReadContract({ data, address }) {
+export default function ReadContract({ data, address, chainId }) {
   const abi = data?.metadata?.content?.output?.abi
   const devDoc = data?.metadata?.content?.output?.devdoc?.methods
 
@@ -19,6 +19,7 @@ export default function ReadContract({ data, address }) {
             item={item}
             key={_}
             address={address}
+            chainId={chainId}
           />
         ))}
     </Accordion>

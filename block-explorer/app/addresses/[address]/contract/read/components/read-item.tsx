@@ -7,16 +7,24 @@ import {
 } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { publicClient } from "@/lib/viem-client"
+import { porciniClient, rootClient } from "@/lib/viem-client"
 import { useMutation } from "@tanstack/react-query"
 import { CornerLeftUp, Loader2 } from "lucide-react"
 import { useState } from "react"
 
-export default function ReadItem({ abi, item, devDoc, index, address }) {
+export default function ReadItem({
+  abi,
+  item,
+  devDoc,
+  index,
+  address,
+  chainId,
+}) {
   const [args, setArgs] = useState<string[]>(Array(item?.inputs?.length))
   const devDocKey = `${item?.name}(${item?.inputs?.map((a) => `${a.type}`)})`
   const currentDevDoc = devDoc[devDocKey]
 
+  const client = chainId === 7668 ? rootClient : porciniClient
   const updateArgsIndex = (index, value) => {
     const newArgs = structuredClone(args)
     newArgs[index] = value
@@ -25,7 +33,7 @@ export default function ReadItem({ abi, item, devDoc, index, address }) {
 
   const mutation = useMutation({
     mutationFn: () =>
-      publicClient.readContract({
+      client.readContract({
         address,
         abi,
         functionName: item?.name,

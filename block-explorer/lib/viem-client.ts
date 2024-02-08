@@ -55,7 +55,12 @@ export const porcini = defineChain({
   },
 })
 
-export const publicClient = createPublicClient({
-  chain: CHAIN_ID === 7668 ? root : porcini,
+export const rootClient = createPublicClient({
+  chain: root,
+  transport: http(),
+})
+
+export const porciniClient = createPublicClient({
+  chain: porcini,
   transport: http(),
 })
