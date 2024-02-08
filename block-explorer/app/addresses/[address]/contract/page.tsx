@@ -6,7 +6,7 @@ import Image from "next/image"
 import Link from "next/link"
 import CodeEditor from "./components/code-editor"
 
-const getData = async ({ params }) => {
+const getData = async ({ params}) => {
   const fetchData = await getContractVerification({
     contractAddress: params.address,
   }).catch((e) => {
@@ -36,8 +36,8 @@ const getData = async ({ params }) => {
   return parsedData
 }
 
-export default async function Page({ params, searchParams }) {
-  const data = await getData({ params, searchParams })
+export default async function Page({ params }) {
+  const data = await getData({ params })
 
   if (!data) {
     return (
