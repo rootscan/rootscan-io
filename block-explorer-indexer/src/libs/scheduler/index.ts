@@ -154,6 +154,7 @@ const scheduler = async () => {
 
   for (const missingBlock of misBlocks) {
     const blockNumber = Number(missingBlock);
+    logger.info(`Detected missing block => ${blockNumber}`);
     await queue.add(
       'PROCESS_BLOCK',
       { blocknumber: blockNumber },
