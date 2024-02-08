@@ -39,20 +39,24 @@ const addresses: { nativeId: number; contractAddress: Address; type: TTokenType 
     type: 'ERC20'
   },
   // ERC721
-
+  {
+    nativeId: 33892,
+    contractAddress: '0xaAF03a65CbD8f01b512Cd8d530a675b3963dE255',
+    type: 'ERC721'
+  },
   // FLUF
-  // {
-  //   nativeId: 3,
-  //   contractAddress: '0xCcc441ac31f02cD96C153DB6fd5Fe0a2F4e6A68d',
-  //   type: 'ERC721'
-  // },
+  {
+    nativeId: 12388,
+    contractAddress: '0xCcc441ac31f02cD96C153DB6fd5Fe0a2F4e6A68d',
+    type: 'ERC721'
+  },
 
   // TNL Character
-  // {
-  //   nativeId: 17508,
-  //   contractAddress: '0x6bCa6de2dbDc4E0d41f7273011785ea16Ba47182',
-  //   type: 'ERC721'
-  // },
+  {
+    nativeId: 1124,
+    contractAddress: '0x6bCa6de2dbDc4E0d41f7273011785ea16Ba47182',
+    type: 'ERC721'
+  },
   {
     nativeId: 17508,
     contractAddress: '0x35471f47c3C0BC5FC75025b97A19ECDDe00F78f8',
