@@ -5,6 +5,7 @@ import {
   createFindPrecompiledTokensTasks,
   findAllEthereumBridgeContractAddresses,
   findAllKnownAddresses,
+  findMissingBlocks,
   findPrecompiledTokens,
   updateStakingValidators
 } from '@/indexer/tasks/prepopulate';
@@ -76,6 +77,9 @@ const start = async () => {
         break;
       case 'UPDATE_STAKING_VALIDATORS':
         await updateStakingValidators();
+        break;
+      case 'FIND_MISSING_BLOCKS':
+        await findMissingBlocks();
         break;
       default:
         throw new Error('NO PROCESSOR');

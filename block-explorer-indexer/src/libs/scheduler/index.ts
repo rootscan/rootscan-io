@@ -71,6 +71,18 @@ const scheduler = async () => {
   );
 
   await queue.add(
+    'FIND_MISSING_BLOCKS',
+    {},
+    {
+      jobId: 'FIND_MISSING_BLOCKS',
+      repeat: {
+        every: 60_000 * 60 * 6, // Every 6 hours
+        immediately: true
+      }
+    }
+  );
+
+  await queue.add(
     'INGEST_KNOWN_ADDRESSES',
     {},
     {
@@ -111,65 +123,6 @@ const scheduler = async () => {
         jobId: `BLOCK_${blockNumber}`
       }
     );
-  }
-
-  if (currentDBBlock !== 0) {
-    const missingBlocks = await DB.Block.aggregate(
-      [
-        {
-          $sort: {
-            number: -1
-          }
-        },
-        {
-          $limit: 100_000
-        },
-        {
-          $group: {
-            _id: '_',
-            mbs: {
-              $push: '$number'
-            },
-            first: {
-              $last: '$number'
-            },
-            last: {
-              $first: '$number'
-            }
-          }
-        },
-        {
-          $project: {
-            numbers: {
-              $setDifference: [
-                {
-                  $range: ['$first', '$last']
-                },
-                '$mbs'
-              ]
-            }
-          }
-        }
-      ],
-      {
-        allowDiskUse: true
-      }
-    );
-
-    const misBlocks = missingBlocks?.[0]?.numbers || [];
-
-    for (const missingBlock of misBlocks) {
-      const blockNumber = Number(missingBlock);
-      logger.info(`Detected missing block => ${blockNumber}`);
-      await queue.add(
-        'PROCESS_BLOCK',
-        { blocknumber: blockNumber },
-        {
-          priority: 1,
-          jobId: `BLOCK_${blockNumber}`
-        }
-      );
-    }
   }
 
   /** Start listening to new blocks */

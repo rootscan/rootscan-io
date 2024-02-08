@@ -152,3 +152,64 @@ export const updateStakingValidators = async () => {
 
   return true;
 };
+
+export const findMissingBlocks = async () => {
+  const missingBlocks = await DB.Block.aggregate(
+    [
+      {
+        $sort: {
+          number: -1
+        }
+      },
+      {
+        $limit: 100_000
+      },
+      {
+        $group: {
+          _id: '_',
+          mbs: {
+            $push: '$number'
+          },
+          first: {
+            $last: '$number'
+          },
+          last: {
+            $first: '$number'
+          }
+        }
+      },
+      {
+        $project: {
+          numbers: {
+            $setDifference: [
+              {
+                $range: ['$first', '$last']
+              },
+              '$mbs'
+            ]
+          }
+        }
+      }
+    ],
+    {
+      allowDiskUse: true
+    }
+  );
+
+  const misBlocks = missingBlocks?.[0]?.numbers || [];
+
+  for (const missingBlock of misBlocks) {
+    const blockNumber = Number(missingBlock);
+    logger.info(`Detected missing block => ${blockNumber}`);
+    await queue.add(
+      'PROCESS_BLOCK',
+      { blocknumber: blockNumber },
+      {
+        priority: 1,
+        jobId: `BLOCK_${blockNumber}`
+      }
+    );
+  }
+
+  return true;
+};
