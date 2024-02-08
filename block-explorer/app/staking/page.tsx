@@ -18,6 +18,7 @@ import { ROOT_TOKEN } from "@/lib/constants/tokens"
 import { getPaginationData } from "@/lib/utils"
 import { AlertTriangle } from "lucide-react"
 import { Metadata } from "next"
+import Link from "next/link"
 import { Fragment, Suspense } from "react"
 
 export const metadata: Metadata = {
@@ -36,9 +37,16 @@ export default async function Page({ searchParams, params }) {
     <Container>
       <div className="flex flex-col gap-4">
         <Breadcrumbs />
-        <SectionTitle>Staking Validators</SectionTitle>
+        <SectionTitle>Staking</SectionTitle>
         <p className="text-xs">
-          If you own $ROOT and wish to stake, please visit here.
+          If you own $ROOT and wish to stake, please visit{" "}
+          <Link
+            href="https://staking.therootnetwork.com/"
+            className="text-primary"
+            target="_blank"
+          >
+            here.
+          </Link>
         </p>
         <Suspense fallback={<Fragment />}>
           <Pagination pagination={getPaginationData(data)} />

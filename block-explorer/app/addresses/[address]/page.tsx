@@ -89,6 +89,14 @@ export default async function Page({ params, searchParams }) {
                 return <NFTMint tx={tx} address={address} key={_} />
               }
 
+              if (section === "sft" && method === "Transfer") {
+                return <SFTTransfer tx={tx} address={address} key={_} />
+              }
+
+              if (section === "sft" && method === "Mint") {
+                return <SFTMint tx={tx} address={address} key={_} />
+              }
+
               return <Fragment key={_} />
             })}
           </TableBody>
@@ -476,5 +484,113 @@ const ExtrinsicMethod = ({ tx, hideExtrinsic = false }) => {
         </Badge>
       </div>
     </div>
+  )
+}
+
+const SFTTransfer = ({ tx, address }) => {
+  return (
+    <TableRow>
+      <TableCell className="max-w-[150px] truncate">
+        <Link href={`/extrinsics/${tx.extrinsicId}`}>
+          <span className="truncate">{tx.extrinsicId}</span>
+        </Link>
+      </TableCell>
+      <TableCell>
+        <ExtrinsicMethod tx={tx} />
+      </TableCell>
+      <TableCell>
+        <InOutBadge
+          address={address}
+          from={tx?.args?.previousOwner}
+          to={tx?.args?.newOwner}
+        />
+      </TableCell>
+      <TableCell>
+        <TimeAgoDate date={tx?.timestamp * 1000} />
+      </TableCell>
+      <TableCell>
+        <div className="flex flex-col gap-2">
+          {tx?.args?.serialNumbers.map((tokenId, _) => (
+            <div
+              className="flex items-center gap-2"
+              key={`${_}_${tx?.nftCollection?.contractAddress}_${tokenId}`}
+            >
+              <NftThumbnail
+                contractAddress={tx?.nftCollection?.contractAddress}
+                tokenId={tokenId}
+              />
+              <div className="flex items-center gap-2">
+                <span>{tokenId}</span>
+                <Badge>x{tx?.args?.balances}</Badge>
+              </div>
+
+              <TokenDisplay token={tx?.nftCollection} hideCopyButton />
+            </div>
+          ))}
+        </div>
+      </TableCell>
+      <TableCell className="max-w-[150px] truncate">
+        <AddressDisplay address={tx?.args?.previousOwner} useShortenedAddress />
+      </TableCell>
+      <TableCell className="max-w-[25px] text-muted-foreground">
+        <ChevronRight className="size-4" />
+      </TableCell>
+      <TableCell className="max-w-[150px] truncate">
+        <AddressDisplay address={tx?.args?.newOwner} useShortenedAddress />
+      </TableCell>
+    </TableRow>
+  )
+}
+
+const SFTMint = ({ tx, address }) => {
+  return (
+    <TableRow>
+      <TableCell className="max-w-[150px] truncate">
+        <Link href={`/extrinsics/${tx.extrinsicId}`}>
+          <span className="truncate">{tx.extrinsicId}</span>
+        </Link>
+      </TableCell>
+      <TableCell>
+        <ExtrinsicMethod tx={tx} />
+      </TableCell>
+      <TableCell>
+        <InOutBadge
+          address={address}
+          from={"0x0000000000000000000000"}
+          to={tx?.args?.owner}
+        />
+      </TableCell>
+      <TableCell>
+        <TimeAgoDate date={tx?.timestamp * 1000} />
+      </TableCell>
+      <TableCell className="max-w-[100px]">
+        <div className="flex flex-col gap-2">
+          {tx?.args?.serialNumbers.map((tokenId, _) => (
+            <div
+              className="flex items-center gap-2"
+              key={`${_}_${tx?.nftCollection?.contractAddress}_${tokenId}`}
+            >
+              <NftThumbnail
+                contractAddress={tx?.nftCollection?.contractAddress}
+                tokenId={tokenId}
+              />
+              <div className="flex items-center gap-2">
+                <span>{tokenId}</span>
+                <Badge>x{tx?.args?.balances}</Badge>
+              </div>
+
+              <TokenDisplay token={tx?.nftCollection} hideCopyButton />
+            </div>
+          ))}
+        </div>
+      </TableCell>
+      <TableCell className="max-w-[150px] truncate">-</TableCell>
+      <TableCell className="max-w-[25px] text-muted-foreground">
+        <ChevronRight className="size-4" />
+      </TableCell>
+      <TableCell className="max-w-[150px] truncate">
+        <AddressDisplay address={tx?.args?.owner} useShortenedAddress />
+      </TableCell>
+    </TableRow>
   )
 }

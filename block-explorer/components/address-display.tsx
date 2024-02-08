@@ -16,6 +16,7 @@ export default function AddressDisplay({
   hideCopyButton,
   useShortenedAddress = false,
   className,
+  isTokenTracker
 }: {
   address: Address
   nameTag?: string
@@ -24,6 +25,7 @@ export default function AddressDisplay({
   hideCopyButton?: boolean
   useShortenedAddress?: boolean
   className?: string
+  isTokenTracker?: boolean
 }) {
   if (!address || !isAddress(address)) return null
   const name = rnsName
@@ -49,7 +51,7 @@ export default function AddressDisplay({
         </Tooltip>
       ) : null}
       <Tooltip text={address} disabled={!useShortenedAddress} asChild>
-        <Link href={`/addresses/${address}`} className="truncate">
+        <Link href={`/${isTokenTracker ? 'token' : 'addresses'}/${address}`} className="truncate">
           {name}
         </Link>
       </Tooltip>

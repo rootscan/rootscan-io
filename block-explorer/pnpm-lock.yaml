@@ -80,6 +80,9 @@ dependencies:
   react-sparklines:
     specifier: ^1.7.0
     version: 1.7.0(react-dom@18.2.0)(react@18.2.0)
+  react-timeago:
+    specifier: ^7.2.0
+    version: 7.2.0(react@18.2.0)
   react18-json-view:
     specifier: ^0.2.7
     version: 0.2.7(react@18.2.0)
@@ -6645,6 +6648,14 @@ packages:
       invariant: 2.2.4
       react: 18.2.0
       tslib: 2.6.2
+    dev: false
+
+  /react-timeago@7.2.0(react@18.2.0):
+    resolution: {integrity: sha512-2KsBEEs+qRhKx/kekUVNSTIpop3Jwd7SRBm0R4Eiq3mPeswRGSsftY9FpKsE/lXLdURyQFiHeHFrIUxLYskG5g==}
+    peerDependencies:
+      react: ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-transition-group@2.9.0(react-dom@18.2.0)(react@18.2.0):

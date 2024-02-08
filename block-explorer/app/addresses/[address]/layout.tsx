@@ -15,6 +15,12 @@ import { getAddress as getAddressViem } from "viem"
 import Menu from "./components/menu"
 import QrCode from "./components/qr-code"
 
+export async function generateMetadata({ params }) {
+  return {
+    title: `Rootscan • ${params.address}`,
+  }
+}
+
 const getData = async ({ params }) => {
   const data = await getAddress({ address: getAddressViem(params.address) })
   return data
@@ -142,6 +148,20 @@ export default async function Layout({
                   )}
                 </CardDetail.Content>
               </CardDetail.Wrapper>
+              {data?.token ? (
+                <div className="max-w-md">
+                  <CardDetail.Wrapper>
+                    <CardDetail.Title>Token Tracker</CardDetail.Title>
+                    <CardDetail.Content>
+                      <TokenDisplay
+                        token={data?.token}
+                        isTokenTracker
+                        hideCopyButton
+                      />
+                    </CardDetail.Content>
+                  </CardDetail.Wrapper>
+                </div>
+              ) : null}
               {tags?.length ? (
                 <CardDetail.Wrapper>
                   <CardDetail.Title>Tags</CardDetail.Title>

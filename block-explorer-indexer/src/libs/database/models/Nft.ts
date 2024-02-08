@@ -21,6 +21,13 @@ schema.index({ contractAddress: 1, tokenId: -1 });
 schema.index({ owner: 1 });
 schema.index({ type: 1 });
 
+schema.virtual('nftCollection', {
+  ref: 'Token',
+  localField: 'contractAddress',
+  foreignField: 'contractAddress',
+  justOne: true
+});
+
 schema.plugin(mongoosePaginate);
 schema.plugin(aggregatePaginate);
 

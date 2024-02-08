@@ -12,6 +12,7 @@ export default async function TokenDisplay({
   overrideImageSizeClass,
   priceData,
   className,
+  isTokenTracker,
 }: {
   token: any
   amount?: any
@@ -19,6 +20,7 @@ export default async function TokenDisplay({
   overrideImageSizeClass?: string
   priceData?: any
   className?: string
+  isTokenTracker?: boolean
 }) {
   const hasLogo = getTokenLogo(token?.contractAddress) || null
   return (
@@ -56,6 +58,7 @@ export default async function TokenDisplay({
             nameTag={`${token?.name} ${token?.symbol ? `(${token?.symbol})` : ""}`}
             hideCopyButton={hideCopyButton}
             className="truncate"
+            isTokenTracker={isTokenTracker}
           />
         </div>
       </Tooltip>

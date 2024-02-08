@@ -417,7 +417,11 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
           // NFT Transfer
           { section: 'nft', method: 'Transfer', 'args.previousOwner': getAddress(address) },
           { section: 'nft', method: 'Transfer', 'args.newOwner': getAddress(address) },
-          { section: 'nft', method: 'Mint', 'args.owner': getAddress(address) }
+          { section: 'nft', method: 'Mint', 'args.owner': getAddress(address) },
+          // SFT
+          { section: 'sft', method: 'Mint', 'args.owner': getAddress(address) },
+          { section: 'sft', method: 'Transfer', 'args.previousOwner': getAddress(address) },
+          { section: 'sft', method: 'Transfer', 'args.newOwner': getAddress(address) }
         ]
       },
       options
@@ -556,7 +560,9 @@ app.post('/getNft', async (req: Request, res: Response) => {
   try {
     const { contractAddress, tokenId }: { contractAddress: Address; tokenId: number } = req.body;
 
-    const data = await DB.Nft.findOne({ contractAddress: getAddress(contractAddress), tokenId: Number(tokenId) }).lean();
+    const data = await DB.Nft.findOne({ contractAddress: getAddress(contractAddress), tokenId: Number(tokenId) })
+      .populate('nftCollection')
+      .lean();
     return res.json(data);
   } catch (e) {
     processError(e, res);
@@ -567,7 +573,7 @@ app.post('/getAddress', async (req: Request, res: Response) => {
   try {
     const { address }: { address: Address } = req.body;
     const data: (IAddress & { rootPriceData?: object | null }) | null = await DB.Address.findOne({ address: getAddress(address) })
-      .populate('isVerifiedContract')
+      .populate('isVerifiedContract token')
       .lean();
     if (data?.balance?.freeFormatted) {
       const rootPriceData = await DB.Token.findOne({ contractAddress: getAddress('0xcCcCCccC00000001000000000000000000000000') })

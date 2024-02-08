@@ -86,7 +86,7 @@ export default async function Page({ params, searchParams }) {
                   ) : (
                     <div className="flex items-center gap-2" key={_}>
                       <NftThumbnail
-                        contractAddress={tx?.nftCollection?.contractAddress}
+                        contractAddress={tx?.address}
                         tokenId={tx?.tokenId}
                       />
                       {tx?.tokenId}

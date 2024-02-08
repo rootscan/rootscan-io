@@ -43,7 +43,7 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn([
           "min-h-screen bg-[#ebebebeb] antialiased dark:bg-white/5",
@@ -53,8 +53,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <ThemeProvider attribute="class" defaultTheme="dark">
           <QueryProvider>
-            {/* Background mounter */}
-            {/* <div className="fixed h-screen w-screen bg-cover bg-main-image blur-[50px] invert dark:invert-0" /> */}
             <div className="relative flex min-h-screen flex-col justify-between">
               <SiteHeader />
               <Container className="md:hidden">
@@ -68,7 +66,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </QueryProvider>
         </ThemeProvider>
       </body>
-      {/* <RefreshProvider /> */}
     </html>
   )
 }

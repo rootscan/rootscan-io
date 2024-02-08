@@ -18,6 +18,7 @@ const items = [
   { title: "DEX", href: "/dex" },
   { title: "Staking", href: "/staking" },
   { title: "Verified Contracts", href: "/verified-contracts" },
+  { title: "Resources", href: "/resources" },
 ]
 
 export function Navigation() {

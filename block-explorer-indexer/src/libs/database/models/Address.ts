@@ -23,6 +23,14 @@ schema.virtual('isVerifiedContract', {
   justOne: true
 });
 
+schema.virtual('token', {
+  ref: 'Token',
+  localField: 'address',
+  foreignField: 'contractAddress',
+  justOne: true
+});
+
+
 schema.plugin(mongoosePaginate);
 schema.plugin(aggregatePaginate);
 
