@@ -61,6 +61,15 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0xbBbbbbBb00007c64000000000000000000000000": "token-ss.png",
     "0xBBBBBBbb00007064000000000000000000000000": "token-ss.png",
     "0xBBBbbbbb00007464000000000000000000000000": "token-ss.png",
+    "0xaaAaaAAa00008864000000000000000000000000": "token-raicers.png",
+    "0xaaAAaaAa00008C64000000000000000000000000": "token-raicers.png",
+    "0xaAAaaAAA00009064000000000000000000000000": "token-raicers.png",
+    "0xaAaaAaAA00009464000000000000000000000000": "token-raicers.png",
+    "0xaaaaaaaA00009864000000000000000000000000": "token-raicers.png",
+    "0xaAAAAAAA00009c64000000000000000000000000": "token-raicers.png",
+    "0xbbbBbBbB0000a064000000000000000000000000": "token-raicers.png",
+    "0xBbbbbBBb0000a464000000000000000000000000": "token-raicers.png",
+    "0xbbBbBBBb0000a864000000000000000000000000": "token-raicers.png",
   },
   7672: {
     // Root

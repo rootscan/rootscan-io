@@ -32,7 +32,11 @@ export default async function Layout({ params, children }) {
               <CardDetail.Wrapper>
                 <CardDetail.Title>Token</CardDetail.Title>
                 <CardDetail.Content>
-                  <TokenDisplay token={data} hideCopyButton />
+                  <TokenDisplay
+                    token={data}
+                    hideCopyButton
+                    overrideImageSizeClass="size-10 mr-2"
+                  />
                 </CardDetail.Content>
               </CardDetail.Wrapper>
             </CardContent>

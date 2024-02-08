@@ -29,7 +29,7 @@ const resources = {
       description:
         "Cross-chain bridge by The Root Network allowing users to seamlessly bridge assets.",
       logo: "/resources-logos/trn-logo.jpg",
-      url: "https://www.therootnetwork.com/",
+      url: "https://app.rootnet.live/bridge",
       category: "Tooling",
     },
     {
@@ -38,6 +38,29 @@ const resources = {
       logo: "/resources-logos/trn-logo.jpg",
       url: "https://docs.therootnetwork.com/",
       category: "Docs",
+    },
+    {
+      title: "Futurepass",
+      description: "Your passport through the open metaverse.",
+      logo: "/resources-logos/fp-logo.png",
+      url: "https://www.futureverse.com/futurepass",
+      category: "Wallet",
+    },
+    {
+      title: "TRN Evm SDK",
+      description:
+        "A utility package that simplifies EVM development on The Root Network.",
+      logo: "/resources-logos/npm-logo.png",
+      url: "https://www.npmjs.com/package/@therootnetwork/evm",
+      category: "Tooling",
+    },
+    {
+      title: "TRN Native SDK",
+      description:
+        "A utility package that complements the @polkadot/api to connect and interact with the Root Network node.",
+      logo: "/resources-logos/npm-logo.png",
+      url: "https://www.npmjs.com/package/@therootnetwork/api",
+      category: "Tooling",
     },
   ],
   "Projects utilizing TRN": [
@@ -87,6 +110,30 @@ const resources = {
       url: "https://www.thenextlegends.xyz/",
       category: "Gaming",
     },
+    {
+      title: "Goblins",
+      description:
+        "Dive fist-first into a stream-to-play battlesimulator where chaos reigns supreme",
+      logo: "/resources-logos/goblins-logo.jpeg",
+      url: "https://godsandgoblins.com/",
+      category: "Gaming",
+    },
+    {
+      title: "Paddi",
+      description:
+        "Introducing Paddi, a futuristic take on a nostalgic arcade game where you can train an AI Agent to compete in your place. This is a demo driven by a protocol for ownable, trainable and tradable decentralized Artificial Intelligence.",
+      logo: "/resources-logos/paddi-logo.png",
+      url: "https://paddi.alteredstatemachine.xyz/",
+      category: "AI Porcini Only",
+    },
+    {
+      title: "Raicers",
+      description:
+        "Unlock a Kart, recruit a Driver, and equip a Brain to activate your Raicer.",
+      logo: "/resources-logos/raicers-logo.png",
+      url: "https://www.raicers.com/",
+      category: "Gaming",
+    },
   ],
 }
 
@@ -98,7 +145,7 @@ export default function Page() {
         {Object.keys(resources)?.map((section, _) => (
           <Fragment key={_}>
             <SectionTitle>{section}</SectionTitle>
-            <section className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
+            <section className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
               {resources[section].map((item, _) => (
                 <Link href={item?.url} key={`${section}_${_}`} target="_blank">
                   <div className="flex h-full flex-col justify-between space-y-3 rounded-lg border bg-muted p-3">
