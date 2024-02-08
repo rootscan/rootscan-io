@@ -6,6 +6,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { Fragment } from "react"
 
+export const dynamic = 'force-dynamic';
+
 const resources = {
   "The Root Network": [
     {
