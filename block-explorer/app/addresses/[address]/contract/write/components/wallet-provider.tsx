@@ -1,7 +1,7 @@
 "use client"
 import "@rainbow-me/rainbowkit/styles.css"
 
-import { root } from "@/lib/viem-client"
+import { porcini, root } from "@/lib/viem-client"
 import {
   RainbowKitProvider,
   darkTheme,
@@ -12,22 +12,24 @@ import { useTheme } from "next-themes"
 import { WagmiConfig, configureChains, createConfig } from "wagmi"
 import { publicProvider } from "wagmi/providers/public"
 
-const { chains, publicClient } = configureChains([root], [publicProvider()])
-
-const { connectors } = getDefaultWallets({
-  appName: "TRN - Block Explorer",
-  projectId: "ee5ec4836ac4632e246a6097fe333c11",
-  chains,
-})
-
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
-})
-
-export default function WalletProvider({ children }) {
+export default function WalletProvider({ children, chainId }) {
   const { theme } = useTheme()
+  const { chains, publicClient } = configureChains(
+    [Number(chainId) === 7668 ? root : porcini],
+    [publicProvider()]
+  )
+
+  const { connectors } = getDefaultWallets({
+    appName: "TRN - Block Explorer",
+    projectId: "ee5ec4836ac4632e246a6097fe333c11",
+    chains,
+  })
+
+  const wagmiConfig = createConfig({
+    autoConnect: true,
+    connectors,
+    publicClient,
+  })
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider

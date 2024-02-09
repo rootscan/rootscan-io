@@ -1,10 +1,10 @@
+import CustomConnectWallet from "@/components/custom-connectwallet"
 import { getContractVerification } from "@/lib/api"
-import { ConnectButton } from "@rainbow-me/rainbowkit"
 import WalletProvider from "./components/wallet-provider"
 import WriteContract from "./components/write-contract"
-import CustomConnectWallet from "@/components/custom-connectwallet"
 
 const getData = async ({ params }) => {
+  const chainId = Number(process?.env?.CHAIN_ID)
   const fetchData = await getContractVerification({
     contractAddress: params.address,
   }).catch((e) => {
@@ -12,7 +12,7 @@ const getData = async ({ params }) => {
   })
 
   if (!fetchData) {
-    return null
+    return { chainId }
   }
 
   let parsedData: { metadata?: any; files: any[] } = {
@@ -31,16 +31,16 @@ const getData = async ({ params }) => {
       }
     }
   }
-  return parsedData
+  return { data: parsedData, chainId }
 }
 
 export default async function Page({ params }: { params: any }) {
-  const data = await getData({ params })
+  const { data, chainId } = await getData({ params })
 
   return (
-    <WalletProvider>
+    <WalletProvider chainId={chainId}>
       <div className="flex flex-col gap-4">
-       <CustomConnectWallet/>
+        <CustomConnectWallet />
         <WriteContract data={data} address={params.address} />
       </div>
     </WalletProvider>
