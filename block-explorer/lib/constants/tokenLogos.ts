@@ -47,6 +47,7 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0xAAAaaAAa00001864000000000000000000000000": "token-fv.png",
     // Partybear
     "0xaAaaAaaA00004464000000000000000000000000": "token-pb.png",
+    "0xAAAaaAAA00006C64000000000000000000000000": "token-pb.png",
     // Partybear Accessories
     "0xBbBBBBbb00006064000000000000000000000000": "token-pb.png",
     "0xbbbbbBbb00004C64000000000000000000000000": "token-pb.png",
@@ -70,6 +71,10 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0xbbbBbBbB0000a064000000000000000000000000": "token-raicers.png",
     "0xBbbbbBBb0000a464000000000000000000000000": "token-raicers.png",
     "0xbbBbBBBb0000a864000000000000000000000000": "token-raicers.png",
+    // Seekers
+    "0xAAaaAAAA00008464000000000000000000000000": "token-seekers.png",
+    // FLUF
+    "0xAaAaAAaa00003064000000000000000000000000": "token-fluf.png"
   },
   7672: {
     // Root

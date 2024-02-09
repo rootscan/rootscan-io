@@ -1,10 +1,13 @@
 "use client"
 
-import { getAddressName } from "@/lib/constants/knownAddresses"
+import {
+  getAddressName,
+  knownAddressNames,
+} from "@/lib/constants/knownAddresses"
 import { cn } from "@/lib/utils"
 import { FileText } from "lucide-react"
 import Link from "next/link"
-import { Address, isAddress } from "viem"
+import { Address, getAddress, isAddress } from "viem"
 import { CopyButton } from "./copy-button"
 import Logo from "./logo"
 import Tooltip from "./tooltip"
@@ -16,7 +19,7 @@ export default function AddressDisplay({
   hideCopyButton,
   useShortenedAddress = false,
   className,
-  isTokenTracker
+  isTokenTracker,
 }: {
   address: Address
   nameTag?: string
@@ -28,11 +31,13 @@ export default function AddressDisplay({
   isTokenTracker?: boolean
 }) {
   if (!address || !isAddress(address)) return null
-  const name = rnsName
-    ? rnsName
-    : nameTag
-      ? nameTag
-      : getAddressName(address, useShortenedAddress)
+  const name = knownAddressNames[getAddress(address)]
+    ? knownAddressNames[getAddress(address)]
+    : rnsName
+      ? rnsName
+      : nameTag
+        ? nameTag
+        : getAddressName(address, useShortenedAddress)
 
   const isFuturepass = address?.toLowerCase()?.startsWith("0xffffffff")
 
@@ -51,7 +56,10 @@ export default function AddressDisplay({
         </Tooltip>
       ) : null}
       <Tooltip text={address} disabled={!useShortenedAddress} asChild>
-        <Link href={`/${isTokenTracker ? 'token' : 'addresses'}/${address}`} className="truncate">
+        <Link
+          href={`/${isTokenTracker ? "token" : "addresses"}/${address}`}
+          className="truncate"
+        >
           {name}
         </Link>
       </Tooltip>

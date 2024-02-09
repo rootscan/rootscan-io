@@ -13,6 +13,7 @@ export default async function TokenDisplay({
   priceData,
   className,
   isTokenTracker,
+  hideLogo,
 }: {
   token: any
   amount?: any
@@ -21,6 +22,7 @@ export default async function TokenDisplay({
   priceData?: any
   className?: string
   isTokenTracker?: boolean
+  hideLogo?: boolean
 }) {
   const hasLogo = getTokenLogo(token?.contractAddress) || null
   return (
@@ -39,7 +41,7 @@ export default async function TokenDisplay({
       ) : null}
       <Tooltip text={token?.contractAddress} asChild>
         <div className="inline-flex items-center gap-1 truncate">
-          {hasLogo ? (
+          {hasLogo && !hideLogo ? (
             <div
               className={cn([
                 overrideImageSizeClass ? overrideImageSizeClass : "size-5",
@@ -53,12 +55,14 @@ export default async function TokenDisplay({
               />
             </div>
           ) : null}
+
           <AddressDisplay
             address={token?.contractAddress}
             nameTag={`${token?.name} ${token?.symbol ? `(${token?.symbol})` : ""}`}
             hideCopyButton={hideCopyButton}
             className="truncate"
             isTokenTracker={isTokenTracker}
+
           />
         </div>
       </Tooltip>

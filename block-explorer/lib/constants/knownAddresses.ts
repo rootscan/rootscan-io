@@ -1,6 +1,11 @@
 import { Address } from "viem"
 
-let knownAddressNames: { [key: Address]: string } = {}
+export const knownAddressNames: { [key: Address]: string } = {
+  "0xAaaAAAaa00000464000000000000000000000000": "TNL Bridged Collection",
+  "0xAaAaAAaa00003064000000000000000000000000": "FLUF Bridged Collection",
+  "0xAAaaAAAA00008464000000000000000000000000": "Seekers Bridged Collection",
+  "0xAAAaaAAA00006C64000000000000000000000000": "Party Bear Bridged Collection",
+}
 
 export const contractAddressToNativeId = (
   contractAddress: Address

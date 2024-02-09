@@ -2,6 +2,7 @@ import Container from "@/components/container"
 import OnlyMainnet from "@/components/layouts/only-mainnet"
 import Pagination from "@/components/pagination"
 import SectionTitle from "@/components/section-title"
+import TokenDisplay from "@/components/token-display"
 import TokenLogo from "@/components/token-logo"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -16,10 +17,9 @@ import { getTokens } from "@/lib/api"
 import { cn, formatNumberDollars, getPaginationData } from "@/lib/utils"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import millify from "millify"
-import Link from "next/link"
+import { Metadata } from "next"
 import { Suspense } from "react"
 import SubMenu from "./components/submenu"
-import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Tokens",
@@ -61,7 +61,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
             {tokens.map((token: any) => (
               <TableRow key={token.contractAddress}>
                 <TableCell className="lg:max-w-8">
-                  <div className="size-8">
+                  <div className="size-10">
                     <TokenLogo
                       contractAddress={token.contractAddress}
                       width={250}
@@ -70,13 +70,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
                   </div>
                 </TableCell>
                 <TableCell className="max-w-xs truncate">
-                  <Link
-                    href={`/token/${token?.contractAddress}`}
-                    className="truncate"
-                  >
-                    {token?.name ? token?.name : "-"}{" "}
-                    {token?.symbol ? `(${token?.symbol})` : null}
-                  </Link>
+                  <TokenDisplay token={token} hideCopyButton hideLogo />
                 </TableCell>
                 <TableCell>
                   <OnlyMainnet fallback={"-"}>
