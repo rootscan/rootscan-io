@@ -107,7 +107,7 @@ export const getTokenDetails = async (contractAddress: Address, forceRefresh = f
     }
 
     if (!tokenType) {
-      if (tokenURI) {
+      if (tokenURI != undefined) {
         tokenType = 'ERC721';
       }
 
