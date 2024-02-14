@@ -7,6 +7,12 @@ import Link from "next/link"
 import Menu from "./components/menu"
 import TestnetWarning from "@/components/testnet-warning"
 
+export async function generateMetadata({ params }) {
+  return {
+    title: `Block #${params.blocknumber}`,
+  };
+}
+
 export default async function Layout({
   children,
   params,

@@ -4,6 +4,12 @@ import SectionTitle from "@/components/section-title"
 import { ReactNode } from "react"
 import Menu from "./components/menu"
 
+export async function generateMetadata({ params }) {
+  return {
+    title: `EVM Transaction ${params.id}`,
+  };
+}
+
 export default function Layout({ children }: { children?: ReactNode }) {
   return (
     <Container>

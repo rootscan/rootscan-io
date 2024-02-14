@@ -18,15 +18,30 @@ const ClientProgressBar = dynamic(
 )
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://rootscan.io/'),
   title: {
-    default: `Rootscan`,
+    default: `Rootscan — The Root Network Blockchain Explorer`,
     template: `%s • Rootscan`,
   },
-  description: `Rootscan is a Block Explorer tailored for The Root Network, an innovative decentralized network.`,
+  description: `Rootscan allows you to explore and search The Root Network blockchain for transactions, addresses and futurepasses, tokens, prices, and more.`,
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    images: 'https://rootscan.io/og-image.png',
+    url: 'https://rootscan.io/',
+    siteName: 'Rootscan',
+    title: 'Rootscan — The Root Network Blockchain Explorer',
+    description: 'Rootscan allows you to explore and search The Root Network blockchain for transactions, addresses and futurepasses, tokens, prices, and more.',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Rootscan — The Root Network Blockchain Explorer',
+    description: 'Rootscan allows you to explore and search The Root Network blockchain for transactions, addresses and futurepasses, tokens, prices, and more.',
   },
 }
 
