@@ -1,4 +1,4 @@
-import { Github } from "lucide-react"
+import { SiGithub, SiX } from "@icons-pack/react-simple-icons"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
@@ -50,9 +50,16 @@ export default function SiteFooter() {
               target="_blank"
             >
               <Button variant="ghost" size="icon">
-                <Github />
+                <SiGithub size={20} />
               </Button>
-            </Link>
+            </Link><Link
+            href="https://twitter.com/rootscan_io"
+            target="_blank"
+          >
+            <Button variant="ghost" size="icon">
+              <SiX size={20} />
+            </Button>
+          </Link>
             <ThemeToggle />
           </div>
         </div>
