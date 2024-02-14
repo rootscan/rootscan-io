@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     images: 'https://rootscan.io/og-image.png',
-    url: 'https://rootscan.io/',
+    url: 'https://rootscan.io',
     siteName: 'Rootscan',
     title: 'Rootscan — The Root Network Blockchain Explorer',
     description: 'Rootscan allows you to explore and search The Root Network blockchain for transactions, addresses and futurepasses, tokens, prices, and more.',
