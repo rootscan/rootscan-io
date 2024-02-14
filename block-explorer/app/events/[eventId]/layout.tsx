@@ -3,6 +3,12 @@ import Container from "@/components/container"
 import SectionTitle from "@/components/section-title"
 import TestnetWarning from "@/components/testnet-warning"
 
+export async function generateMetadata({ params }) {
+  return {
+    title: `Event ${params.eventId}`,
+  };
+}
+
 export default async function Layout({
   children,
   params,

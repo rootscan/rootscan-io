@@ -17,8 +17,8 @@ import QrCode from "./components/qr-code"
 
 export async function generateMetadata({ params }) {
   return {
-    title: `Rootscan • ${params.address}`,
-  }
+    title: `Address ${params.address}`,
+  };
 }
 
 const getData = async ({ params }) => {
