@@ -82,7 +82,8 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           </QueryProvider>
         </ThemeProvider>
       </body>
-      <Script defer data-domain={Number(process?.env?.CHAIN_ID) === 7668 ? 'rootscan.io' : 'porcini.rootscan.io'} src="https://plausible.rootscan.io/js/script.js" strategy="beforeInteractive" />
+      {process?.env?.PLAUSIBLE_DATA_DOMAIN && <Script defer data-domain={process.env.PLAUSIBLE_DATA_DOMAIN}
+               src="https://plausible.rootscan.io/js/script.js" strategy="beforeInteractive"/>}
     </html>
   )
 }
