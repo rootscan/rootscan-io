@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 import "@/styles/globals.css"
 import { Metadata, Viewport } from "next"
 import dynamic from "next/dynamic"
+import Script from 'next/script'
 const ClientProgressBar = dynamic(
   () => import("../components/client-progressbar"),
   {
@@ -56,7 +57,7 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body
@@ -81,6 +82,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </QueryProvider>
         </ThemeProvider>
       </body>
+      <Script defer data-domain={Number(process?.env?.CHAIN_ID) === 7668 ? 'rootscan.io' : 'porcini.rootscan.io'} src="https://plausible.rootscan.io/js/script.js" strategy="beforeInteractive" />
     </html>
   )
 }
