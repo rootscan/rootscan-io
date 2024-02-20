@@ -18,7 +18,7 @@ import QrCode from "./components/qr-code"
 export async function generateMetadata({ params }) {
   return {
     title: `Address ${params.address}`,
-  };
+  }
 }
 
 const getData = async ({ params }) => {
@@ -117,17 +117,22 @@ export default async function Layout({
                   ) : (
                     <div className="flex flex-col gap-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-muted-foreground">Available</span>
+                        <span className="text-muted-foreground">Total</span>
                         <span>
                           {data?.balance?.freeFormatted ? (
                             <TokenDisplay
                               token={ROOT_TOKEN}
-                              amount={data?.balance?.free || 0}
+                              amount={
+                                Number(
+                                  BigInt(data?.balance?.free) +
+                                    BigInt(data?.balance?.reserved || "0")
+                                ) || 0
+                              }
                               hideCopyButton
                             />
                           ) : (
                             "0"
-                          )}{" "}
+                          )}
                         </span>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
