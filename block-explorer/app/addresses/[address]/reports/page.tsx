@@ -3,8 +3,10 @@ import { DatePickerWithRange } from "@/components/date-picker-with-range"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
+import { useState } from "react"
 
 export default function Page({ params }) {
+  const [date, setDate] = useState({ from: undefined, to: undefined })
   return (
     <Card>
       <CardHeader>
@@ -22,17 +24,23 @@ export default function Page({ params }) {
           </p>
           <div className="flex flex-col gap-2">
             <label className="text-sm">Date Range</label>
-            <DatePickerWithRange />
+            <DatePickerWithRange onChange={(d) => setDate(d)} />
           </div>
-          <div>
-            <Link
-              href="/api/report?from=25-05-2022"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button>Download</Button>
-            </Link>
-          </div>
+          {date?.from && date?.to ? (
+            <div>
+              <Link
+                href={`/api/report?from=${new Date(date.from).toISOString()}&to=${new Date(date.to).toISOString()}&address=${params.address}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button>Download</Button>
+              </Link>
+            </div>
+          ) : (
+            <div>
+              <Button disabled>Download</Button>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

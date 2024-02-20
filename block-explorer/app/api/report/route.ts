@@ -7,9 +7,13 @@ export async function GET(
   const address = request?.nextUrl?.searchParams.get("address") as string
 
   const BASE_URL = process.env.BASE_URL
+
   const url = `${BASE_URL}/generateReport`
   const response = await fetch(url, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ from, to, address }),
   })
 
