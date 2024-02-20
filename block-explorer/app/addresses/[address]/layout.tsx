@@ -136,6 +136,30 @@ export default async function Layout({
                         </span>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-muted-foreground">Available</span>
+                        <span>
+                          {data?.balance?.free ? (
+                            <TokenDisplay
+                              token={ROOT_TOKEN}
+                              amount={Number(
+                                BigInt(data?.balance?.free) -
+                                  BigInt(
+                                    Math.max(
+                                      ...[
+                                        data?.balance?.miscFrozen || 0,
+                                        data?.balance?.feeFrozen || 0,
+                                      ]
+                                    )
+                                  )
+                              )}
+                              hideCopyButton
+                            />
+                          ) : (
+                            "0"
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
                         <span className="text-muted-foreground">Reserved</span>
                         <span>
                           {data?.balance?.reservedFormatted ? (
