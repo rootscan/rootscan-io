@@ -649,32 +649,103 @@ app.post('/generateReport', async (req: Request, res: Response) => {
       throw new Error('From date cant be after to date');
     }
 
-    const records = [];
-    let extrinsicsTokenLookupCache: { [key: number]: IToken } = {};
-    let evmTokenLookupCache: { [key: Address]: IToken } = {};
+    const extrinsicsTokenLookupCache: { [key: number]: IToken } = {};
+    const evmTokenLookupCache: { [key: Address]: IToken } = {};
+    const getEpochTime = (time, endOfDay = false) => {
+      if (!endOfDay) {
+        return moment(time).valueOf();
+      } else {
+        return moment(time).endOf('day').valueOf();
+      }
+    };
+
+    const timestampQueryExtrinsics = { $gte: Math.floor(getEpochTime(from) / 1000), $lte: Math.floor(getEpochTime(to, true) / 1000) };
     const extrinsics = await DB.Event.find({
       $or: [
         // Assets Pallet
-        { section: 'assets', method: 'Transferred', 'args.from': getAddress(address) },
-        { section: 'assets', method: 'Transferred', 'args.to': getAddress(address) },
-        { section: 'assets', method: 'Issued', 'args.source': getAddress(address) },
-        { section: 'assets', method: 'Issued', 'args.owner': getAddress(address) },
-        { section: 'assets', method: 'Burned', 'args.owner': getAddress(address) },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'assets',
+          method: 'Transferred',
+          'args.from': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'assets',
+          method: 'Transferred',
+          'args.to': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'assets',
+          method: 'Issued',
+          'args.source': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'assets',
+          method: 'Issued',
+          'args.owner': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'assets',
+          method: 'Burned',
+          'args.owner': getAddress(address)
+        },
+        // NFT Pallet
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'nft',
+          method: 'Transfer',
+          'args.previousOwner': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'nft',
+          method: 'Transfer',
+          'args.newOwner': getAddress(address)
+        },
+
         // Balances Pallet
-        { section: 'balances', method: 'Reserved', 'args.who': getAddress(address) },
-        { section: 'balances', method: 'Transfer', 'args.from': getAddress(address) },
-        { section: 'balances', method: 'Transfer', 'args.to': getAddress(address) },
-        { section: 'balances', method: 'Unreserved', 'args.who': getAddress(address) }
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'balances',
+          method: 'Reserved',
+          'args.who': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'balances',
+          method: 'Transfer',
+          'args.from': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'balances',
+          method: 'Transfer',
+          'args.to': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'balances',
+          method: 'Unreserved',
+          'args.who': getAddress(address)
+        }
       ]
-    }).sort('-timestamp').lean();
+    })
+      .sort('-timestamp')
+      .lean();
 
     let csv = `Date,Tx Hash,Type,Amount,Currency,From,To\n`;
 
-    const findAndCacheToken = async (assetId: number): Promise<IToken | null> => {
+    const findAndCacheToken = async (assetId: number, isCollectionId = false): Promise<IToken | null> => {
       if (extrinsicsTokenLookupCache[assetId]) {
         return extrinsicsTokenLookupCache[assetId];
       } else {
-        const token: IToken | null = await DB.Token.findOne({ assetId }).lean();
+        const query = { assetId };
+        const collectionIdQuery = { collectionId: assetId };
+        const token: IToken | null = await DB.Token.findOne(isCollectionId ? collectionIdQuery : query).lean();
         if (!token) return null;
         extrinsicsTokenLookupCache[assetId] = token;
         evmTokenLookupCache[getAddress(token.contractAddress)] = token;
@@ -687,7 +758,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
       let to = ZeroAddress;
       let type = '';
       const date = moment(extrinsic.timestamp * 1000).toISOString();
-      const txHash = extrinsic.extrinsicId;
+      const txHash = extrinsic?.extrinsicId || '-';
       let amount = '0';
       let currency = '';
 
@@ -743,7 +814,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
         amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
       }
 
-      if (extrinsic.method === 'Transfer') {
+      if (extrinsic.section === 'balances' && extrinsic.method === 'Transfer') {
         from = args?.from;
         to = args?.to;
         if (from === getAddress(address)) {
@@ -759,12 +830,30 @@ app.post('/generateReport', async (req: Request, res: Response) => {
         amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
       }
 
+      if (extrinsic.section === 'nft' && extrinsic.method === 'Transfer') {
+        from = args?.previousOwner;
+        to = args?.newOwner;
+        if (from === getAddress(address)) {
+          type = 'out';
+        } else if (to === getAddress(address)) {
+          type = 'in';
+        }
+        const tokenLookup = await findAndCacheToken(args.collectionId);
+        if (!tokenLookup) continue;
+
+        currency = tokenLookup.name;
+
+        amount = `TokenIds: ${args?.serialNumbers.join('|')}`;
+      }
+
       csv += `${date},${txHash},${type},${amount},${currency},${from},${to}\n`;
     }
 
+    const timestampEvmQuery = { $gte: moment(from).valueOf(), $lte: moment(to).valueOf() };
     const evmTransactions = await DB.EvmTransaction.aggregate([
       {
         $match: {
+          timestamp: timestampEvmQuery,
           'events.eventName': 'Transfer',
           $or: [
             {
@@ -807,6 +896,19 @@ app.post('/generateReport', async (req: Request, res: Response) => {
         }
       }
     ]);
+
+    for (const evmTx of evmTransactions) {
+      const args = evmTx.events;
+      const date = moment(evmTx.timestamp).toISOString();
+      const txHash = evmTx.hash;
+      const from = args?.from;
+      const to = args?.to;
+      const type = from === getAddress(address) ? 'out' : 'in';
+      const amount = args?.type === 'ERC20' ? args.formattedAmount : args.tokenId;
+      const currency = args?.name;
+
+      csv += `${date},${txHash},${type},${amount},${currency},${from},${to}\n`;
+    }
 
     return res.send(csv);
   } catch (e) {

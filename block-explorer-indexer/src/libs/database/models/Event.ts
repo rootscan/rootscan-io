@@ -36,11 +36,17 @@ schema.index({ 'args.XrplTxHash': 1 });
 
 // Transfers Pallet
 schema.index({ section: 1, method: 1, 'args.from': 1, blockNumber: -1 });
+schema.index({ section: 1, method: 1, 'args.from': 1, timestamp: 1 });
 schema.index({ section: 1, method: 1, 'args.to': 1, blockNumber: -1 });
+schema.index({ section: 1, method: 1, 'args.to': 1, timestamp: 1 });
 schema.index({ section: 1, method: 1, 'args.source': 1, blockNumber: -1 });
+schema.index({ section: 1, method: 1, 'args.source': 1, timestamp: 1 });
 schema.index({ section: 1, method: 1, 'args.owner': 1, blockNumber: -1 });
+schema.index({ section: 1, method: 1, 'args.owner': 1, timestamp: 1 });
 schema.index({ section: 1, method: 1, 'args.previousOwner': 1, blockNumber: -1 });
+schema.index({ section: 1, method: 1, 'args.previousOwner': 1, timestamp: 1 });
 schema.index({ section: 1, method: 1, 'args.newOwner': 1, blockNumber: -1 });
+schema.index({ section: 1, method: 1, 'args.newOwner': 1, timestamp: 1 });
 schema.index({ section: 1, method: 1, 'args.collectionId': 1 });
 schema.index({ section: 1, method: 1, 'args.tokenId': 1 });
 
