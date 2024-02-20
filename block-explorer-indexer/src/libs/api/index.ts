@@ -2,9 +2,11 @@ import DB from '@/database';
 import logger from '@/logger';
 import { IAddress, IBalance, IEVMTransaction, IEvent, IExtrinsic, INFT, IStakingValidator, IToken, TTokenType } from '@/types';
 import cors from 'cors';
+import { ZeroAddress } from 'ethers';
 import express, { Next, Request, Response } from 'express';
 import helmet from 'helmet';
-import { Address, Hash, getAddress } from 'viem';
+import moment from 'moment';
+import { Address, Hash, formatUnits, getAddress } from 'viem';
 import { processError } from './utils';
 const app = express();
 
@@ -600,6 +602,213 @@ app.post('/getTokenBalances', async (req: Request, res: Response) => {
     const data = await DB.Balance.paginate({ address: getAddress(address) }, options);
 
     return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
+});
+
+app.post('/getFuturepasses', async (req: Request, res: Response) => {
+  try {
+    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const options = {
+      page: page ? Number(page) : 1,
+      limit: limit ? limit : 25,
+      allowDiskUse: true,
+      skipFullCount: true,
+      lean: true
+    };
+
+    const data = await DB.EvmTransaction.paginate(
+      {
+        from: getAddress('0xb2cB82436AfD5D34867af68277Ae8A268Dd09661'),
+        'events.eventName': 'FuturepassCreated',
+        'events.owner': getAddress(address)
+      },
+      options
+    );
+
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
+});
+
+app.post('/generateReport', async (req: Request, res: Response) => {
+  try {
+    const { from, to, address }: { address: Address; from: Date; to: Date } = req.body;
+
+    if (!moment(from).isValid()) {
+      throw new Error('Invalid from date provided');
+    }
+
+    if (!moment(to).isValid()) {
+      throw new Error('Invalid to date provided');
+    }
+
+    if (moment(from).isAfter(moment(to))) {
+      throw new Error('From date cant be after to date');
+    }
+
+    const records = [];
+    let extrinsicsTokenLookupCache: { [key: number]: IToken } = {};
+    let evmTokenLookupCache: { [key: Address]: IToken } = {};
+    const extrinsics = await DB.Event.find({
+      $or: [
+        // Assets Pallet
+        { section: 'assets', method: 'Transferred', 'args.from': getAddress(address) },
+        { section: 'assets', method: 'Transferred', 'args.to': getAddress(address) },
+        { section: 'assets', method: 'Issued', 'args.source': getAddress(address) },
+        { section: 'assets', method: 'Issued', 'args.owner': getAddress(address) },
+        { section: 'assets', method: 'Burned', 'args.owner': getAddress(address) },
+        // Balances Pallet
+        { section: 'balances', method: 'Reserved', 'args.who': getAddress(address) },
+        { section: 'balances', method: 'Transfer', 'args.from': getAddress(address) },
+        { section: 'balances', method: 'Transfer', 'args.to': getAddress(address) },
+        { section: 'balances', method: 'Unreserved', 'args.who': getAddress(address) }
+      ]
+    }).sort('-timestamp').lean();
+
+    let csv = `Date,Tx Hash,Type,Amount,Currency,From,To\n`;
+
+    const findAndCacheToken = async (assetId: number): Promise<IToken | null> => {
+      if (extrinsicsTokenLookupCache[assetId]) {
+        return extrinsicsTokenLookupCache[assetId];
+      } else {
+        const token: IToken | null = await DB.Token.findOne({ assetId }).lean();
+        if (!token) return null;
+        extrinsicsTokenLookupCache[assetId] = token;
+        evmTokenLookupCache[getAddress(token.contractAddress)] = token;
+        return token;
+      }
+    };
+    for (const extrinsic of extrinsics) {
+      const args = extrinsic?.args;
+      let from = ZeroAddress;
+      let to = ZeroAddress;
+      let type = '';
+      const date = moment(extrinsic.timestamp * 1000).toISOString();
+      const txHash = extrinsic.extrinsicId;
+      let amount = '0';
+      let currency = '';
+
+      if (extrinsic.method === 'Transferred') {
+        from = args?.from;
+        to = args?.to;
+        if (from === getAddress(address)) {
+          type = 'out';
+        } else if (to === getAddress(address)) {
+          type = 'in';
+        }
+        const tokenLookup = await findAndCacheToken(args.assetId);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+
+        currency = tokenLookup.name;
+
+        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+      }
+
+      if (extrinsic.method === 'Issued') {
+        to = args?.owner;
+        type = 'in';
+        const tokenLookup = await findAndCacheToken(args.assetId);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+        currency = tokenLookup.name;
+        amount = formatUnits(BigInt(args.totalSupply), tokenLookup.decimals);
+      }
+
+      if (extrinsic.method === 'Burned') {
+        from = getAddress(args.owner);
+        type = 'out';
+        const tokenLookup = await findAndCacheToken(args.assetId);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+        currency = tokenLookup.name;
+        amount = formatUnits(BigInt(args.balance), tokenLookup.decimals);
+      }
+
+      if (extrinsic.method === 'Reserved') {
+        from = getAddress(args.who);
+        type = 'out';
+        const tokenLookup = await findAndCacheToken(1);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+        currency = tokenLookup.name;
+        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+      }
+
+      if (extrinsic.method === 'Unreserved') {
+        to = getAddress(args.who);
+        type = 'out';
+        const tokenLookup = await findAndCacheToken(1);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+        currency = tokenLookup.name;
+        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+      }
+
+      if (extrinsic.method === 'Transfer') {
+        from = args?.from;
+        to = args?.to;
+        if (from === getAddress(address)) {
+          type = 'out';
+        } else if (to === getAddress(address)) {
+          type = 'in';
+        }
+        const tokenLookup = await findAndCacheToken(1);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+
+        currency = tokenLookup.name;
+
+        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+      }
+
+      csv += `${date},${txHash},${type},${amount},${currency},${from},${to}\n`;
+    }
+
+    const evmTransactions = await DB.EvmTransaction.aggregate([
+      {
+        $match: {
+          'events.eventName': 'Transfer',
+          $or: [
+            {
+              'events.from': getAddress(address)
+            },
+            {
+              'events.to': getAddress(address)
+            }
+          ]
+        }
+      },
+      {
+        $project: {
+          type: 0,
+          accessList: 0,
+          input: 0,
+          from: 0,
+          to: 0
+        }
+      },
+      { $unwind: '$events' },
+      {
+        $match: {
+          'events.eventName': 'Transfer',
+          $or: [
+            {
+              'events.from': getAddress(address)
+            },
+            {
+              'events.to': getAddress(address)
+            }
+          ]
+        }
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ['$events', '$$ROOT']
+          }
+        }
+      }
+    ]);
+
+    return res.send(csv);
   } catch (e) {
     processError(e, res);
   }
