@@ -22,7 +22,7 @@ const resources = {
       title: "Portal",
       description:
         "A dashboard that aids in creating extrinsics and reading blockchain data.",
-      logo: "/resources-logos/trn-logo.jpg",
+      logo: "/resources-logos/root-portal.png",
       url: "https://portal.rootnet.live/",
       category: "Tooling",
     },
@@ -30,14 +30,14 @@ const resources = {
       title: "Bridge",
       description:
         "Cross-chain bridge by The Root Network allowing users to seamlessly bridge assets.",
-      logo: "/resources-logos/trn-logo.jpg",
+      logo: "/resources-logos/root-bridge.png",
       url: "https://app.rootnet.live/bridge",
       category: "Tooling",
     },
     {
       title: "Documentation",
       description: "All documentation involving The Root Network.",
-      logo: "/resources-logos/trn-logo.jpg",
+      logo: "/resources-logos/root-docs.png",
       url: "https://docs.therootnetwork.com/",
       category: "Docs",
     },
@@ -52,7 +52,7 @@ const resources = {
       title: "TRN Evm SDK",
       description:
         "A utility package that simplifies EVM development on The Root Network.",
-      logo: "/resources-logos/npm-logo.png",
+      logo: "/resources-logos/root-evm.png",
       url: "https://www.npmjs.com/package/@therootnetwork/evm",
       category: "Tooling",
     },
@@ -60,7 +60,7 @@ const resources = {
       title: "TRN Native SDK",
       description:
         "A utility package that complements the @polkadot/api to connect and interact with the Root Network node.",
-      logo: "/resources-logos/npm-logo.png",
+      logo: "/resources-logos/root-native.png",
       url: "https://www.npmjs.com/package/@therootnetwork/api",
       category: "Tooling",
     },
