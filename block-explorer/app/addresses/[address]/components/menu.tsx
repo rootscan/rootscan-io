@@ -35,6 +35,14 @@ export default function Menu({
           title: "Bridge Transactions",
           href: `/addresses/${address}/bridge-transactions`,
         },
+        {
+          title: "Futurepass",
+          href: `/addresses/${address}/futurepass`,
+        },
+        {
+          title: "Reports",
+          href: `/addresses/${address}/reports`,
+        },
       ].map((item, _) => {
         if (!isContract && item?.title === "Contract") return null
         return (

@@ -2,9 +2,11 @@ import DB from '@/database';
 import logger from '@/logger';
 import { IAddress, IBalance, IEVMTransaction, IEvent, IExtrinsic, INFT, IStakingValidator, IToken, TTokenType } from '@/types';
 import cors from 'cors';
+import { ZeroAddress } from 'ethers';
 import express, { Next, Request, Response } from 'express';
 import helmet from 'helmet';
-import { Address, Hash, getAddress } from 'viem';
+import moment from 'moment';
+import { Address, Hash, formatUnits, getAddress } from 'viem';
 import { processError } from './utils';
 const app = express();
 
@@ -600,6 +602,315 @@ app.post('/getTokenBalances', async (req: Request, res: Response) => {
     const data = await DB.Balance.paginate({ address: getAddress(address) }, options);
 
     return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
+});
+
+app.post('/getFuturepasses', async (req: Request, res: Response) => {
+  try {
+    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const options = {
+      page: page ? Number(page) : 1,
+      limit: limit ? limit : 25,
+      allowDiskUse: true,
+      skipFullCount: true,
+      lean: true
+    };
+
+    const data = await DB.EvmTransaction.paginate(
+      {
+        from: getAddress('0xb2cB82436AfD5D34867af68277Ae8A268Dd09661'),
+        'events.eventName': 'FuturepassCreated',
+        'events.owner': getAddress(address)
+      },
+      options
+    );
+
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
+});
+
+app.post('/generateReport', async (req: Request, res: Response) => {
+  try {
+    const { from, to, address }: { address: Address; from: Date; to: Date } = req.body;
+
+    if (!moment(from).isValid()) {
+      throw new Error('Invalid from date provided');
+    }
+
+    if (!moment(to).isValid()) {
+      throw new Error('Invalid to date provided');
+    }
+
+    if (moment(from).isAfter(moment(to))) {
+      throw new Error('From date cant be after to date');
+    }
+
+    const extrinsicsTokenLookupCache: { [key: number]: IToken } = {};
+    const evmTokenLookupCache: { [key: Address]: IToken } = {};
+    const getEpochTime = (time, endOfDay = false) => {
+      if (!endOfDay) {
+        return moment(time).valueOf();
+      } else {
+        return moment(time).endOf('day').valueOf();
+      }
+    };
+
+    const timestampQueryExtrinsics = { $gte: Math.floor(getEpochTime(from) / 1000), $lte: Math.floor(getEpochTime(to, true) / 1000) };
+    const extrinsics = await DB.Event.find({
+      $or: [
+        // Assets Pallet
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'assets',
+          method: 'Transferred',
+          'args.from': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'assets',
+          method: 'Transferred',
+          'args.to': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'assets',
+          method: 'Issued',
+          'args.source': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'assets',
+          method: 'Issued',
+          'args.owner': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'assets',
+          method: 'Burned',
+          'args.owner': getAddress(address)
+        },
+        // NFT Pallet
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'nft',
+          method: 'Transfer',
+          'args.previousOwner': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'nft',
+          method: 'Transfer',
+          'args.newOwner': getAddress(address)
+        },
+
+        // Balances Pallet
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'balances',
+          method: 'Reserved',
+          'args.who': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'balances',
+          method: 'Transfer',
+          'args.from': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'balances',
+          method: 'Transfer',
+          'args.to': getAddress(address)
+        },
+        {
+          timestamp: timestampQueryExtrinsics,
+          section: 'balances',
+          method: 'Unreserved',
+          'args.who': getAddress(address)
+        }
+      ]
+    })
+      .sort('-timestamp')
+      .lean();
+
+    let csv = `Date,Tx Hash,Type,Amount,Currency,From,To\n`;
+
+    const findAndCacheToken = async (assetId: number, isCollectionId = false): Promise<IToken | null> => {
+      if (extrinsicsTokenLookupCache[assetId]) {
+        return extrinsicsTokenLookupCache[assetId];
+      } else {
+        const query = { assetId };
+        const collectionIdQuery = { collectionId: assetId };
+        const token: IToken | null = await DB.Token.findOne(isCollectionId ? collectionIdQuery : query).lean();
+        if (!token) return null;
+        extrinsicsTokenLookupCache[assetId] = token;
+        evmTokenLookupCache[getAddress(token.contractAddress)] = token;
+        return token;
+      }
+    };
+    for (const extrinsic of extrinsics) {
+      const args = extrinsic?.args;
+      let from = ZeroAddress;
+      let to = ZeroAddress;
+      let type = '';
+      const date = moment(extrinsic.timestamp * 1000).toISOString();
+      const txHash = extrinsic?.extrinsicId || '-';
+      let amount = '0';
+      let currency = '';
+
+      if (extrinsic.method === 'Transferred') {
+        from = args?.from;
+        to = args?.to;
+        if (from === getAddress(address)) {
+          type = 'out';
+        } else if (to === getAddress(address)) {
+          type = 'in';
+        }
+        const tokenLookup = await findAndCacheToken(args.assetId);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+
+        currency = tokenLookup.name;
+
+        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+      }
+
+      if (extrinsic.method === 'Issued') {
+        to = args?.owner;
+        type = 'in';
+        const tokenLookup = await findAndCacheToken(args.assetId);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+        currency = tokenLookup.name;
+        amount = formatUnits(BigInt(args.totalSupply), tokenLookup.decimals);
+      }
+
+      if (extrinsic.method === 'Burned') {
+        from = getAddress(args.owner);
+        type = 'out';
+        const tokenLookup = await findAndCacheToken(args.assetId);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+        currency = tokenLookup.name;
+        amount = formatUnits(BigInt(args.balance), tokenLookup.decimals);
+      }
+
+      if (extrinsic.method === 'Reserved') {
+        from = getAddress(args.who);
+        type = 'out';
+        const tokenLookup = await findAndCacheToken(1);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+        currency = tokenLookup.name;
+        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+      }
+
+      if (extrinsic.method === 'Unreserved') {
+        to = getAddress(args.who);
+        type = 'out';
+        const tokenLookup = await findAndCacheToken(1);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+        currency = tokenLookup.name;
+        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+      }
+
+      if (extrinsic.section === 'balances' && extrinsic.method === 'Transfer') {
+        from = args?.from;
+        to = args?.to;
+        if (from === getAddress(address)) {
+          type = 'out';
+        } else if (to === getAddress(address)) {
+          type = 'in';
+        }
+        const tokenLookup = await findAndCacheToken(1);
+        if (!tokenLookup || !tokenLookup?.decimals) continue;
+
+        currency = tokenLookup.name;
+
+        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+      }
+
+      if (extrinsic.section === 'nft' && extrinsic.method === 'Transfer') {
+        from = args?.previousOwner;
+        to = args?.newOwner;
+        if (from === getAddress(address)) {
+          type = 'out';
+        } else if (to === getAddress(address)) {
+          type = 'in';
+        }
+        const tokenLookup = await findAndCacheToken(args.collectionId);
+        if (!tokenLookup) continue;
+
+        currency = tokenLookup.name;
+
+        amount = `TokenIds: ${args?.serialNumbers.join('|')}`;
+      }
+
+      csv += `${date},${txHash},${type},${amount},${currency},${from},${to}\n`;
+    }
+
+    const timestampEvmQuery = { $gte: moment(from).valueOf(), $lte: moment(to).valueOf() };
+    const evmTransactions = await DB.EvmTransaction.aggregate([
+      {
+        $match: {
+          timestamp: timestampEvmQuery,
+          'events.eventName': 'Transfer',
+          $or: [
+            {
+              'events.from': getAddress(address)
+            },
+            {
+              'events.to': getAddress(address)
+            }
+          ]
+        }
+      },
+      {
+        $project: {
+          type: 0,
+          accessList: 0,
+          input: 0,
+          from: 0,
+          to: 0
+        }
+      },
+      { $unwind: '$events' },
+      {
+        $match: {
+          'events.eventName': 'Transfer',
+          $or: [
+            {
+              'events.from': getAddress(address)
+            },
+            {
+              'events.to': getAddress(address)
+            }
+          ]
+        }
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ['$events', '$$ROOT']
+          }
+        }
+      }
+    ]);
+
+    for (const evmTx of evmTransactions) {
+      const args = evmTx.events;
+      const date = moment(evmTx.timestamp).toISOString();
+      const txHash = evmTx.hash;
+      const from = args?.from;
+      const to = args?.to;
+      const type = from === getAddress(address) ? 'out' : 'in';
+      const amount = args?.type === 'ERC20' ? args.formattedAmount : args.tokenId;
+      const currency = args?.name;
+
+      csv += `${date},${txHash},${type},${amount},${currency},${from},${to}\n`;
+    }
+
+    return res.send(csv);
   } catch (e) {
     processError(e, res);
   }

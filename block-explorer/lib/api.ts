@@ -78,11 +78,24 @@ export const getTokenHolders = (body: any) => {
   })
 }
 
+export const generateReport = (body: any) => {
+  return fetcher({
+    url: "/generateReport",
+    body: JSON.stringify(body),
+  })
+}
+
 export const getNft = (body: any) => {
   return fetcher({
     url: "/getNft",
     body: JSON.stringify(body),
     cacheDuration: 60 * 120,
+  })
+}
+export const getFuturepasses = (body: any) => {
+  return fetcher({
+    url: "/getFuturepasses",
+    body: JSON.stringify(body),
   })
 }
 
@@ -249,7 +262,7 @@ export const getDex = (body: any) => {
 }
 
 export const getContractVerification = ({ contractAddress }) => {
-  const CHAIN_ID = process?.env?.CHAIN_ID;
+  const CHAIN_ID = process?.env?.CHAIN_ID
   return fetcher({
     method: "GET",
     url: `https://sourcify.dev/server/files/${CHAIN_ID}/${contractAddress}`,

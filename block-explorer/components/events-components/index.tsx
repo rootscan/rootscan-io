@@ -528,6 +528,7 @@ const allowedInExtrinsics = [
   // "balances.Endowed",
 
   "sft.Mint",
+  "nft.Mint",
   "nft.Transfer",
   "sft.Transfer",
 

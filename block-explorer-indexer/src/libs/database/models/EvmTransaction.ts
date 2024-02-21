@@ -41,6 +41,8 @@ schema.index({ from: 1, blockNumber: -1 });
 schema.index({ to: 1, blockNumber: -1 });
 schema.index({ to: 1 });
 schema.index({ 'events.eventName': 1 });
+
+schema.index({ from: 1, 'events.eventName': 1, 'events.owner': 1 });
 schema.index({ 'events.tokenId': 1, 'events.address': 1 });
 schema.index({ 'events.from': 1, 'events.to': 1 });
 schema.index({ 'events.from': 1, 'events.to': 1, 'events.type': 1 });
