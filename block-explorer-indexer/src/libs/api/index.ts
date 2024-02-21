@@ -649,8 +649,10 @@ app.post('/generateReport', async (req: Request, res: Response) => {
       throw new Error('From date cant be after to date');
     }
 
-    const extrinsicsTokenLookupCache: { [key: number]: IToken } = {};
-    const evmTokenLookupCache: { [key: Address]: IToken } = {};
+    const extrinsicsTokenLookupCache: { [key: string]: { [key: number]: IToken } } = {
+      false: {},
+      true: {}
+    };
     const getEpochTime = (time, endOfDay = false) => {
       if (!endOfDay) {
         return moment(time).valueOf();
@@ -740,15 +742,14 @@ app.post('/generateReport', async (req: Request, res: Response) => {
     let csv = `Date,Tx Hash,Type,Amount,Currency,From,To\n`;
 
     const findAndCacheToken = async (assetId: number, isCollectionId = false): Promise<IToken | null> => {
-      if (extrinsicsTokenLookupCache[assetId]) {
-        return extrinsicsTokenLookupCache[assetId];
+      if (extrinsicsTokenLookupCache[String(isCollectionId)][assetId]) {
+        return extrinsicsTokenLookupCache[String(isCollectionId)][assetId];
       } else {
         const query = { assetId };
         const collectionIdQuery = { collectionId: assetId };
         const token: IToken | null = await DB.Token.findOne(isCollectionId ? collectionIdQuery : query).lean();
         if (!token) return null;
-        extrinsicsTokenLookupCache[assetId] = token;
-        evmTokenLookupCache[getAddress(token.contractAddress)] = token;
+        extrinsicsTokenLookupCache[String(isCollectionId)][assetId] = token;
         return token;
       }
     };
@@ -838,7 +839,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
         } else if (to === getAddress(address)) {
           type = 'in';
         }
-        const tokenLookup = await findAndCacheToken(args.collectionId);
+        const tokenLookup = await findAndCacheToken(args.collectionId, true);
         if (!tokenLookup) continue;
 
         currency = tokenLookup.name;
