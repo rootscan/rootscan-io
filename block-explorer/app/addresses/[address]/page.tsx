@@ -215,7 +215,7 @@ const AssetsBurned = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} hideExtrinsic />
       </TableCell>
       <TableCell>
-        <InOutBadge address={address} from={"-"} to={tx?.args?.owner} />
+        <InOutBadge address={address} from={address} to="" />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
