@@ -35,7 +35,7 @@ if (!isAddress(contractAddress)) {
 
 const tokenType = program?.args?.[2]?.toLowerCase();
 if (tokenType !== 'erc721' && tokenType !== 'erc1155') {
-  console.error(`Provided type can obly be erc721 or erc1155`);
+  console.error(`Provided type can only be erc721 or erc1155`);
   process.exit(1);
 }
 
@@ -186,7 +186,12 @@ const run = async () => {
       console.log(`EXISTS.. ${tokenId}`);
       continue;
     }
-    const res = await fetch(url);
+    let res;
+    try {
+      res = await fetch(url);
+    } catch {
+      /* eslint no-empty: "error" */
+    }
     if (res?.ok) {
       let jsonData: any = undefined;
       try {
@@ -198,10 +203,11 @@ const run = async () => {
       if (jsonData?.tokenId === undefined) {
         jsonData.tokenId = Number(tokenId);
       }
+      console.log(`Fetched ${tokenId} success.`);
       data.push(jsonData);
     }
 
-    await fs.writeFile(fileDir, JSON.stringify(data, null, 2));
+    await fs.writeFile(fileDir, JSON.stringify(data, null, 0));
   }
 };
 
