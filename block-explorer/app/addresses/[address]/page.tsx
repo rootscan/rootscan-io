@@ -1,5 +1,7 @@
 import AddressDisplay from "@/components/address-display"
+import ExtrinsicMethod from "@/components/extrinsic-method"
 import InOutBadge from "@/components/in-out-badge"
+import NFTMint from "@/components/nft-mint-comp"
 import NftThumbnail from "@/components/nft-thumbnail"
 import NoData from "@/components/no-data"
 import PaginationSuspense from "@/components/pagination-suspense"
@@ -17,8 +19,8 @@ import {
 } from "@/components/ui/table"
 import { getNativeTransfersForAddress } from "@/lib/api"
 import { ROOT_TOKEN } from "@/lib/constants/tokens"
-import { camelCaseToWords, getPaginationData } from "@/lib/utils"
-import { ChevronDown, ChevronRight, Flame } from "lucide-react"
+import { getPaginationData } from "@/lib/utils"
+import { ChevronRight, Flame } from "lucide-react"
 import Link from "next/link"
 import { Fragment } from "react"
 import { getAddress } from "viem"
@@ -403,87 +405,6 @@ const NFTTransfer = ({ tx, address }) => {
         <AddressDisplay address={tx?.args?.newOwner} useShortenedAddress />
       </TableCell>
     </TableRow>
-  )
-}
-
-const NFTMint = ({ tx, address }) => {
-  const tokenIdsMinted: any = []
-
-  if (tx?.args?.start && tx?.args?.end) {
-    for (let i = tx?.args?.start; i <= tx?.args?.end; i++) {
-      tokenIdsMinted.push(i)
-    }
-  }
-  return (
-    <TableRow>
-      <TableCell className="max-w-[150px] truncate">
-        <Link href={`/extrinsics/${tx.extrinsicId}`}>
-          <span className="truncate">{tx.extrinsicId}</span>
-        </Link>
-      </TableCell>
-      <TableCell>
-        <ExtrinsicMethod tx={tx} />
-      </TableCell>
-      <TableCell>
-        <InOutBadge
-          address={address}
-          from={"0x0000000000000000000000"}
-          to={tx?.args?.owner}
-        />
-      </TableCell>
-      <TableCell>
-        <TimeAgoDate date={tx?.timestamp * 1000} />
-      </TableCell>
-      <TableCell className="max-w-[100px]">
-        <div className="flex flex-col gap-2">
-          {tokenIdsMinted.map((tokenId, _) => (
-            <div
-              className="flex items-center gap-2"
-              key={`${_}_${tx?.nftCollection?.contractAddress}_${tokenId}`}
-            >
-              <NftThumbnail
-                contractAddress={tx?.nftCollection?.contractAddress}
-                tokenId={tokenId}
-              />
-              {tokenId}
-              <TokenDisplay token={tx?.nftCollection} hideCopyButton />
-            </div>
-          ))}
-        </div>
-      </TableCell>
-      <TableCell className="max-w-[150px] truncate">-</TableCell>
-      <TableCell className="max-w-[25px] text-muted-foreground">
-        <ChevronRight className="size-4" />
-      </TableCell>
-      <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.args?.owner} useShortenedAddress />
-      </TableCell>
-    </TableRow>
-  )
-}
-
-const ExtrinsicMethod = ({ tx, hideExtrinsic = false }) => {
-  return (
-    <div className="flex flex-col gap-1">
-      {!hideExtrinsic &&
-      tx?.extrinsicData?.section &&
-      tx?.extrinsicData?.method ? (
-        <Fragment>
-          <div>
-            <Badge>
-              {camelCaseToWords(tx?.extrinsicData?.section)}{" "}
-              {camelCaseToWords(tx?.extrinsicData?.method)}
-            </Badge>
-          </div>
-          <ChevronDown className="size-4 text-muted-foreground" />
-        </Fragment>
-      ) : null}
-      <div>
-        <Badge>
-          {camelCaseToWords(tx?.section)} {camelCaseToWords(tx?.method)}
-        </Badge>
-      </div>
-    </div>
   )
 }
 
