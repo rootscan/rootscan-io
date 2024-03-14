@@ -85,6 +85,7 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0x4Ba71e25C34AF053a07Fae82103C2F52A5ece1A3": "moai-sylo-xrp.png",
     // USDC-XRP
     "0xf3C7834EF75Dd6330D8Cd0B22435416382573fC0": "moai-usdc-xrp.png",
+    "0xcccCCcCc0000D864000000000000000000000000": "token-marco.png",
   },
   7672: {
     // Root
