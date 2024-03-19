@@ -54,17 +54,35 @@ app.post('/getBlocks', async (req: Request, res: Response) => {
 
 app.post('/getEvents', async (req: Request, res: Response) => {
   try {
-    const { page, limit, query }: { page: number; limit: number; query: object } = req.body;
+    const { page, limit, query }: { page: number; limit: number; query: Record<string, unknown> } = req.body;
+
+    const regex = /^\d{10}-\d{6}-[0-9a-f]{5}$/gm; // regular expression to check extrinsic ID format
+
+    let extrinsicId = query?.extrinsicId;
+
+    // filter events by retroExtrinsicId - get extrinsicId firstly
+    if (extrinsicId && regex.test(String(extrinsicId))) {
+      const extrinsic: IExtrinsic | null = await DB.Extrinsic.findOne({ retroExtrinsicId: String(extrinsicId) }).lean();
+
+      if (extrinsic) {
+        extrinsicId = extrinsic.extrinsicId;
+      } else {
+        return res.status(404).json({
+          message: 'Extrinsic not found',
+          extrinsicId: extrinsicId
+        });
+      }
+    }
     const options = {
       page: page ? Number(page) : 1,
       limit: limit ? limit : 25,
-      sort: '-blockNumber',
+      sort: '-blockNumber eventId',
       allowDiskUse: true,
       skipFullCount: true,
-      lean: true
+      lean: true,
+      collation: { locale: 'en', numericOrdering: true }
     };
-
-    const data = await DB.Event.paginate(query ? query : {}, options);
+    const data = await DB.Event.paginate(extrinsicId ? { extrinsicId: extrinsicId } : {}, options);
     return res.json(data);
   } catch (e) {
     processError(e, res);
