@@ -87,6 +87,7 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0xf3C7834EF75Dd6330D8Cd0B22435416382573fC0": "moai-usdc-xrp.png",
     "0xcccCCcCc0000D864000000000000000000000000": "token-marco.png",
     "0xCcCcCccc00016864000000000000000000000000": "token-rootgames.png",
+    "0xCcccCccC00018064000000000000000000000000": "token-30mm.png"
   },
   7672: {
     // Root
