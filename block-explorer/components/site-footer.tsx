@@ -24,12 +24,15 @@ export default function SiteFooter() {
       </Container>
       <div className="hidden h-[1px] w-full border-b md:block" />
       <Container>
-        <p className="max-w-md pb-8 text-xs">
-          Rootscan is a Block Explorer tailored for The Root Network, an
-          innovative decentralized network.
-        </p>
+        <div className="flex justify-between">
+          <p className="max-w-md pb-8 text-xs">
+            Rootscan is a Block Explorer tailored for The Root Network, an
+            innovative decentralized network.
+          </p>
+          <Link href="/policy" className="text-muted-foreground">Privacy Policy</Link>
+        </div>
         <div className="flex flex-wrap items-center justify-between gap-4 text-sm">
-          <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/site-logos/rootscan-logo.png"
