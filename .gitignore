@@ -30,3 +30,4 @@ build
 
 # Groovy lib
 lib
+.DS_Store
