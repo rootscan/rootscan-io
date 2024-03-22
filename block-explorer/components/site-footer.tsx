@@ -29,7 +29,7 @@ export default function SiteFooter() {
             Rootscan is a Block Explorer tailored for The Root Network, an
             innovative decentralized network.
           </p>
-          <Link href="/policy" className="text-muted-foreground">Privacy Policy</Link>
+          <Link href="/policy" className="text-muted-foreground text-sm">Privacy Policy</Link>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4 text-sm">
           <div className="flex items-center gap-2">
