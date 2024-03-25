@@ -10,6 +10,8 @@ if (!process?.env?.RPC_WS_URL || !process?.env?.RPC_HTTP_URL) {
 const WS_URL = process?.env?.RPC_WS_URL;
 const HTTP_URL = process?.env?.RPC_HTTP_URL;
 
+const HTTP_ETHEREUM_URL = process?.env?.RPC_ETHEREUM_HTTP_URL || 'https://cloudflare-eth.com/';
+
 export const root = defineChain({
   id: 7668,
   name: 'TRN - Mainnet',
@@ -60,6 +62,25 @@ export const porcini = defineChain({
     public: {
       http: [HTTP_URL],
       webSocket: [WS_URL]
+    }
+  }
+});
+
+export const ethereum = defineChain({
+  id: 1,
+  name: 'Ethereum',
+  network: 'ethereum',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'ETH',
+    symbol: 'ETH'
+  },
+  rpcUrls: {
+    default: {
+      http: [HTTP_ETHEREUM_URL],
+    },
+    public: {
+      http: [HTTP_ETHEREUM_URL],
     }
   }
 });
