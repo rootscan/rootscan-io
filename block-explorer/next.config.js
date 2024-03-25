@@ -6,9 +6,6 @@ module.exports = {
     ignoreDuringBuilds: true,
   },
   reactStrictMode: true,
-  experimental: {
-    ppr: true,
-  },
   async redirects() {
     return [
       {
