@@ -1,7 +1,7 @@
 import ABIs from '@/constants/abi';
 import DB from '@/database';
 import logger from '@/logger';
-import { evmClient, substrateClient } from '@/rpc';
+import { ethereumClient, evmClient, substrateClient } from '@/rpc';
 import { IToken, TTokenType } from '@/types';
 import { Abi, Address, formatUnits, getAddress, zeroAddress } from 'viem';
 import { contractAddressToNativeId } from '.';
@@ -10,7 +10,7 @@ export const getTokenDetails = async (contractAddress: Address, forceRefresh = f
   const tokenLookUp: IToken | null = await DB.Token.findOne({
     contractAddress: getAddress(contractAddress)
   })
-    .select('name symbol decimals type uri')
+    .select('name symbol decimals type uri ethereumContractAddress')
     .lean();
 
   if (!forceRefresh) {
@@ -69,9 +69,22 @@ export const getTokenDetails = async (contractAddress: Address, forceRefresh = f
     const decimals: number | undefined = parseMulticallResult(2);
     const tokenURI: string | undefined = parseMulticallResult(3);
     const balanceOfBatch: number | undefined = parseMulticallResult(4);
-    const totalSupply: bigint | undefined = parseMulticallResult(5);
+    let totalSupply: bigint | undefined = parseMulticallResult(5);
     const nativeId = contractAddressToNativeId(contractAddress);
 
+
+    // Get real total supply from Ethereum if is bridged-collection
+    if (tokenLookUp?.symbol === 'bridged-collection' && tokenLookUp?.type === 'ERC721') {
+      const totalSupplyRes = await ethereumClient.readContract({
+        address: tokenLookUp?.ethereumContractAddress as Address,
+        abi: ABIs.ERC721_ORIGINAL,
+        functionName: 'totalSupply'
+      }) as string
+      if (totalSupplyRes){
+        totalSupply = BigInt(totalSupplyRes)
+      }
+    }
+    
     const api = await substrateClient();
 
     const lowerCaseContractAddress = contractAddress?.toLowerCase();
