@@ -26,6 +26,7 @@ if (network !== 'porcini' && network !== 'root') {
 }
 
 let contractAddress = program?.args?.[1];
+let ethereumContractAddress = '';
 if (!isAddress(contractAddress)) {
   console.error(`Provided contractAddress is an invalid address`);
   process.exit(1);
@@ -51,6 +52,7 @@ console.log({ network, contractAddress, tokenType });
 
 const WS_URL = network === 'root' ? 'wss://root.rootnet.live/archive/ws' : 'wss://porcini.rootnet.app/archive/ws';
 const HTTP_URL = network === 'root' ? 'https://root.rootnet.live/archive' : 'https://porcini.rootnet.app/archive';
+const HTTP_ETHEREUM_URL = 'https://cloudflare-eth.com/';
 
 export const root = defineChain({
   id: 7668,
@@ -106,21 +108,58 @@ export const porcini = defineChain({
   }
 });
 
+export const ethereumChain = defineChain({
+  id: 1,
+  name: 'Ethereum',
+  network: 'ethereum',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'ETH',
+    symbol: 'ETH'
+  },
+  rpcUrls: {
+    default: {
+      http: [HTTP_ETHEREUM_URL],
+    },
+    public: {
+      http: [HTTP_ETHEREUM_URL],
+    }
+  }
+});
+
+
 export const evmClient: PublicClient = createPublicClient({
   chain: network === 'root' ? root : porcini,
+  transport: http()
+});
+export const ethereumClient: PublicClient = createPublicClient({
+  chain: ethereumChain,
   transport: http()
 });
 
 const detectedUriUrl = async () => {
   if (tokenType === 'erc721') {
-    const data = (await evmClient.readContract({
+    let data = (await evmClient.readContract({
       address: contractAddress as Address,
       abi: ERC721_ABI,
       functionName: 'tokenURI',
       args: [1]
     })) as string;
+
     if (!data) {
       throw new Error('Unable to determine uri for contract');
+    }
+    if (data.startsWith('ethereum://')) {
+      // get ethereum address from url string
+      const parts = data.split(/[:/]/).filter(part => part !== '');
+      ethereumContractAddress = getAddress(parts[1]);
+
+      data = (await ethereumClient.readContract({
+        address: ethereumContractAddress as Address,
+        abi: ERC721_ABI,
+        functionName: 'tokenURI',
+        args: [1]
+      })) as string;
     }
     const uri = data.substring(0, data?.length - 1);
     return uri;
@@ -144,11 +183,21 @@ const getTotalSupply = async () => {
   if (tokenType === 'erc1155') {
     return Number(predefinedTotalSupply);
   }
-  const data = (await evmClient.readContract({
-    address: contractAddress as Address,
-    abi: tokenType === 'erc721' ? ERC721_ABI : ERC1155_ABI,
-    functionName: 'totalSupply'
-  })) as string;
+  let data;
+  if (ethereumContractAddress) {
+    data = (await ethereumClient.readContract({
+      address: ethereumContractAddress as Address,
+      abi: ERC721_ABI,
+      functionName: 'totalSupply'
+    })) as string;
+  } else {
+    data = (await evmClient.readContract({
+      address: contractAddress as Address,
+      abi: tokenType === 'erc721' ? ERC721_ABI : ERC1155_ABI,
+      functionName: 'totalSupply'
+    })) as string;
+  }
+  console.log('Total tokens: ', data);
   if (!data) {
     throw new Error('Unable to determine totalSupply for contract');
   }
@@ -190,7 +239,7 @@ const run = async () => {
     try {
       res = await fetch(url);
     } catch {
-      /* eslint no-empty: "error" */
+/* eslint no-empty: "error" */
     }
     if (res?.ok) {
       let jsonData: any = undefined;
