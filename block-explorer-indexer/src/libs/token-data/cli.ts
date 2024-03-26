@@ -148,18 +148,16 @@ export const ethereumClient: PublicClient = createPublicClient({
 });
 
 const getTokenMetadataUrl = async (tokenId = 1): Promise<string> => {
+  let data
   if (tokenType === 'erc721') {
-    let data = (await evmClient.readContract({
+     data = (await evmClient.readContract({
       address: contractAddress as Address,
       abi: ERC721_ABI,
       functionName: 'tokenURI',
       args: [tokenId]
     })) as string;
-
-    if (!data) {
-      throw new Error('Unable to determine uri for contract');
-    }
-    if (data.startsWith('ethereum://')) {
+  
+    if (data?.startsWith('ethereum://')) {
       // get ethereum address from url string
       const parts = data.split(/[:/]/).filter(part => part !== '');
       ethereumContractAddress = getAddress(parts[1]);
@@ -175,17 +173,17 @@ const getTokenMetadataUrl = async (tokenId = 1): Promise<string> => {
   }
 
   if (tokenType === 'erc1155') {
-    const data = (await evmClient.readContract({
+    data = (await evmClient.readContract({
       address: contractAddress as Address,
       abi: ERC1155_ABI,
       functionName: 'uri',
       args: [tokenId]
     })) as string;
-    if (!data) {
-      throw new Error('Unable to determine uri for contract');
-    }
-    return data;
   }
+  if (!data) {
+    throw new Error('Unable to determine uri for contract');
+  }
+  return data;
 };
 
 const getTotalSupply = async () => {
