@@ -14,6 +14,8 @@ program.parse();
 
 const options = program.opts();
 
+const C_REGEX_NORMAL_TOKEN_METADATA_URL = /^.*\/(\d+)$/;
+
 // a polyfill for it would be:
 AbortSignal.timeout ??= function timeout(ms) {
   const ctrl = new AbortController()
@@ -145,13 +147,13 @@ export const ethereumClient: PublicClient = createPublicClient({
   transport: http()
 });
 
-const detectedUriUrl = async () => {
+const getTokenMetadataUrl = async (tokenId = 1): Promise<string> => {
   if (tokenType === 'erc721') {
     let data = (await evmClient.readContract({
       address: contractAddress as Address,
       abi: ERC721_ABI,
       functionName: 'tokenURI',
-      args: [1]
+      args: [tokenId]
     })) as string;
 
     if (!data) {
@@ -166,26 +168,23 @@ const detectedUriUrl = async () => {
         address: ethereumContractAddress as Address,
         abi: ERC721_ABI,
         functionName: 'tokenURI',
-        args: [1]
+        args: [tokenId]
       })) as string;
     }
-    
-    console.log('!', data)
-    const uri = data.substring(0, data?.length - 1);
-    return uri;
+    return data;
   }
+
   if (tokenType === 'erc1155') {
     const data = (await evmClient.readContract({
       address: contractAddress as Address,
       abi: ERC1155_ABI,
       functionName: 'uri',
-      args: [1]
+      args: [tokenId]
     })) as string;
     if (!data) {
       throw new Error('Unable to determine uri for contract');
     }
-    const uri = data.substring(0, data?.length - 1);
-    return uri;
+    return data;
   }
 };
 
@@ -215,7 +214,15 @@ const getTotalSupply = async () => {
 };
 
 const run = async () => {
-  const uri = await detectedUriUrl();
+  const uri = await getTokenMetadataUrl(1);
+  const getTokenMetadataUrlFn = 
+    C_REGEX_NORMAL_TOKEN_METADATA_URL.test(uri!) ?
+      (tokenId) => {
+        const uri2 = uri.substring(0, uri?.length - 1);
+        return `${uri2}${tokenId}`
+      }: 
+      getTokenMetadataUrl;
+  
   const totalSupply = await getTotalSupply();
   console.log(`Detected ${uri} as URI with a totalSupply of ${totalSupply}`);
   const fileDir = `./blockchains/${network}/${contractAddress}.json`;
@@ -230,37 +237,36 @@ const run = async () => {
   }
 
   for (let tokenId = 0; tokenId < totalSupply; tokenId++) {
-    const url = `${uri}${tokenId}`;
+    const url = await getTokenMetadataUrlFn(tokenId)
     console.log(`Fetching ${tokenId} ${url}`);
     const exists = data?.find((a) => Number(a.tokenId) === tokenId);
     if (exists) {
       console.log(`EXISTS.. ${tokenId}`);
-      continue;
-    }
-    let res;
-    try {
-      res = await fetch(url, { signal: AbortSignal.timeout(5000) });
-    } catch {
-/* eslint no-empty: "error" */
-    }
-    if (res?.ok) {
-      let jsonData: Record<string, unknown> | undefined = undefined;
+    } else {
+      let res;
       try {
-        jsonData = await res.json();
+        res = await fetch(url, { signal: AbortSignal.timeout(5000) });
       } catch {
         /* eslint no-empty: "error" */
       }
-      if (!jsonData) return true;
-      if (jsonData?.tokenId === undefined) {
-        jsonData.tokenId = Number(tokenId);
+      if (res?.ok) {
+        let jsonData: Record<string, unknown> | undefined = undefined;
+        try {
+          jsonData = await res.json();
+        } catch {
+          /* eslint no-empty: "error" */
+        }
+        if (!jsonData) return true;
+        if (jsonData?.tokenId === undefined) {
+          jsonData.tokenId = Number(tokenId);
+        }
+        console.log(`Fetched ${tokenId} success.`);
+        delete jsonData.attributes;
+        delete jsonData.properties;
+        delete jsonData._id;
+        data.push(jsonData);
       }
-      console.log(`Fetched ${tokenId} success.`);
-      delete jsonData.attributes;
-      delete jsonData.properties;
-      delete jsonData._id;
-      data.push(jsonData);
     }
-
     if (tokenId % 100 === 0 || tokenId + 1 >= totalSupply) {
       await fs.writeFile(fileDir, JSON.stringify(data, null, 0));
       console.log('saved')
