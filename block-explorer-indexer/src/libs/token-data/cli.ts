@@ -14,6 +14,14 @@ program.parse();
 
 const options = program.opts();
 
+// a polyfill for it would be:
+AbortSignal.timeout ??= function timeout(ms) {
+  const ctrl = new AbortController()
+  setTimeout(() => ctrl.abort(), ms)
+  return ctrl.signal
+}
+
+
 if (!options?.network || !options?.contractaddress || !options?.type) {
   console.error(`Missing one of the required arguments.`);
   process.exit(1);
@@ -161,6 +169,8 @@ const detectedUriUrl = async () => {
         args: [1]
       })) as string;
     }
+    
+    console.log('!', data)
     const uri = data.substring(0, data?.length - 1);
     return uri;
   }
@@ -204,14 +214,6 @@ const getTotalSupply = async () => {
   return Number(data);
 };
 
-const sleep = (ms: number) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, ms);
-  });
-};
-
 const run = async () => {
   const uri = await detectedUriUrl();
   const totalSupply = await getTotalSupply();
@@ -221,7 +223,7 @@ const run = async () => {
     return false;
   });
 
-  let data: any = [];
+  let data: Record<string, unknown>[] = [];
   if (exists) {
     const readData = await fs.readFile(fileDir, 'utf-8');
     data = structuredClone(JSON.parse(readData));
@@ -229,7 +231,7 @@ const run = async () => {
 
   for (let tokenId = 0; tokenId < totalSupply; tokenId++) {
     const url = `${uri}${tokenId}`;
-    console.log(`Fetching ${tokenId}`);
+    console.log(`Fetching ${tokenId} ${url}`);
     const exists = data?.find((a) => Number(a.tokenId) === tokenId);
     if (exists) {
       console.log(`EXISTS.. ${tokenId}`);
@@ -237,12 +239,12 @@ const run = async () => {
     }
     let res;
     try {
-      res = await fetch(url);
+      res = await fetch(url, { signal: AbortSignal.timeout(5000) });
     } catch {
 /* eslint no-empty: "error" */
     }
     if (res?.ok) {
-      let jsonData: any = undefined;
+      let jsonData: Record<string, unknown> | undefined = undefined;
       try {
         jsonData = await res.json();
       } catch {
@@ -253,10 +255,16 @@ const run = async () => {
         jsonData.tokenId = Number(tokenId);
       }
       console.log(`Fetched ${tokenId} success.`);
+      delete jsonData.attributes;
+      delete jsonData.properties;
+      delete jsonData._id;
       data.push(jsonData);
     }
 
-    await fs.writeFile(fileDir, JSON.stringify(data, null, 0));
+    if (tokenId % 100 === 0 || tokenId + 1 >= totalSupply) {
+      await fs.writeFile(fileDir, JSON.stringify(data, null, 0));
+      console.log('saved')
+    }
   }
 };
 
