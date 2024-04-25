@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@mother/mongoose-cursor-pagination": "^0.0.6",
-    "@polkadot/api": "^10.9.1",
+    "@polkadot/api": "^10.12.6",
     "@therootnetwork/api": "^1.0.6",
     "@therootnetwork/api-types": "^1.0.1",
     "@therootnetwork/evm": "^1.0.4",
