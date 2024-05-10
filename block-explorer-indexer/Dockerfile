@@ -1,4 +1,4 @@
-FROM node:20.12.1-alpine AS build
+FROM node:20.13-alpine AS build
 
 RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 RUN npm install -g pnpm
@@ -13,7 +13,7 @@ COPY . .
 
 RUN pnpm run build
 
-FROM node:20.12.1-alpine AS deps
+FROM node:20.13-alpine AS deps
 
 RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 RUN npm install -g pnpm
@@ -25,7 +25,7 @@ ENV NODE_ENV=production
 COPY pnpm-lock.yaml package.json ./
 RUN pnpm install --prod --frozen-lockfile --no-optional --unsafe-perm
 
-FROM node:20.12.1-alpine AS runner
+FROM node:20.13-alpine AS runner
 
 RUN apk update && apk upgrade && apk add --no-cache tzdata && rm -rf /var/cache/apk/*
 
