@@ -10,10 +10,15 @@
     "worker": "nx run block-explorer-indexer:worker",
     "bull-board": "nx run bull-board:start",
     "block-explorer": "nx run block-explorer:dev",
+    "lint": "nx run-many --target=lint --exclude=portal --all --parallel --max-warnings=0",
     "docker-down": "docker compose down"
   },
   "private": true,
   "devDependencies": {
+    "@nx/eslint": "19.0.2",
+    "@nx/eslint-plugin": "^19.0.2",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "eslint": "~8.57.0",
     "nx": "19.0.2"
   },
   "engines": {
@@ -21,6 +26,6 @@
     "npm": "please-use-pnpm",
     "yarn": "please-use-pnpm",
     "pnpm": ">=8.6.0"
-  }
+  },
+  "dependencies": {}
 }
-

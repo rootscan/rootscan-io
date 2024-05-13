@@ -13,7 +13,6 @@
     "alias": "tsc-alias -p ./tsconfig.json",
     "dev": "tsx watch src/index.ts",
     "format": "prettier --config .prettierrc src/**/*.ts --write",
-    "lint": "eslint . --ext .ts --ext .mts",
     "clean": "rm -rf lib"
   },
   "devDependencies": {

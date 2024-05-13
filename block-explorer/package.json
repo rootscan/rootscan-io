@@ -8,7 +8,6 @@
     "dev": "next dev",
     "start": "next start",
     "clean": "next clean",
-    "lint": "next lint",
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
     "check-components": "tsx ./find-required-components.ts",

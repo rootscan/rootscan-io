@@ -10,8 +10,33 @@
     },
     "lint": {
       "cache": true
+    },
+    "@nx/eslint:lint": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.js"
+      ]
     }
   },
   "useInferencePlugins": false,
-  "nxCloudAccessToken": "NjE2YzBjMjQtMDIwOS00ZGE1LWExMDYtYTEzMDU1ZmFlNzQxfHJlYWQtd3JpdGU="
+  "nxCloudAccessToken": "NjE2YzBjMjQtMDIwOS00ZGE1LWExMDYtYTEzMDU1ZmFlNzQxfHJlYWQtd3JpdGU=",
+  "plugins": [
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint",
+        "extensions": ["ts", "tsx", "js", "jsx", "html", "vue"],
+        "maxWarnings": 0,
+        "silent": true
+      },
+      "include": [
+        "block-explorer/**/*",
+        "block-explorer-indexer/**/*",
+        "bull-board/**/*",
+      ]
+    }
+  ]
 }
