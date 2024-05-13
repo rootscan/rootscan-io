@@ -14,7 +14,7 @@
   },
   "private": true,
   "devDependencies": {
-    "nx": "18.3.4"
+    "nx": "19.0.2"
   },
   "engines": {
     "node": ">=18",
