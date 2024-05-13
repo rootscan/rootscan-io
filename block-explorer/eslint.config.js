@@ -10,7 +10,6 @@ const compat = new FlatCompat({
 module.exports = [
   ...baseConfig,
   ...compat.extends('plugin:tailwindcss/recommended'),
-  ...compat.extends('next/core-web-vitals'),
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {},
