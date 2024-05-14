@@ -8,7 +8,7 @@ import { IBulkWriteUpdateOp } from '@/types';
 import { getTokenDetails } from '@/utils/tokenInformation';
 import queue from '@/workerpool';
 import '@therootnetwork/api-types';
-import { assetIdToERC20Address, collectionIdToERC1155Address, collectionIdToERC721Address } from '@therootnetwork/evm';
+import { assetIdToERC20Address, collectionIdToERC721Address, collectionIdToERC1155Address } from '@therootnetwork/evm';
 import { Address, getAddress } from 'viem';
 
 export const findAllKnownAddresses = async (): Promise<void> => {
@@ -18,18 +18,18 @@ export const findAllKnownAddresses = async (): Promise<void> => {
     ops.push({
       updateOne: {
         filter: {
-          address: getAddress(address)
+          address: getAddress(address),
         },
         update: {
           $set: {
             address: getAddress(address),
             rns: null,
             nameTag,
-            isContract: true
-          }
+            isContract: true,
+          },
         },
-        upsert: true
-      }
+        upsert: true,
+      },
     });
   }
 
@@ -42,13 +42,13 @@ export const findAllEthereumBridgeContractAddresses = async (): Promise<void> =>
     const query =
       type === 'ERC20'
         ? {
-            assetId: Number(nativeId)
+            assetId: Number(nativeId),
           }
         : type === 'ERC721'
-          ? {
-              collectionId: Number(nativeId)
-            }
-          : null;
+        ? {
+            collectionId: Number(nativeId),
+          }
+        : null;
 
     if (!query) continue;
 
@@ -58,11 +58,11 @@ export const findAllEthereumBridgeContractAddresses = async (): Promise<void> =>
         update: {
           $set: {
             ...query,
-            ethereumContractAddress: getAddress(contractAddress)
-          }
+            ethereumContractAddress: getAddress(contractAddress),
+          },
         },
-        upsert: true
-      }
+        upsert: true,
+      },
     });
   }
 
@@ -80,8 +80,8 @@ export const createFindPrecompiledTokensTasks = async (): Promise<void> => {
       'FIND_PRECOMPILE_TOKENS',
       { from, to },
       {
-        jobId: `PRECOMPILE_TASK_${from}_${to}`
-      }
+        jobId: `PRECOMPILE_TASK_${from}_${to}`,
+      },
     );
   }
 };
@@ -98,7 +98,7 @@ export const findPrecompiledTokens = async (from: number, to: number): Promise<v
       await Promise.all([
         getTokenDetails(CONTRACT_ADDRESS_ERC721 as Address, true),
         getTokenDetails(CONTRACT_ADDRESS_ERC1155 as Address, true),
-        getTokenDetails(CONTRACT_ADDRESS_ERC20 as Address, true)
+        getTokenDetails(CONTRACT_ADDRESS_ERC20 as Address, true),
       ]);
     } catch {
       /*eslint no-empty: "error"*/
@@ -129,19 +129,19 @@ export const updateStakingValidators = async () => {
       validator: getAddress(String(validator)),
       nominators,
       totalRootNominated,
-      isOversubscribed
+      isOversubscribed,
     };
     validatorsOps.push({
       updateOne: {
         filter: {
           era: parsedData.era,
-          validator: parsedData.validator
+          validator: parsedData.validator,
         },
         update: {
-          $set: parsedData
+          $set: parsedData,
         },
-        upsert: true
-      }
+        upsert: true,
+      },
     });
   });
   if (validatorsOps?.length) {
@@ -158,42 +158,42 @@ export const findMissingBlocks = async () => {
     [
       {
         $sort: {
-          number: -1
-        }
+          number: -1,
+        },
       },
       {
-        $limit: 100_000
+        $limit: 100_000,
       },
       {
         $group: {
           _id: '_',
           mbs: {
-            $push: '$number'
+            $push: '$number',
           },
           first: {
-            $last: '$number'
+            $last: '$number',
           },
           last: {
-            $first: '$number'
-          }
-        }
+            $first: '$number',
+          },
+        },
       },
       {
         $project: {
           numbers: {
             $setDifference: [
               {
-                $range: ['$first', '$last']
+                $range: ['$first', '$last'],
               },
-              '$mbs'
-            ]
-          }
-        }
-      }
+              '$mbs',
+            ],
+          },
+        },
+      },
     ],
     {
-      allowDiskUse: true
-    }
+      allowDiskUse: true,
+    },
   );
 
   const misBlocks = missingBlocks?.[0]?.numbers || [];
@@ -206,8 +206,8 @@ export const findMissingBlocks = async () => {
       { blocknumber: blockNumber },
       {
         priority: 1,
-        jobId: `BLOCK_${blockNumber}`
-      }
+        jobId: `BLOCK_${blockNumber}`,
+      },
     );
   }
 

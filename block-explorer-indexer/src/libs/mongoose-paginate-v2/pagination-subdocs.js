@@ -60,9 +60,7 @@ function paginateSubDocs(query, options, callback) {
     const paginatedDocs = paginatedResult[path];
 
     if (!paginatedDocs) {
-      throw new Error(
-        `Parse error! Cannot find key on result with path ${path}`
-      );
+      throw new Error(`Parse error! Cannot find key on result with path ${path}`);
     }
 
     page = Math.ceil((offset + 1) / limit);
@@ -112,14 +110,7 @@ function paginateSubDocs(query, options, callback) {
   }
 
   // options properties for main document query
-  const {
-    populate,
-    read = {},
-    select = '',
-    pagination = true,
-    pagingOptions,
-    projection,
-  } = options;
+  const { populate, read = {}, select = '', pagination = true, pagingOptions, projection } = options;
 
   const mQuery = this.findOne(query, projection);
 

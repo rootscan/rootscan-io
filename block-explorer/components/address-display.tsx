@@ -55,15 +55,13 @@ async function AddressView({
         ? nameTag
         : getAddressName(address, useShortenedAddress)
 
-  const isFuturepass = address?.toLowerCase()?.startsWith("0xffffffff")
+  const isFuturepass = address?.toLowerCase()?.startsWith('0xffffffff');
 
   return (
-    <div
-      className={cn(["flex items-center gap-2", className ? className : ""])}
-    >
+    <div className={cn(['flex items-center gap-2', className ? className : ''])}>
       {isContract ? (
         <Tooltip text="EVM Contract" asChild>
-          <FileText className="size-4 text-muted-foreground" />
+          <FileText className="text-muted-foreground size-4" />
         </Tooltip>
       ) : null}
       {isFuturepass ? (
@@ -72,14 +70,11 @@ async function AddressView({
         </Tooltip>
       ) : null}
       <Tooltip text={address} disabled={!useShortenedAddress} asChild>
-        <Link
-          href={`/${isTokenTracker ? "token" : "addresses"}/${address}`}
-          className="truncate"
-        >
+        <Link href={`/${isTokenTracker ? 'token' : 'addresses'}/${address}`} className="truncate">
           {name}
         </Link>
       </Tooltip>
       {!hideCopyButton || !address ? <CopyButton value={address} /> : null}
     </div>
-  )
+  );
 }

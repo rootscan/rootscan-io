@@ -1,16 +1,14 @@
-import { FunctionSquare } from "lucide-react"
-import Link from "next/link"
+'use client';
 
-import SectionTitle from "@/components/section-title"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import AddressDisplay from "../address-display"
-import TimeAgoDate from "../time-ago-date"
+import SectionTitle from '@/components/section-title';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FunctionSquare } from 'lucide-react';
+import Link from 'next/link';
 
-export default function LatestExtrinsics({
-  latestExtrinsics,
-}: {
-  latestExtrinsics: any
-}) {
+import AddressDisplay from '../address-display';
+import TimeAgoDate from '../time-ago-date';
+
+export default function LatestExtrinsics({ latestExtrinsics }: { latestExtrinsics: any }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -27,15 +25,12 @@ export default function LatestExtrinsics({
             <CardHeader>
               <CardTitle>
                 <div className="flex items-center gap-4">
-                  <FunctionSquare className="size-6 text-muted-foreground" />
-                  <Link
-                    href={`/extrinsics/${extrinsic?.extrinsicId}`}
-                    className="shrink-0"
-                  >
+                  <FunctionSquare className="text-muted-foreground size-6" />
+                  <Link href={`/extrinsics/${extrinsic?.extrinsicId}`} className="shrink-0">
                     <span>{extrinsic?.extrinsicId}</span>
                   </Link>
                   <div className="ml-auto flex items-center">
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       <TimeAgoDate date={extrinsic?.timestamp * 1000} />
                     </span>
                   </div>
@@ -59,10 +54,7 @@ export default function LatestExtrinsics({
                 {extrinsic?.signer ? (
                   <div className="flex gap-2">
                     <span className="text-muted-foreground">Signer</span>
-                    <AddressDisplay
-                      address={extrinsic?.signer}
-                      useShortenedAddress
-                    />
+                    <AddressDisplay address={extrinsic?.signer} useShortenedAddress />
                   </div>
                 ) : null}
               </div>
@@ -71,5 +63,5 @@ export default function LatestExtrinsics({
         ))}
       </div>
     </div>
-  )
+  );
 }

@@ -35,8 +35,8 @@ export const refetchBalancesForAddressesInObject = async (obj: object) => {
       data: { address: involvedAddress },
       opts: {
         priority: 4,
-        jobId: `FETCH_BALANCES_${involvedAddress}`
-      }
+        jobId: `FETCH_BALANCES_${involvedAddress}`,
+      },
     };
   });
   if (jobs?.length) {
@@ -52,8 +52,8 @@ export const createTransactionsJobs = async (transactions: Hash[]) => {
       data: { hash },
       opts: {
         lifo: true, // Process transactions first
-        jobId: `PROCESS_TRANSACTION_${hash}`
-      }
+        jobId: `PROCESS_TRANSACTION_${hash}`,
+      },
     };
   });
   if (jobs?.length) {
@@ -98,7 +98,11 @@ export const extraArgsFromEvent = (event, api): { [key: string]: any } => {
 
     data.forEach((data, index) => {
       const value = data.toPrimitive();
-      const name = names[index] ? names[index] : fieldsHuman[index]?.typeName ? fieldsHuman[index]?.typeName : fieldsHuman[index];
+      const name = names[index]
+        ? names[index]
+        : fieldsHuman[index]?.typeName
+        ? fieldsHuman[index]?.typeName
+        : fieldsHuman[index];
       args[name] = value;
     });
   }
@@ -106,13 +110,17 @@ export const extraArgsFromEvent = (event, api): { [key: string]: any } => {
   return args;
 };
 
-export const isExtrinsicSuccess = (events, index: number, api: ApiPromise): { isSuccess?: boolean; errorInfo?: string } => {
+export const isExtrinsicSuccess = (
+  events,
+  index: number,
+  api: ApiPromise,
+): { isSuccess?: boolean; errorInfo?: string } => {
   for (const curEvent of events) {
     const { event, phase } = curEvent;
     if (phase.isApplyExtrinsic && phase.asApplyExtrinsic.eq(index)) {
       if (api.events.system.ExtrinsicSuccess.is(event)) {
         return {
-          isSuccess: true
+          isSuccess: true,
         };
       } else if (api.events.system.ExtrinsicFailed.is(event)) {
         // extract the data for this event
@@ -134,7 +142,7 @@ export const isExtrinsicSuccess = (events, index: number, api: ApiPromise): { is
 
         return {
           isSuccess: false,
-          errorInfo
+          errorInfo,
         };
       }
     }
@@ -157,44 +165,44 @@ export function decodeBridgeMessage(pegAddress: string, message: string, directi
     rootTokenPeg: '0x7556085E8e6A1Dabbc528fbcA2C7699fA5Ee6e11',
     erc20: '0xe9410b5aa32b270154c37752ecc0607c8c7abc5f',
     erc721: '0xc90Eda4C3aF49717dfCeb4CB237A05ee4DfE3C4d',
-    bridge: '0x110fd9a44a056cb418d07f7d9957d0303f0020e4'
+    bridge: '0x110fd9a44a056cb418d07f7d9957d0303f0020e4',
   };
   switch (pegAddress.toLowerCase()) {
     case pegPalletAddress.rootTokenPeg.toLowerCase(): {
       const [tokenAddress, amount, to] = decodeAbiParameters(
         [{ type: 'address' }, { type: 'uint128' }, { type: 'address' }],
-        message as Hex
+        message as Hex,
       ) as [string, bigint, string];
       const value = {
         amount: amount.toString(),
-        tokenAddress
+        tokenAddress,
       };
 
       return {
         to,
-        erc20Value: value
+        erc20Value: value,
       };
     }
     case pegPalletAddress.erc20.toLowerCase(): {
       const [tokenAddress, amount, to] = decodeAbiParameters(
         [{ type: 'address' }, { type: 'uint128' }, { type: 'address' }],
-        message as Hex
+        message as Hex,
       ) as [string, bigint, string];
       const value = {
         amount: amount.toString(),
-        tokenAddress
+        tokenAddress,
       };
 
       if (tokenAddress === zeroAddress) {
         return {
           to,
-          ethValue: value
+          ethValue: value,
         };
       }
 
       return {
         to,
-        erc20Value: value
+        erc20Value: value,
       };
     }
 
@@ -203,19 +211,22 @@ export function decodeBridgeMessage(pegAddress: string, message: string, directi
         if (direction === 'inbox') {
           const [, arg2, arg3, arg4] = decodeAbiParameters(
             [{ type: 'uint256' }, { type: 'address[]' }, { type: 'uint256[][]' }, { type: 'address' }],
-            message as Hash
+            message as Hash,
           );
 
           return [arg2, arg3, arg4];
         }
 
-        return decodeAbiParameters([{ type: 'address[]' }, { type: 'uint256[][]' }, { type: 'address' }], message as Hex);
+        return decodeAbiParameters(
+          [{ type: 'address[]' }, { type: 'uint256[][]' }, { type: 'address' }],
+          message as Hex,
+        );
       })() as [string[], bigint[][], string];
 
       const erc721Value = tokenAddresses.map((tokenAddress, index) => {
         return {
           tokenAddress,
-          tokenIds: tokenIds[index].map((item) => item.toString())
+          tokenIds: tokenIds[index].map((item) => item.toString()),
         };
       });
 

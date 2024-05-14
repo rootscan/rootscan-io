@@ -1,44 +1,43 @@
-"use client"
+'use client';
 
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from 'react';
 
-import { Button } from "./ui/button"
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+
+import { Button } from './ui/button';
 
 export default function Pagination({ pagination }: { pagination?: any }) {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams: any = useSearchParams()
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams: any = useSearchParams();
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
-      setIsLoading(true)
-      return params.toString()
+      const params = new URLSearchParams(searchParams);
+      params.set(name, value);
+      setIsLoading(true);
+      return params.toString();
     },
-    [searchParams]
-  )
+    [searchParams],
+  );
 
   useEffect(() => {
-    setIsLoading(false)
+    setIsLoading(false);
     return () => {
-      setIsLoading(true)
-    }
-  }, [pathname, searchParams])
+      setIsLoading(true);
+    };
+  }, [pathname, searchParams]);
 
-  const currentPage = searchParams.get("page") || 1
+  const currentPage = searchParams.get('page') || 1;
 
   return (
     <div className="flex items-center justify-end gap-4">
-      {isLoading ? (
-        <Loader2 className="size-5 animate-spin text-muted-foreground" />
-      ) : null}
+      {isLoading ? <Loader2 className="text-muted-foreground size-5 animate-spin" /> : null}
       <div className="flex items-center justify-end gap-6">
         {!pagination?.skipFullCount ? (
-          <span className="text-sm text-muted-foreground">
+          <span className="text-muted-foreground text-sm">
             Page {pagination?.page} of {pagination?.totalPages}
           </span>
         ) : null}
@@ -49,14 +48,9 @@ export default function Pagination({ pagination }: { pagination?: any }) {
             onClick={() => {
               router.push(
                 pathname +
-                  "?" +
-                  createQueryString(
-                    "page",
-                    String(
-                      Number(currentPage) - 1 >= 1 ? Number(currentPage) - 1 : 1
-                    )
-                  )
-              )
+                  '?' +
+                  createQueryString('page', String(Number(currentPage) - 1 >= 1 ? Number(currentPage) - 1 : 1)),
+              );
             }}
             disabled={!pagination?.hasPrevPage}
           >
@@ -73,11 +67,7 @@ export default function Pagination({ pagination }: { pagination?: any }) {
             variant="outline"
             size="pagination"
             onClick={() => {
-              router.push(
-                pathname +
-                  "?" +
-                  createQueryString("page", String(Number(currentPage) + 1))
-              )
+              router.push(pathname + '?' + createQueryString('page', String(Number(currentPage) + 1)));
             }}
             disabled={!pagination?.hasNextPage}
           >
@@ -86,5 +76,5 @@ export default function Pagination({ pagination }: { pagination?: any }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

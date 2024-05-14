@@ -6,7 +6,7 @@ const schema = new Schema<IBalance, Mongoose.Model<IBalance>>({
   address: { type: String },
   contractAddress: { type: String },
   balance: { type: Number },
-  balanceFormatted: { type: String }
+  balanceFormatted: { type: String },
 });
 
 schema.index({ address: 1, contractAddress: 1 }, { unique: true });
@@ -18,7 +18,7 @@ schema.virtual('tokenDetails', {
   localField: 'contractAddress',
   foreignField: 'contractAddress',
   select: 'name symbol',
-  justOne: true
+  justOne: true,
 });
 
 schema.plugin(mongoosePaginate);

@@ -1,17 +1,17 @@
-import AddressDisplay from "@/components/address-display"
-import NoData from "@/components/no-data"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import CardDetail from "@/components/ui/card-detail"
-import { getTransaction } from "@/lib/api"
+import AddressDisplay from '@/components/address-display';
+import NoData from '@/components/no-data';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import CardDetail from '@/components/ui/card-detail';
+import { getTransaction } from '@/lib/api';
 
 const getData = async ({ params }: any) => {
-  const data = await getTransaction({ hash: params.id })
-  return data
-}
+  const data = await getTransaction({ hash: params.id });
+  return data;
+};
 export default async function Page({ params }) {
-  const data = await getData({ params })
-  const logs = data?.logs
+  const data = await getData({ params });
+  const logs = data?.logs;
   return (
     <Card>
       <CardHeader>
@@ -33,7 +33,7 @@ export default async function Page({ params }) {
                       </CardDetail.Title>
                       <CardDetail.Content>
                         <span className="truncate">
-                        <AddressDisplay address={item.address} />
+                          <AddressDisplay address={item.address} />
                         </span>
                       </CardDetail.Content>
                     </CardDetail.Wrapper>
@@ -43,9 +43,7 @@ export default async function Page({ params }) {
                         <CardDetail.Title>
                           <div>Event Name</div>
                         </CardDetail.Title>
-                        <CardDetail.Content>
-                          {item?.eventName}
-                        </CardDetail.Content>
+                        <CardDetail.Content>{item?.eventName}</CardDetail.Content>
                       </CardDetail.Wrapper>
                     ) : null}
                     {item?.args ? (
@@ -56,8 +54,8 @@ export default async function Page({ params }) {
                         <CardDetail.Content>
                           {Object.keys(item.args)?.map((key, x) => (
                             <div key={x}>
-                              {key}:{" "}
-                              {typeof item?.args?.[key] === "object"
+                              {key}:{' '}
+                              {typeof item?.args?.[key] === 'object'
                                 ? JSON.stringify(item?.args?.[key])
                                 : String(item?.args?.[key])}
                             </div>
@@ -70,9 +68,7 @@ export default async function Page({ params }) {
                         <div>Topics</div>
                       </CardDetail.Title>
                       <CardDetail.Content>
-                        {item.topics?.map((topic, x) => (
-                          <div key={x}>{topic}</div>
-                        ))}
+                        {item.topics?.map((topic, x) => <div key={x}>{topic}</div>)}
                       </CardDetail.Content>
                     </CardDetail.Wrapper>
                     <CardDetail.Wrapper>
@@ -95,5 +91,5 @@ export default async function Page({ params }) {
         <NoData />
       )}
     </Card>
-  )
+  );
 }

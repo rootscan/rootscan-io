@@ -1,5 +1,4 @@
 /** THIS FILE IS FOR TEST PURPOSES AND WILL BE REMOVED FURTHER DOWN THE ROAD */
-
 import DB from '@/database';
 import Indexer from '@/indexer';
 import { findAllEthereumBridgeContractAddresses } from '@/indexer/tasks/prepopulate';

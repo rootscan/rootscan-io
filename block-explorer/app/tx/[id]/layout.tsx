@@ -1,8 +1,10 @@
-import Breadcrumbs from "@/components/breadcrumbs"
-import Container from "@/components/container"
-import SectionTitle from "@/components/section-title"
-import { ReactNode } from "react"
-import Menu from "./components/menu"
+import { ReactNode } from 'react';
+
+import Breadcrumbs from '@/components/breadcrumbs';
+import Container from '@/components/container';
+import SectionTitle from '@/components/section-title';
+
+import Menu from './components/menu';
 
 export async function generateMetadata({ params }) {
   return {
@@ -20,5 +22,5 @@ export default function Layout({ children }: { children?: ReactNode }) {
         {children}
       </div>
     </Container>
-  )
+  );
 }

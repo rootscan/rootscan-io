@@ -18,7 +18,6 @@ tsx cli.ts --network root --contractaddress 0xAAaaAAaa00000864000000000000000000
 tsx cli.ts --network root --contractaddress 0x5BF788cf0065f6524Daac8BcfCF5eC77f07B5F25 --type erc721 &&
 tsx cli.ts --network root --contractaddress 0xC64e7D6c94e4769927A84941398e18Bda5EF12f7 --type erc721 &&
 
-
-tsx cli.ts --network root --contractaddress 0xbbbBbBbB0000a064000000000000000000000000 --type erc1155 --totalsupply 5  &&
+tsx cli.ts --network root --contractaddress 0xbbbBbBbB0000a064000000000000000000000000 --type erc1155 --totalsupply 5 &&
 tsx cli.ts --network root --contractaddress 0xBbbbbBBb0000a464000000000000000000000000 --type erc1155 --totalsupply 11 &&
 tsx cli.ts --network root --contractaddress 0xbbBbBBBb0000a864000000000000000000000000 --type erc1155 --totalsupply 5

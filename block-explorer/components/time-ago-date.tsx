@@ -1,9 +1,10 @@
-"use client"
+'use client';
 
-import { Suspense } from "react"
-import TimeAgo from "react-timeago"
-import Tooltip from "./tooltip"
-import { Skeleton } from "./ui/skeleton"
+import { Suspense } from 'react';
+import TimeAgo from 'react-timeago';
+
+import Tooltip from './tooltip';
+import { Skeleton } from './ui/skeleton';
 
 export default function TimeAgoDate({ date }) {
   return (
@@ -12,5 +13,5 @@ export default function TimeAgoDate({ date }) {
         <TimeAgo date={date} className="truncate" />
       </Tooltip>
     </Suspense>
-  )
+  );
 }

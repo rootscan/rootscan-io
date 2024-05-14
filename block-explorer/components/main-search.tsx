@@ -19,14 +19,14 @@ export default function MainSearch() {
 
   return (
     <div className="relative">
-      <Search className="absolute left-2.5 top-2.5 -z-10 size-5 text-muted-foreground" />
+      <Search className="text-muted-foreground absolute left-2.5 top-2.5 -z-10 size-5" />
       <Input
         onChange={handleChangeValue}
         placeholder="Search by address / txn hash / block..."
         onKeyDown={handlePress}
         className="px-10"
       />
-      <CornerDownLeft className="absolute right-2.5 top-2.5 -z-10 m-auto size-5 text-muted-foreground" />
+      <CornerDownLeft className="text-muted-foreground absolute right-2.5 top-2.5 -z-10 m-auto size-5" />
     </div>
-  )
+  );
 }

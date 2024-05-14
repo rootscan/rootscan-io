@@ -1,20 +1,20 @@
-import { CopyButton } from "@/components/copy-button"
-import NoData from "@/components/no-data"
-import Timestamp from "@/components/timestamp"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import CardDetail from "@/components/ui/card-detail"
-import { getBlock } from "@/lib/api"
-import Link from "next/link"
+import { CopyButton } from '@/components/copy-button';
+import NoData from '@/components/no-data';
+import Timestamp from '@/components/timestamp';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import CardDetail from '@/components/ui/card-detail';
+import { getBlock } from '@/lib/api';
+import Link from 'next/link';
 
 export default async function Page({ params }: { params: any }) {
-  const { blocknumber } = params
+  const { blocknumber } = params;
   if (Number(blocknumber) < 0) {
-    throw new Error("There is no block lower than 0.")
+    throw new Error('There is no block lower than 0.');
   }
-  const block = await getBlock({ number: blocknumber })
+  const block = await getBlock({ number: blocknumber });
 
-  if (!block) return <NoData />
+  if (!block) return <NoData />;
 
   return (
     <Card>
@@ -117,5 +117,5 @@ export default async function Page({ params }: { params: any }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

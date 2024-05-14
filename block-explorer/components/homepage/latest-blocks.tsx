@@ -1,17 +1,15 @@
-import { AlertTriangle, Box } from "lucide-react"
-import Link from "next/link"
+'use client';
 
-import SectionTitle from "@/components/section-title"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel"
-import { cn } from "@/lib/utils"
-import AddressDisplay from "../address-display"
-import TimeAgoDate from "../time-ago-date"
-import Tooltip from "../tooltip"
+import SectionTitle from '@/components/section-title';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import { cn } from '@/lib/utils';
+import { AlertTriangle, Box } from 'lucide-react';
+import Link from 'next/link';
+
+import AddressDisplay from '../address-display';
+import TimeAgoDate from '../time-ago-date';
+import Tooltip from '../tooltip';
 
 export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
   return (
@@ -27,10 +25,7 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
             {latestBlocks?.map((block: any, _: number) => (
               <CarouselItem
                 key={block.number}
-                className={cn([
-                  "basis-1/1 md:basis-1/2 lg:basis-1/4",
-                  _ === 0 && "animate-block w-full",
-                ])}
+                className={cn(['basis-1/1 md:basis-1/2 lg:basis-1/4', _ === 0 && 'animate-block w-full'])}
               >
                 <Card>
                   <CardHeader>
@@ -43,7 +38,7 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
                           </Link>
                         </div>
                         {block?.isFinalized ? (
-                          <span className="line-clamp-1 truncate text-right text-xs text-muted-foreground">
+                          <span className="text-muted-foreground line-clamp-1 truncate text-right text-xs">
                             <TimeAgoDate date={block.timestamp} />
                           </span>
                         ) : (
@@ -64,9 +59,7 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
                       </div>
                       <div className="flex flex-row justify-between">
                         <div className="flex gap-2">
-                          <span className="text-muted-foreground">
-                            Extrinsics
-                          </span>
+                          <span className="text-muted-foreground">Extrinsics</span>
                           <Link href={`/blocks/${block.number}/extrinsics`}>
                             <span>{block.extrinsicsCount}</span>
                           </Link>
@@ -80,10 +73,7 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
                       </div>
                       <div className="flex gap-2">
                         <span className="text-muted-foreground">Validator</span>
-                        <AddressDisplay
-                          address={block.evmBlock.miner}
-                          useShortenedAddress
-                        />
+                        <AddressDisplay address={block.evmBlock.miner} useShortenedAddress />
                       </div>
                     </div>
                   </CardContent>
@@ -94,5 +84,5 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
         </Carousel>
       </div>
     </div>
-  )
+  );
 }

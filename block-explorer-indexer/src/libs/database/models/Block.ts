@@ -14,15 +14,16 @@ const schema = new Schema<IBlock, Mongoose.Model<IBlock>>({
     hash: { type: String },
     parentHash: { type: String },
     stateRoot: { type: String },
-    miner: { type: String }
+    miner: { type: String },
   },
   extrinsicsCount: { type: Number },
   transactionsCount: { type: Number },
   eventsCount: { type: Number },
-  spec: { type: String }
+  spec: { type: String },
 });
 
 schema.index({ number: 1 }, { unique: true });
+schema.index({ hash: 1 });
 schema.index({ timestamp: 1 });
 schema.index({ number: -1 });
 schema.index({ isFinalized: 1 });

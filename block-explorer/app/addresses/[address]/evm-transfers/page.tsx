@@ -1,36 +1,29 @@
-import AddressDisplay from "@/components/address-display"
-import InOutBadge from "@/components/in-out-badge"
-import NftThumbnail from "@/components/nft-thumbnail"
-import NoData from "@/components/no-data"
-import PaginationSuspense from "@/components/pagination-suspense"
-import TimeAgoDate from "@/components/time-ago-date"
-import TokenDisplay from "@/components/token-display"
-import { Badge } from "@/components/ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { getTokenTransfersFromAddress } from "@/lib/api"
-import { getPaginationData } from "@/lib/utils"
-import { ChevronRight } from "lucide-react"
-import Link from "next/link"
-import { getAddress } from "viem"
+import AddressDisplay from '@/components/address-display';
+import InOutBadge from '@/components/in-out-badge';
+import NftThumbnail from '@/components/nft-thumbnail';
+import NoData from '@/components/no-data';
+import PaginationSuspense from '@/components/pagination-suspense';
+import TimeAgoDate from '@/components/time-ago-date';
+import TokenDisplay from '@/components/token-display';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { getTokenTransfersFromAddress } from '@/lib/api';
+import { getPaginationData } from '@/lib/utils';
+import { ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { getAddress } from 'viem';
 
 const getData = async ({ params, searchParams }) => {
   const data = await getTokenTransfersFromAddress({
     address: params.address,
     page: searchParams.page,
-  })
-  return data
-}
+  });
+  return data;
+};
 export default async function Page({ params, searchParams }) {
-  const data = await getData({ params, searchParams })
-  const transactions = data?.docs
-  const address = getAddress(params.address)
+  const data = await getData({ params, searchParams });
+  const transactions = data?.docs;
+  const address = getAddress(params.address);
 
   return (
     <div className="flex flex-col gap-4">
@@ -81,14 +74,11 @@ export default async function Page({ params, searchParams }) {
                   />
                 </TableCell>
                 <TableCell>
-                  {tx?.type === "ERC20" ? (
+                  {tx?.type === 'ERC20' ? (
                     tx.formattedAmount
                   ) : (
                     <div className="flex items-center gap-2" key={_}>
-                      <NftThumbnail
-                        contractAddress={tx?.address}
-                        tokenId={tx?.tokenId}
-                      />
+                      <NftThumbnail contractAddress={tx?.address} tokenId={tx?.tokenId} />
                       {tx?.tokenId}
                     </div>
                   )}
@@ -96,7 +86,7 @@ export default async function Page({ params, searchParams }) {
                 <TableCell className="max-w-[150px] truncate">
                   <AddressDisplay address={tx.from} useShortenedAddress />
                 </TableCell>
-                <TableCell className="max-w-[25px] text-muted-foreground">
+                <TableCell className="text-muted-foreground max-w-[25px]">
                   <ChevronRight className="size-4" />
                 </TableCell>
                 <TableCell className="max-w-[150px] truncate">
@@ -108,5 +98,5 @@ export default async function Page({ params, searchParams }) {
         </Table>
       )}
     </div>
-  )
+  );
 }

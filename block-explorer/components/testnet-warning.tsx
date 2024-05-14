@@ -1,14 +1,11 @@
-"use server"
+'use server';
 
-import { CHAIN_ID } from "@/lib/viem-client"
-import { Fragment, ReactNode } from "react"
+import { Fragment, ReactNode } from 'react';
 
-export default async function TestnetWarning({
-  children,
-}: {
-  children: ReactNode
-}) {
-  if (Number(CHAIN_ID) === 7668) return null
+import { CHAIN_ID } from '@/lib/viem-client';
 
-  return <Fragment>{children}</Fragment>
+export default async function TestnetWarning({ children }: { children: ReactNode }) {
+  if (Number(CHAIN_ID) === 7668) return null;
+
+  return <Fragment>{children}</Fragment>;
 }

@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from 'next/image';
 
 export default function Loader() {
   return (
@@ -14,5 +14,5 @@ export default function Loader() {
       />
       Retrieving data
     </div>
-  )
+  );
 }

@@ -17,9 +17,9 @@ const scheduler = async () => {
       jobId: 'FIND_FINALIZED_BLOCKS',
       repeat: {
         every: 4000, // Every 4 seconds
-        immediately: true
-      }
-    }
+        immediately: true,
+      },
+    },
   );
 
   await queue.add(
@@ -29,9 +29,9 @@ const scheduler = async () => {
       jobId: 'UPDATE_TOKEN_PRICING_DETAILS',
       repeat: {
         every: 60_000 * 60, // Every 1 hour
-        immediately: true
-      }
-    }
+        immediately: true,
+      },
+    },
   );
 
   await queue.add(
@@ -41,9 +41,9 @@ const scheduler = async () => {
       jobId: 'CHECK_FOR_NEWLY_VERIFIED_CONTRACTS',
       repeat: {
         every: 60_000 * 5, // Every 5 minutes
-        immediately: true
-      }
-    }
+        immediately: true,
+      },
+    },
   );
 
   await queue.add(
@@ -53,9 +53,9 @@ const scheduler = async () => {
       jobId: 'UPDATE_STAKING_VALIDATORS',
       repeat: {
         every: 60_000 * 5, // Every 5 minutes
-        immediately: true
-      }
-    }
+        immediately: true,
+      },
+    },
   );
 
   await queue.add(
@@ -65,9 +65,9 @@ const scheduler = async () => {
       jobId: 'REFETCH_NFT_HOLDERS_GEN_TASKS',
       repeat: {
         every: 60_000 * 15, // Every 15 minutes
-        immediately: true
-      }
-    }
+        immediately: true,
+      },
+    },
   );
 
   await queue.add(
@@ -77,25 +77,25 @@ const scheduler = async () => {
       jobId: 'FIND_MISSING_BLOCKS',
       repeat: {
         every: 60_000 * 60 * 6, // Every 6 hours
-        immediately: true
-      }
-    }
+        immediately: true,
+      },
+    },
   );
 
   await queue.add(
     'INGEST_KNOWN_ADDRESSES',
     {},
     {
-      jobId: 'INGEST_KNOWN_ADDRESSES'
-    }
+      jobId: 'INGEST_KNOWN_ADDRESSES',
+    },
   );
 
   await queue.add(
     'FIND_ETH_BRIDGE_CONTRACT_ADDRESSES',
     {},
     {
-      jobId: 'FIND_ETH_BRIDGE_CONTRACT_ADDRESSES'
-    }
+      jobId: 'FIND_ETH_BRIDGE_CONTRACT_ADDRESSES',
+    },
   );
 
   /** @dev - Figure out where scheduler has stalled and recreate tasks for missed blocks */
@@ -108,8 +108,8 @@ const scheduler = async () => {
       'CREATE_FIND_PRECOMPILE_TOKENS_TASKS',
       {},
       {
-        jobId: 'CREATE_FIND_PRECOMPILE_TOKENS_TASKS'
-      }
+        jobId: 'CREATE_FIND_PRECOMPILE_TOKENS_TASKS',
+      },
     );
   }
 
@@ -120,8 +120,8 @@ const scheduler = async () => {
       { blocknumber: blockNumber },
       {
         priority: 1,
-        jobId: `BLOCK_${blockNumber}`
-      }
+        jobId: `BLOCK_${blockNumber}`,
+      },
     );
   }
 
@@ -136,10 +136,10 @@ const scheduler = async () => {
         { blocknumber: Number(blockNumber) },
         {
           priority: 1,
-          jobId: `BLOCK_${Number(blockNumber)}`
-        }
+          jobId: `BLOCK_${Number(blockNumber)}`,
+        },
       );
-    }
+    },
   });
 };
 

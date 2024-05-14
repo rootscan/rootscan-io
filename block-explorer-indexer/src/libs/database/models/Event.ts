@@ -12,7 +12,7 @@ const schema = new Schema<IEvent, Mongoose.Model<IEvent>>({
   method: { type: String },
   section: { type: String },
   doc: { type: String },
-  args: { type: Object }
+  args: { type: Object },
 });
 
 schema.plugin(mongoosePaginate);
@@ -62,7 +62,7 @@ schema.virtual('token', {
   ref: 'Token',
   localField: 'args.assetId',
   foreignField: 'assetId',
-  justOne: true
+  justOne: true,
 });
 
 schema.virtual('tokenNative', {
@@ -70,23 +70,23 @@ schema.virtual('tokenNative', {
   localField: 'args.assetId',
   foreignField: 'assetId',
   match: {
-    contractAddress: { $ne: null }
+    contractAddress: { $ne: null },
   },
-  justOne: true
+  justOne: true,
 });
 
 schema.virtual('extrinsicData', {
   ref: 'Extrinsic',
   localField: 'extrinsicId',
   foreignField: 'extrinsicId',
-  justOne: true
+  justOne: true,
 });
 
 schema.virtual('nftCollection', {
   ref: 'Token',
   localField: 'args.collectionId',
   foreignField: 'collectionId',
-  justOne: true
+  justOne: true,
 });
 
 // Swap Populate
@@ -94,14 +94,14 @@ schema.virtual('swapFromToken', {
   ref: 'Token',
   localField: 'args.trading_path[0]',
   foreignField: 'assetId',
-  justOne: true
+  justOne: true,
 });
 
 schema.virtual('swapToToken', {
   ref: 'Token',
   localField: 'args.trading_path[1]',
   foreignField: 'assetId',
-  justOne: true
+  justOne: true,
 });
 
 const Model = Mongoose.model<IEvent, Mongoose.PaginateModel<IEvent>>('Event', schema);

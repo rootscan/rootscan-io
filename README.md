@@ -4,19 +4,18 @@
 
 # Rootscan
 
-This repo uses [package-based](https://nx.dev/getting-started/tutorials/package-based-repo-tutorial) nx structure 
+This repo uses [package-based](https://nx.dev/getting-started/tutorials/package-based-repo-tutorial) nx structure
 Each folder is separate project.
-
 
 ## Requirements
 
-* docker - to run redis and mongo
-* pnpm - to install dependencies
-* nodejs - to run the project
+- docker - to run redis and mongo
+- pnpm - to install dependencies
+- nodejs - to run the project
 
 ### Optional
 
-* [snyk](https://docs.snyk.io/snyk-cli/install-or-update-the-snyk-cli) - security checks
+- [snyk](https://docs.snyk.io/snyk-cli/install-or-update-the-snyk-cli) - security checks
 
 ## Getting Started
 

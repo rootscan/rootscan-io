@@ -1,15 +1,8 @@
-import AddressDisplay from "@/components/address-display"
-import { Button } from "@/components/ui/button"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { SortDesc } from "lucide-react"
-import Link from "next/link"
+import AddressDisplay from '@/components/address-display';
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { SortDesc } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Erc721Holders({ data, contractAddress }) {
   return (
@@ -33,9 +26,7 @@ export default function Erc721Holders({ data, contractAddress }) {
             </TableCell>
             <TableCell>{item.count}</TableCell>
             <TableCell className="flex justify-end">
-              <Link
-                href={`/addresses/${item.owner}/nft-inventory/${contractAddress}`}
-              >
+              <Link href={`/addresses/${item.owner}/nft-inventory/${contractAddress}`}>
                 <Button size="sm" variant="ghost">
                   View NFTs
                 </Button>
@@ -45,5 +36,5 @@ export default function Erc721Holders({ data, contractAddress }) {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

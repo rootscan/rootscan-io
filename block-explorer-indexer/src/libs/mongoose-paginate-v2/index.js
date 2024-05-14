@@ -37,7 +37,7 @@ const defaultOptions = {
     pagingCounter: 'pagingCounter',
     hasPrevPage: 'hasPrevPage',
     hasNextPage: 'hasNextPage',
-    meta: null
+    meta: null,
   },
   collation: {},
   lean: false,
@@ -51,14 +51,14 @@ const defaultOptions = {
   useCustomCountFn: false,
   forceCountFn: false,
   allowDiskUse: false,
-  customFind: 'find'
+  customFind: 'find',
 };
 
 function paginate(query, options, callback) {
   options = {
     ...defaultOptions,
     ...paginate.options,
-    ...options
+    ...options,
   };
   query = query || {};
 
@@ -77,12 +77,12 @@ function paginate(query, options, callback) {
     forceCountFn,
     allowDiskUse,
     skipFullCount,
-    customFind
+    customFind,
   } = options;
 
   const customLabels = {
     ...defaultOptions.customLabels,
-    ...options.customLabels
+    ...options.customLabels,
   };
 
   let limit = defaultOptions.limit;
@@ -220,7 +220,7 @@ function paginate(query, options, callback) {
       }
 
       const meta = {
-        [labelTotal]: count
+        [labelTotal]: count,
       };
 
       let result = {};
@@ -286,12 +286,12 @@ function paginate(query, options, callback) {
       if (labelMeta) {
         result = {
           [labelDocs]: docs,
-          [labelMeta]: meta
+          [labelMeta]: meta,
         };
       } else {
         result = {
           [labelDocs]: docs,
-          ...meta
+          ...meta,
         };
       }
 

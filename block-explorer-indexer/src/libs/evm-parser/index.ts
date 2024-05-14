@@ -6,10 +6,13 @@ import { BigNumberish, formatUnits } from 'ethers';
 import { Address, Hash, PublicClient, Transaction, TransactionReceipt, decodeEventLog, getAddress } from 'viem';
 
 export const getEVMTransaction = async (client: PublicClient, hash: Hash) => {
-  const [txRaw, txReceipt] = await Promise.all([client.getTransaction({ hash }), client.getTransactionReceipt({ hash })]);
+  const [txRaw, txReceipt] = await Promise.all([
+    client.getTransaction({ hash }),
+    client.getTransactionReceipt({ hash }),
+  ]);
   const tx: Transaction & TransactionReceipt & { creates?: Address } & IEVMTransaction = {
     ...txRaw,
-    ...txReceipt
+    ...txReceipt,
   };
   const txBlock = await client.getBlock({ blockNumber: txRaw.blockNumber as bigint });
   return { tx, txBlock };
@@ -31,7 +34,7 @@ export const calculateTransactionFee = (tx: Transaction & TransactionReceipt) =>
     const gasLimit = new BigNumber(tx.gas as unknown as number);
     let gasPrice = new BigNumber(String(formatUnits(String(tx.effectiveGasPrice), 'gwei')));
     const maxPriorityFeePerGas = new BigNumber(
-      tx.maxPriorityFeePerGas ? String(formatUnits(String(tx.maxPriorityFeePerGas), 'gwei')) : '0'
+      tx.maxPriorityFeePerGas ? String(formatUnits(String(tx.maxPriorityFeePerGas), 'gwei')) : '0',
     );
     gasPrice = gasPrice.plus(maxPriorityFeePerGas);
     const totalFee = gasLimit.multipliedBy(gasPrice); // Number(gasLimit) * Number(gasPrice);
@@ -53,7 +56,7 @@ export const parseEventsFromEvmTx = async (tx: TransactionReceipt & Transaction)
         topics = decodeEventLog({
           abi,
           data: log.data,
-          topics: log.topics
+          topics: log.topics,
         });
       } catch {
         /*eslint no-empty: "error"*/
@@ -65,6 +68,7 @@ export const parseEventsFromEvmTx = async (tx: TransactionReceipt & Transaction)
           formattedValue?: string;
           tokenId?: BigNumberish | bigint | number;
           name?: string;
+          id?: string | number;
           symbol?: string;
           type?: TTokenType;
           eventName?: string;
@@ -72,7 +76,7 @@ export const parseEventsFromEvmTx = async (tx: TransactionReceipt & Transaction)
         } = {
           ...topics.args,
           eventName: topics.eventName,
-          address: getAddress(log.address)
+          address: getAddress(log.address),
         };
         const matchedAbi = abiKey;
         const tokenDetails: Omit<IToken, 'contractAddress'> | null = await getTokenDetails(log.address);
@@ -145,9 +149,12 @@ export const parseEventsFromEvmTx = async (tx: TransactionReceipt & Transaction)
         // ERC1155
         if (
           tokenDetails?.type === 'ERC1155' &&
-          (event?.eventName === 'Transfer' || event?.eventName === 'TransferSingle' || event?.eventName === 'TransferBatch')
+          (event?.eventName === 'Transfer' ||
+            event?.eventName === 'TransferSingle' ||
+            event?.eventName === 'TransferBatch')
         ) {
           event.name = tokenDetails.name;
+          event.id = String(event.id).length > 9 ? event.id?.toString() : Number(event.id);
           event.symbol = tokenDetails.symbol;
           event.type = 'ERC1155';
           const tag = 'NFT Transfer';

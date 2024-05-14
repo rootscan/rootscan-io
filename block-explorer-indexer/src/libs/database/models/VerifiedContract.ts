@@ -8,7 +8,7 @@ const schema = new Schema<IVerifiedContract, Mongoose.Model<IVerifiedContract>>(
   abi: { type: Object },
   bytecode: { type: String },
   deployer: { type: String },
-  deployedBlock: { type: Number }
+  deployedBlock: { type: Number },
 });
 
 schema.index({ address: 1 }, { unique: true });

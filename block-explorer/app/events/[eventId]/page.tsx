@@ -1,23 +1,23 @@
-import AddressDisplay from "@/components/address-display"
-import { CopyButton } from "@/components/copy-button"
-import { getEventComponent } from "@/components/events-components"
-import JsonViewer from "@/components/json-viewer"
-import Timestamp from "@/components/timestamp"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import CardDetail from "@/components/ui/card-detail"
-import { getEvent } from "@/lib/api"
-import { camelCaseToWords } from "@/lib/utils"
-import Link from "next/link"
+import AddressDisplay from '@/components/address-display';
+import { CopyButton } from '@/components/copy-button';
+import { getEventComponent } from '@/components/events-components';
+import JsonViewer from '@/components/json-viewer';
+import Timestamp from '@/components/timestamp';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import CardDetail from '@/components/ui/card-detail';
+import { getEvent } from '@/lib/api';
+import { camelCaseToWords } from '@/lib/utils';
+import Link from 'next/link';
 
 const getData = async ({ params }) => {
-  const data = await getEvent({ eventId: String(params?.eventId) })
+  const data = await getEvent({ eventId: String(params?.eventId) });
 
-  return data
-}
+  return data;
+};
 
 export default async function Page({ params }) {
-  const data = await getData({ params })
+  const data = await getData({ params });
 
   return (
     <Card>
@@ -38,7 +38,7 @@ export default async function Page({ params }) {
                   <span className="truncate">{data.extrinsicId}</span>
                 </Link>
               ) : (
-                "-"
+                '-'
               )}
             </CardDetail.Content>
           </CardDetail.Wrapper>
@@ -60,38 +60,30 @@ export default async function Page({ params }) {
             <CardDetail.Title>Method</CardDetail.Title>
             <CardDetail.Content>
               <div>
-                <Badge>
-                  {data?.method ? camelCaseToWords(data.method) : null}
-                </Badge>
+                <Badge>{data?.method ? camelCaseToWords(data.method) : null}</Badge>
               </div>
             </CardDetail.Content>
           </CardDetail.Wrapper>
           <div className="flex flex-col gap-1">
             <span className="text-muted-foreground">⚡ Event(s)</span>
-            <div className="mt-1 rounded-2xl bg-black/5 p-3 dark:bg-white/5">
-              {getEventComponent(data)}
-            </div>
+            <div className="mt-1 rounded-2xl bg-black/5 p-3 dark:bg-white/5">{getEventComponent(data)}</div>
           </div>
           <CardDetail.Wrapper>
             <CardDetail.Title>Raw Arguments</CardDetail.Title>
-            <CardDetail.Content>
-              {data?.args ? <JsonViewer json={data?.args} /> : null}
-            </CardDetail.Content>
+            <CardDetail.Content>{data?.args ? <JsonViewer json={data?.args} /> : null}</CardDetail.Content>
           </CardDetail.Wrapper>
           <CardDetail.Wrapper>
             <CardDetail.Title>Hash</CardDetail.Title>
             <CardDetail.Content>
               <div className="flex items-center gap-2">
                 <span className="truncate">{data?.hash}</span>
-                <CopyButton value={data?.hash}/>
+                <CopyButton value={data?.hash} />
               </div>
             </CardDetail.Content>
           </CardDetail.Wrapper>
           <CardDetail.Wrapper>
             <CardDetail.Title>Description</CardDetail.Title>
-            <CardDetail.Content>
-              {data?.doc ? data?.doc : "-"}
-            </CardDetail.Content>
+            <CardDetail.Content>{data?.doc ? data?.doc : '-'}</CardDetail.Content>
           </CardDetail.Wrapper>
           {data?.signer ? (
             <CardDetail.Wrapper>
@@ -104,5 +96,5 @@ export default async function Page({ params }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

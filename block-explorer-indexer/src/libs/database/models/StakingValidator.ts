@@ -9,7 +9,7 @@ const schema = new Schema<IStakingValidator, Mongoose.Model<IStakingValidator>>(
   validator: { type: String },
   nominators: { type: Number },
   totalRootNominated: { type: Number },
-  isOversubscribed: { type: Boolean }
+  isOversubscribed: { type: Boolean },
 });
 
 schema.index({ validator: 1 });

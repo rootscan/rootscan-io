@@ -28,9 +28,7 @@ class PaginationParametersHelper {
     const openingBrackets = ['{', '['];
     const closingBrackets = ['}', ']'];
     const firstCharIsBracket = option[0] && openingBrackets.includes(option[0]);
-    const lastCharIsBracket =
-      option[option.length - 1] &&
-      closingBrackets.includes(option[option.length - 1]);
+    const lastCharIsBracket = option[option.length - 1] && closingBrackets.includes(option[option.length - 1]);
     const optionIsObject = firstCharIsBracket && lastCharIsBracket;
 
     try {
@@ -91,24 +89,17 @@ class PaginationParametersHelper {
     if (collation) options['collation'] = this.optObjectOrString(collation);
     if (sort) options['sort'] = this.optObjectOrString(sort);
     if (populate) options['populate'] = this.optObjectOrString(populate);
-    if (projection !== undefined)
-      options['projection'] = this.optObjectOrString(projection);
+    if (projection !== undefined) options['projection'] = this.optObjectOrString(projection);
     if (lean !== undefined) options['lean'] = this.booleanOpt(lean);
-    if (leanWithId !== undefined)
-      options['leanWithId'] = this.booleanOpt(leanWithId);
+    if (leanWithId !== undefined) options['leanWithId'] = this.booleanOpt(leanWithId);
     if (offset) options['offset'] = Number(offset);
     if (page) options['page'] = Number(page);
     if (limit || limit == 0) options['limit'] = Number(limit);
-    if (customLabels)
-      options['customLabels'] = this.optObjectOrString(customLabels);
-    if (pagination !== undefined)
-      options['pagination'] = this.booleanOpt(pagination);
-    if (useEstimatedCount !== undefined)
-      options['useEstimatedCount'] = this.booleanOpt(useEstimatedCount);
-    if (useCustomCountFn !== undefined)
-      options['useCustomCountFn'] = this.booleanOpt(useCustomCountFn);
-    if (forceCountFn !== undefined)
-      options['forceCountFn'] = this.booleanOpt(forceCountFn);
+    if (customLabels) options['customLabels'] = this.optObjectOrString(customLabels);
+    if (pagination !== undefined) options['pagination'] = this.booleanOpt(pagination);
+    if (useEstimatedCount !== undefined) options['useEstimatedCount'] = this.booleanOpt(useEstimatedCount);
+    if (useCustomCountFn !== undefined) options['useCustomCountFn'] = this.booleanOpt(useCustomCountFn);
+    if (forceCountFn !== undefined) options['forceCountFn'] = this.booleanOpt(forceCountFn);
     if (allowDiskUse) options['allowDiskUse'] = this.booleanOpt(allowDiskUse);
     if (read) options['read'] = this.optObjectOrString(read);
     if (mongooseOptions) options['options'] = this.getOptions(mongooseOptions);

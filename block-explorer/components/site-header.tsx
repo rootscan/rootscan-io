@@ -1,14 +1,16 @@
-import Link from "next/link"
+import { Fragment } from 'react';
 
-import { Fuel } from "lucide-react"
-import Image from "next/image"
-import { Fragment } from "react"
-import OnlyMainnet from "./layouts/only-mainnet"
-import MainSearch from "./main-search"
-import { Navigation } from "./navigation"
-import RootPrice from "./root-price"
-import TestnetWarning from "./testnet-warning"
-import { Badge } from "./ui/badge"
+import { Fuel } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import OnlyMainnet from './layouts/only-mainnet';
+import MainSearch from './main-search';
+import { Navigation } from './navigation';
+import RootPrice from './root-price';
+import TestnetWarning from './testnet-warning';
+import { Badge } from './ui/badge';
+
 export function SiteHeader() {
   return (
     <Fragment>
@@ -16,13 +18,12 @@ export function SiteHeader() {
         <div className="hidden border-b pb-4 lg:block">
           <div className="container">
             <div className="flex items-center justify-between gap-4">
-              <div className="flex select-none items-center gap-2 text-xs text-primary/80">
+              <div className="text-primary/80 flex select-none items-center gap-2 text-xs">
                 <OnlyMainnet>
                   <RootPrice />
                 </OnlyMainnet>
-                <Fuel className="size-4 text-muted-foreground" />{" "}
-                <span className="text-muted-foreground">EVM Gas:</span> 7500
-                Gwei
+                <Fuel className="text-muted-foreground size-4" />{' '}
+                <span className="text-muted-foreground">EVM Gas:</span> 7500 Gwei
               </div>
               <div className="hidden max-w-2xl grow lg:block">
                 <MainSearch />
@@ -49,5 +50,5 @@ export function SiteHeader() {
         </div>
       </header>
     </Fragment>
-  )
+  );
 }

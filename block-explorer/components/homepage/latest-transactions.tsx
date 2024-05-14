@@ -1,20 +1,18 @@
-import { generateAvatarURL } from "@cfx-kit/wallet-avatar"
-import { ArrowLeftRight, ChevronRight } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
+'use client';
 
-import SectionTitle from "@/components/section-title"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { getAddress } from "viem"
-import AddressDisplay from "../address-display"
-import TimeAgoDate from "../time-ago-date"
+import SectionTitle from '@/components/section-title';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { generateAvatarURL } from '@cfx-kit/wallet-avatar';
+import { ArrowLeftRight, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { getAddress } from 'viem';
 
-export default function LatestTransactions({
-  latestTransactions,
-}: {
-  latestTransactions: any
-}) {
+import AddressDisplay from '../address-display';
+import TimeAgoDate from '../time-ago-date';
+
+export default function LatestTransactions({ latestTransactions }: { latestTransactions: any }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -29,25 +27,21 @@ export default function LatestTransactions({
               <div className="flex flex-col flex-wrap justify-between gap-4">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="flex flex-wrap items-center gap-4">
-                    {transaction?.toLookup?.isContract ? (
-                      <Badge variant="info">Contract Call</Badge>
-                    ) : null}
-                    {transaction.status === "success" ? (
-                      <Badge variant="success">Confirmed</Badge>
-                    ) : null}
+                    {transaction?.toLookup?.isContract ? <Badge variant="info">Contract Call</Badge> : null}
+                    {transaction.status === 'success' ? <Badge variant="success">Confirmed</Badge> : null}
                     {transaction?.tags?.map((tag, _) => (
                       <Badge variant="info" key={_}>
                         {tag}
                       </Badge>
                     ))}
                   </div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-muted-foreground text-xs">
                     <TimeAgoDate date={transaction?.timestamp} />
                   </span>
                 </div>
               </div>
               <div className="flex min-w-0 items-center gap-4 truncate">
-                <ArrowLeftRight className="shrink-0 text-muted-foreground" />
+                <ArrowLeftRight className="text-muted-foreground shrink-0" />
                 <Link href={`/tx/${transaction.hash}`} className="truncate">
                   <span className="truncate">{transaction.hash}</span>
                 </Link>
@@ -70,7 +64,7 @@ export default function LatestTransactions({
                   useShortenedAddress
                 />
 
-                <ChevronRight className="mx-1 size-4 shrink-0 text-muted-foreground" />
+                <ChevronRight className="text-muted-foreground mx-1 size-4 shrink-0" />
 
                 <Image
                   src={generateAvatarURL(transaction.to)}
@@ -95,5 +89,5 @@ export default function LatestTransactions({
         ))}
       </div>
     </div>
-  )
+  );
 }

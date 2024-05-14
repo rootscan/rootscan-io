@@ -1,14 +1,7 @@
-import AddressDisplay from "@/components/address-display"
-import TokenDisplay from "@/components/token-display"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { SortDesc } from "lucide-react"
+import AddressDisplay from '@/components/address-display';
+import TokenDisplay from '@/components/token-display';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { SortDesc } from 'lucide-react';
 
 export default function Erc20Holders({ data }) {
   return (
@@ -36,5 +29,5 @@ export default function Erc20Holders({ data }) {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

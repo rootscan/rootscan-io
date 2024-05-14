@@ -7,7 +7,7 @@ import {
   findAllKnownAddresses,
   findMissingBlocks,
   findPrecompiledTokens,
-  updateStakingValidators
+  updateStakingValidators,
 } from '@/indexer/tasks/prepopulate';
 import logger from '@/logger';
 import NftIndexer from '@/nft-indexer';
@@ -94,14 +94,14 @@ const start = async () => {
   const worker = new Worker(process.env.WORKERPOOL_QUEUE, handleTask, {
     connection: redisClient,
     removeOnComplete: { count: 100 },
-    removeOnFail: { count: 5000 }
+    removeOnFail: { count: 5000 },
   });
 
   worker.on('completed', (job) => {
     logger.info(
       `[COMPLETED] ${job?.name} (ID: ${job?.id}) (${
         job?.finishedOn && job?.processedOn ? Number(job.finishedOn - job.processedOn) : '-'
-      }ms)`
+      }ms)`,
     );
   });
 

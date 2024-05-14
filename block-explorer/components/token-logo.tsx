@@ -1,7 +1,7 @@
-import getTokenLogo from "@/lib/constants/tokenLogos"
-import { cn } from "@/lib/utils"
-import Image from "next/image"
-import { Address } from "viem"
+import getTokenLogo from '@/lib/constants/tokenLogos';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import { Address } from 'viem';
 
 export default async function TokenLogo({
   contractAddress,
@@ -9,13 +9,13 @@ export default async function TokenLogo({
   height,
   className,
 }: {
-  contractAddress: Address
-  width: number
-  height: number
-  className?: string
+  contractAddress: Address;
+  width: number;
+  height: number;
+  className?: string;
 }) {
-  const url = getTokenLogo(contractAddress)
-  if (!url) return <div />
+  const url = getTokenLogo(contractAddress);
+  if (!url) return <div />;
   return (
     <Image
       src={url}
@@ -25,7 +25,7 @@ export default async function TokenLogo({
       unoptimized
       priority
       quality={100}
-      className={cn(["shrink-0 rounded-full", className ? className : ""])}
+      className={cn(['shrink-0 rounded-full', className ? className : ''])}
     />
-  )
+  );
 }

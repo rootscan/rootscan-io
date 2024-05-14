@@ -1,41 +1,35 @@
-import AddressDisplay from "@/components/address-display"
-import ExtrinsicMethod from "@/components/extrinsic-method"
-import InOutBadge from "@/components/in-out-badge"
-import NFTMint from "@/components/nft-mint-comp"
-import NftThumbnail from "@/components/nft-thumbnail"
-import NoData from "@/components/no-data"
-import PaginationSuspense from "@/components/pagination-suspense"
-import TimeAgoDate from "@/components/time-ago-date"
-import TokenDisplay from "@/components/token-display"
-import Tooltip from "@/components/tooltip"
-import { Badge } from "@/components/ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { getNativeTransfersForAddress } from "@/lib/api"
-import { ROOT_TOKEN } from "@/lib/constants/tokens"
-import { getPaginationData } from "@/lib/utils"
-import { ChevronRight, Flame } from "lucide-react"
-import Link from "next/link"
-import { Fragment } from "react"
-import { getAddress } from "viem"
+import { Fragment } from 'react';
+
+import AddressDisplay from '@/components/address-display';
+import ExtrinsicMethod from '@/components/extrinsic-method';
+import InOutBadge from '@/components/in-out-badge';
+import NFTMint from '@/components/nft-mint-comp';
+import NftThumbnail from '@/components/nft-thumbnail';
+import NoData from '@/components/no-data';
+import PaginationSuspense from '@/components/pagination-suspense';
+import TimeAgoDate from '@/components/time-ago-date';
+import TokenDisplay from '@/components/token-display';
+import Tooltip from '@/components/tooltip';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { getNativeTransfersForAddress } from '@/lib/api';
+import { ROOT_TOKEN } from '@/lib/constants/tokens';
+import { getPaginationData } from '@/lib/utils';
+import { ChevronRight, Flame } from 'lucide-react';
+import Link from 'next/link';
+import { getAddress } from 'viem';
 
 const getData = async ({ params, searchParams }) => {
   const data = await getNativeTransfersForAddress({
     address: getAddress(params.address),
     page: searchParams.page,
-  })
-  return data
-}
+  });
+  return data;
+};
 export default async function Page({ params, searchParams }) {
-  const data = await getData({ params, searchParams })
-  const transactions = data?.docs
-  const address = getAddress(params.address)
+  const data = await getData({ params, searchParams });
+  const transactions = data?.docs;
+  const address = getAddress(params.address);
 
   return (
     <div className="flex flex-col gap-4">
@@ -58,54 +52,52 @@ export default async function Page({ params, searchParams }) {
           </TableHeader>
           <TableBody>
             {transactions.map((tx, _) => {
-              const { method, section } = tx
-              if (section === "assets" && method === "Transferred") {
-                return <AssetsTransferred tx={tx} address={address} key={_} />
+              const { method, section } = tx;
+              if (section === 'assets' && method === 'Transferred') {
+                return <AssetsTransferred tx={tx} address={address} key={_} />;
               }
-              if (section === "assets" && method === "ApprovedTransfer") {
-                return (
-                  <AssetsApprovedTransfer tx={tx} address={address} key={_} />
-                )
+              if (section === 'assets' && method === 'ApprovedTransfer') {
+                return <AssetsApprovedTransfer tx={tx} address={address} key={_} />;
               }
-              if (section === "assets" && method === "Issued") {
-                return <AssetsIssued tx={tx} address={address} key={_} />
+              if (section === 'assets' && method === 'Issued') {
+                return <AssetsIssued tx={tx} address={address} key={_} />;
               }
-              if (section === "assets" && method === "Burned") {
-                return <AssetsBurned tx={tx} address={address} key={_} />
+              if (section === 'assets' && method === 'Burned') {
+                return <AssetsBurned tx={tx} address={address} key={_} />;
               }
-              if (section === "balances" && method === "Reserved") {
-                return <BalancesReserved tx={tx} address={address} key={_} />
+              if (section === 'balances' && method === 'Reserved') {
+                return <BalancesReserved tx={tx} address={address} key={_} />;
               }
-              if (section === "balances" && method === "Transfer") {
-                return <BalancesTransfer tx={tx} address={address} key={_} />
+              if (section === 'balances' && method === 'Transfer') {
+                return <BalancesTransfer tx={tx} address={address} key={_} />;
               }
-              if (section === "balances" && method === "Unreserved") {
-                return <BalancesUnreserved tx={tx} address={address} key={_} />
+              if (section === 'balances' && method === 'Unreserved') {
+                return <BalancesUnreserved tx={tx} address={address} key={_} />;
               }
 
-              if (section === "nft" && method === "Transfer") {
-                return <NFTTransfer tx={tx} address={address} key={_} />
+              if (section === 'nft' && method === 'Transfer') {
+                return <NFTTransfer tx={tx} address={address} key={_} />;
               }
 
-              if (section === "nft" && method === "Mint") {
-                return <NFTMint tx={tx} address={address} key={_} />
+              if (section === 'nft' && method === 'Mint') {
+                return <NFTMint tx={tx} address={address} key={_} />;
               }
 
-              if (section === "sft" && method === "Transfer") {
-                return <SFTTransfer tx={tx} address={address} key={_} />
+              if (section === 'sft' && method === 'Transfer') {
+                return <SFTTransfer tx={tx} address={address} key={_} />;
               }
 
-              if (section === "sft" && method === "Mint") {
-                return <SFTMint tx={tx} address={address} key={_} />
+              if (section === 'sft' && method === 'Mint') {
+                return <SFTMint tx={tx} address={address} key={_} />;
               }
 
-              return <Fragment key={_} />
+              return <Fragment key={_} />;
             })}
           </TableBody>
         </Table>
       )}
     </div>
-  )
+  );
 }
 
 const AssetsTransferred = ({ tx, address }) => {
@@ -126,12 +118,7 @@ const AssetsTransferred = ({ tx, address }) => {
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>
-        <TokenDisplay
-          className="truncate"
-          token={tx?.tokenNative}
-          amount={tx?.args?.amount}
-          hideCopyButton
-        />
+        <TokenDisplay className="truncate" token={tx?.tokenNative} amount={tx?.args?.amount} hideCopyButton />
       </TableCell>
       <TableCell>
         <AddressDisplay address={tx?.args?.from} useShortenedAddress />
@@ -143,8 +130,8 @@ const AssetsTransferred = ({ tx, address }) => {
         <AddressDisplay address={tx?.args?.to} useShortenedAddress />
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 const AssetsApprovedTransfer = ({ tx, address }) => {
   return (
     <TableRow>
@@ -163,9 +150,7 @@ const AssetsApprovedTransfer = ({ tx, address }) => {
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>{tx?.name}</TableCell>
-      <TableCell>
-        {tx?.type === "ERC20" ? tx?.formattedAmount : tx?.tokenId}
-      </TableCell>
+      <TableCell>{tx?.type === 'ERC20' ? tx?.formattedAmount : tx?.tokenId}</TableCell>
       <TableCell className="max-w-[150px] truncate">
         <AddressDisplay address={tx?.from} useShortenedAddress />
       </TableCell>
@@ -176,8 +161,8 @@ const AssetsApprovedTransfer = ({ tx, address }) => {
         <AddressDisplay address={tx?.to} useShortenedAddress />
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 const AssetsIssued = ({ tx, address }) => {
   return (
     <TableRow>
@@ -186,17 +171,13 @@ const AssetsIssued = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} hideExtrinsic />
       </TableCell>
       <TableCell>
-        <InOutBadge address={address} from={"-"} to={tx?.args?.owner} />
+        <InOutBadge address={address} from={'-'} to={tx?.args?.owner} />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>
-        <TokenDisplay
-          token={tx?.tokenNative}
-          amount={tx?.args?.totalSupply}
-          hideCopyButton
-        />
+        <TokenDisplay token={tx?.tokenNative} amount={tx?.args?.totalSupply} hideCopyButton />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">-</TableCell>
       <TableCell className="text-muted-foreground max-w-[25px]">
@@ -206,8 +187,8 @@ const AssetsIssued = ({ tx, address }) => {
         <AddressDisplay address={tx?.args?.owner} useShortenedAddress />
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 
 const AssetsBurned = ({ tx, address }) => {
   return (
@@ -223,11 +204,7 @@ const AssetsBurned = ({ tx, address }) => {
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>
-        <TokenDisplay
-          amount={tx?.args?.balance}
-          token={tx?.tokenNative}
-          hideCopyButton
-        />
+        <TokenDisplay amount={tx?.args?.balance} token={tx?.tokenNative} hideCopyButton />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
         <AddressDisplay address={tx?.args?.owner} useShortenedAddress />
@@ -241,8 +218,8 @@ const AssetsBurned = ({ tx, address }) => {
         </Tooltip>
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 
 const BalancesReserved = ({ tx, address }) => {
   return (
@@ -262,11 +239,7 @@ const BalancesReserved = ({ tx, address }) => {
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>
-        <TokenDisplay
-          token={ROOT_TOKEN}
-          amount={tx?.args?.amount}
-          hideCopyButton
-        />
+        <TokenDisplay token={ROOT_TOKEN} amount={tx?.args?.amount} hideCopyButton />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
         <AddressDisplay address={tx?.args?.who} useShortenedAddress />
@@ -278,8 +251,8 @@ const BalancesReserved = ({ tx, address }) => {
         <AddressDisplay address={tx?.args?.who} useShortenedAddress />
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 const BalancesTransfer = ({ tx, address }) => {
   return (
     <TableRow>
@@ -298,11 +271,7 @@ const BalancesTransfer = ({ tx, address }) => {
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>
-        <TokenDisplay
-          token={ROOT_TOKEN}
-          amount={tx?.args?.amount}
-          hideCopyButton
-        />
+        <TokenDisplay token={ROOT_TOKEN} amount={tx?.args?.amount} hideCopyButton />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
         <AddressDisplay address={tx?.args?.from} useShortenedAddress />
@@ -314,8 +283,8 @@ const BalancesTransfer = ({ tx, address }) => {
         <AddressDisplay address={tx?.args?.to} useShortenedAddress />
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 const BalancesUnreserved = ({ tx, address }) => {
   // ;<div className="flex flex-wrap items-center gap-2">
   //   {args?.amount ? (
@@ -337,7 +306,7 @@ const BalancesUnreserved = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge address={address} from={"0x000000000"} to={address} />
+        <InOutBadge address={address} from={'0x000000000'} to={address} />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
@@ -357,8 +326,8 @@ const BalancesUnreserved = ({ tx, address }) => {
         <AddressDisplay address={tx?.args?.who} useShortenedAddress />
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 
 const NFTTransfer = ({ tx, address }) => {
   return (
@@ -372,11 +341,7 @@ const NFTTransfer = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge
-          address={address}
-          from={tx?.args?.previousOwner}
-          to={tx?.args?.newOwner}
-        />
+        <InOutBadge address={address} from={tx?.args?.previousOwner} to={tx?.args?.newOwner} />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
@@ -385,12 +350,8 @@ const NFTTransfer = ({ tx, address }) => {
         <div className="flex flex-col gap-2">
           {tx?.args?.serialNumbers.map((tokenId, _) => (
             <div className="flex items-center gap-2" key={_}>
-              <NftThumbnail
-                contractAddress={tx?.nftCollection?.contractAddress}
-                tokenId={tokenId}
-              />
-              {tokenId}{" "}
-              <TokenDisplay token={tx?.nftCollection} hideCopyButton />
+              <NftThumbnail contractAddress={tx?.nftCollection?.contractAddress} tokenId={tokenId} />
+              {tokenId} <TokenDisplay token={tx?.nftCollection} hideCopyButton />
             </div>
           ))}
         </div>
@@ -405,8 +366,8 @@ const NFTTransfer = ({ tx, address }) => {
         <AddressDisplay address={tx?.args?.newOwner} useShortenedAddress />
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 
 const SFTTransfer = ({ tx, address }) => {
   return (
@@ -420,11 +381,7 @@ const SFTTransfer = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge
-          address={address}
-          from={tx?.args?.previousOwner}
-          to={tx?.args?.newOwner}
-        />
+        <InOutBadge address={address} from={tx?.args?.previousOwner} to={tx?.args?.newOwner} />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
@@ -432,14 +389,8 @@ const SFTTransfer = ({ tx, address }) => {
       <TableCell>
         <div className="flex flex-col gap-2">
           {tx?.args?.serialNumbers.map((tokenId, _) => (
-            <div
-              className="flex items-center gap-2"
-              key={`${_}_${tx?.nftCollection?.contractAddress}_${tokenId}`}
-            >
-              <NftThumbnail
-                contractAddress={tx?.nftCollection?.contractAddress}
-                tokenId={tokenId}
-              />
+            <div className="flex items-center gap-2" key={`${_}_${tx?.nftCollection?.contractAddress}_${tokenId}`}>
+              <NftThumbnail contractAddress={tx?.nftCollection?.contractAddress} tokenId={tokenId} />
               <div className="flex items-center gap-2">
                 <span>{tokenId}</span>
                 <Badge>x{tx?.args?.balances}</Badge>
@@ -460,8 +411,8 @@ const SFTTransfer = ({ tx, address }) => {
         <AddressDisplay address={tx?.args?.newOwner} useShortenedAddress />
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 
 const SFTMint = ({ tx, address }) => {
   return (
@@ -475,11 +426,7 @@ const SFTMint = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge
-          address={address}
-          from={"0x0000000000000000000000"}
-          to={tx?.args?.owner}
-        />
+        <InOutBadge address={address} from={'0x0000000000000000000000'} to={tx?.args?.owner} />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
@@ -487,14 +434,8 @@ const SFTMint = ({ tx, address }) => {
       <TableCell className="max-w-[100px]">
         <div className="flex flex-col gap-2">
           {tx?.args?.serialNumbers.map((tokenId, _) => (
-            <div
-              className="flex items-center gap-2"
-              key={`${_}_${tx?.nftCollection?.contractAddress}_${tokenId}`}
-            >
-              <NftThumbnail
-                contractAddress={tx?.nftCollection?.contractAddress}
-                tokenId={tokenId}
-              />
+            <div className="flex items-center gap-2" key={`${_}_${tx?.nftCollection?.contractAddress}_${tokenId}`}>
+              <NftThumbnail contractAddress={tx?.nftCollection?.contractAddress} tokenId={tokenId} />
               <div className="flex items-center gap-2">
                 <span>{tokenId}</span>
                 <Badge>x{tx?.args?.balances}</Badge>
@@ -513,5 +454,5 @@ const SFTMint = ({ tx, address }) => {
         <AddressDisplay address={tx?.args?.owner} useShortenedAddress />
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};

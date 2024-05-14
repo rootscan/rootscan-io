@@ -8,6 +8,7 @@ import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
 import { Models } from 'mongoose';
 import { Abi, Address, MulticallResults, PublicClient, getAddress, isAddress } from 'viem';
+
 export default class NftIndexer {
   client: PublicClient;
   api: ApiPromise;
@@ -27,10 +28,12 @@ export default class NftIndexer {
 
     const collection: IToken | null = await this.DB.Token.findOne({
       contractAddress: getAddress(contractAddress),
-      type: { $in: ['ERC721', 'ERC1155'] }
+      type: { $in: ['ERC721', 'ERC1155'] },
     }).lean();
 
-    logger.info(`Refreshing holders for ${collection?.name || '-'} ${contractAddress} [Total Supply: ${collection?.totalSupply}]`);
+    logger.info(
+      `Refreshing holders for ${collection?.name || '-'} ${contractAddress} [Total Supply: ${collection?.totalSupply}]`,
+    );
 
     if (!collection) throw new Error('Collection does not exist.');
     if (!collection?.totalSupply || collection?.totalSupply === 0) return true;
@@ -48,14 +51,15 @@ export default class NftIndexer {
             { section: 'sft', method: 'Transfer', 'args.collectionId': nativeId },
             { section: 'sft', method: 'Mint', 'args.collectionId': nativeId },
             { section: 'sft', method: 'CollectionCreate', 'args.collectionId': nativeId },
-            { section: 'sft', method: 'TokenCreate', 'args.tokenId[0]': nativeId }
-          ]
+            { section: 'sft', method: 'TokenCreate', 'args.tokenId[0]': nativeId },
+          ],
         })
           .select('args')
           .lean();
 
         for (const event of sftEvents) {
-          const address = event?.args?.owner || event?.args?.tokenOwner || event?.args?.newOwner || event?.args?.collectionOwner;
+          const address =
+            event?.args?.owner || event?.args?.tokenOwner || event?.args?.newOwner || event?.args?.collectionOwner;
           if (isAddress(address)) {
             addresses.add(getAddress(address));
           }
@@ -69,41 +73,41 @@ export default class NftIndexer {
               {
                 'events.eventName': 'Transfer',
                 'events.type': 'ERC1155',
-                'events.address': getAddress(contractAddress)
+                'events.address': getAddress(contractAddress),
               },
               {
                 'events.eventName': 'TransferSingle',
                 'events.type': 'ERC1155',
-                'events.address': getAddress(contractAddress)
+                'events.address': getAddress(contractAddress),
               },
               {
                 'events.eventName': 'TransferBatch',
                 'events.type': 'ERC1155',
-                'events.address': getAddress(contractAddress)
-              }
-            ]
-          }
+                'events.address': getAddress(contractAddress),
+              },
+            ],
+          },
         },
         {
-          $unwind: '$events'
+          $unwind: '$events',
         },
         {
           $match: {
-            'events.address': getAddress(contractAddress)
-          }
+            'events.address': getAddress(contractAddress),
+          },
         },
         {
           $replaceRoot: {
-            newRoot: '$events'
-          }
+            newRoot: '$events',
+          },
         },
         {
           $project: {
             from: 1,
             to: 1,
-            operator: 1
-          }
-        }
+            operator: 1,
+          },
+        },
       ]);
 
       for (const evmEvent of evmEvents) {
@@ -131,17 +135,20 @@ export default class NftIndexer {
           address: getAddress(contractAddress),
           abi: ABIs.ERC1155_ORIGINAL as Abi,
           functionName: 'balanceOfBatch',
-          args: [a, q]
+          args: [a, q],
         });
       }
 
       const multicall: MulticallResults = await this.client.multicall({
         contracts: calls,
-        allowFailure: true
+        allowFailure: true,
       });
 
       const ops: (IBulkWriteUpdateOp | IBulkWriteDeleteOp)[] = [];
-      const currentBalances = await this.DB.Nft.find({ contractAddress: getAddress(contractAddress), amount: { $gt: 0 } })
+      const currentBalances = await this.DB.Nft.find({
+        contractAddress: getAddress(contractAddress),
+        amount: { $gt: 0 },
+      })
         .select('owner tokenId amount')
         .lean();
 
@@ -164,14 +171,14 @@ export default class NftIndexer {
               const metadata = await getTokenMetadata(
                 getAddress(contractAddress),
                 Number(tokenId),
-                Number(currentChainId) === 7668 ? 'root' : 'porcini'
+                Number(currentChainId) === 7668 ? 'root' : 'porcini',
               );
               ops.push({
                 updateOne: {
                   filter: {
                     tokenId: Number(tokenId),
                     contractAddress: getAddress(contractAddress),
-                    owner: getAddress(address)
+                    owner: getAddress(address),
                   },
                   update: {
                     $set: {
@@ -181,11 +188,11 @@ export default class NftIndexer {
                       amount: Number(quantity),
                       attributes: metadata?.attributes,
                       image: metadata?.image || null,
-                      animation_url: metadata?.animation_url || null
-                    }
+                      animation_url: metadata?.animation_url || null,
+                    },
                   },
-                  upsert: true
-                }
+                  upsert: true,
+                },
               });
             } else if (Number(quantity) === 0 && balCache?.[getAddress(address)]?.includes(Number(tokenId))) {
               ops.push({
@@ -193,9 +200,9 @@ export default class NftIndexer {
                   filter: {
                     contractAddress: getAddress(contractAddress),
                     tokenId: Number(tokenId),
-                    owner: getAddress(address)
-                  }
-                }
+                    owner: getAddress(address),
+                  },
+                },
               });
             }
             tokenId++;
@@ -220,13 +227,13 @@ export default class NftIndexer {
             address: getAddress(contractAddress),
             abi: ABIs.ERC721_ORIGINAL as Abi,
             functionName: 'ownerOf',
-            args: [i]
+            args: [i],
           });
         }
 
         const multicall: MulticallResults = await this.client.multicall({
           contracts: calls,
-          allowFailure: true
+          allowFailure: true,
         });
 
         const ops: IBulkWriteUpdateOp[] = [];
@@ -237,14 +244,14 @@ export default class NftIndexer {
               const metadata = await getTokenMetadata(
                 getAddress(contractAddress),
                 Number(tokenId),
-                Number(currentChainId) === 7668 ? 'root' : 'porcini'
+                Number(currentChainId) === 7668 ? 'root' : 'porcini',
               );
               const owner: Address = getAddress(result?.result as string);
               ops.push({
                 updateOne: {
                   filter: {
                     tokenId: Number(tokenId),
-                    contractAddress: getAddress(contractAddress)
+                    contractAddress: getAddress(contractAddress),
                   },
                   update: {
                     $set: {
@@ -253,11 +260,11 @@ export default class NftIndexer {
                       owner,
                       attributes: metadata?.attributes,
                       image: metadata?.image || null,
-                      animation_url: metadata?.animation_url || null
-                    }
+                      animation_url: metadata?.animation_url || null,
+                    },
                   },
-                  upsert: true
-                }
+                  upsert: true,
+                },
               });
             }
           }
@@ -284,12 +291,12 @@ export default class NftIndexer {
       await queue.add(
         'REFETCH_NFT_HOLDERS',
         {
-          contractAddress: getAddress(contractAddress)
+          contractAddress: getAddress(contractAddress),
         },
         {
           priority: 6,
-          jobId: `REFETCH_NFT_HOLDERS_${contractAddress}`
-        }
+          jobId: `REFETCH_NFT_HOLDERS_${contractAddress}`,
+        },
       );
     }
   }

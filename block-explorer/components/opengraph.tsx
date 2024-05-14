@@ -1,18 +1,16 @@
-import { ImageResponse } from "next/og"
+import { ImageResponse } from 'next/og';
 
 export type Props = {
-  title?: string
+  title?: string;
   params?: {
-    id: string
-  }
-}
+    id: string;
+  };
+};
 
-export default async function OpengraphImage(
-  props: Props
-): Promise<ImageResponse> {
-  const font = fetch(
-    new URL("/public/fonts/ObjektivMk1_Trial_Md.ttf", import.meta.url)
-  ).then((res) => res.arrayBuffer())
+export default async function OpengraphImage(props: Props): Promise<ImageResponse> {
+  const font = fetch(new URL('/public/fonts/ObjektivMk1_Trial_Md.ttf', import.meta.url)).then((res) =>
+    res.arrayBuffer(),
+  );
 
   return new ImageResponse(
     (
@@ -32,12 +30,12 @@ export default async function OpengraphImage(
       height: 630,
       fonts: [
         {
-          name: "Inter",
+          name: 'Inter',
           data: await font,
-          style: "normal",
+          style: 'normal',
           weight: 400,
         },
       ],
-    }
-  )
+    },
+  );
 }

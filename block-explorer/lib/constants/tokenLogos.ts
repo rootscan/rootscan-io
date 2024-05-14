@@ -97,7 +97,13 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0xcCcCCCcc00015064000000000000000000000000": "token-king-prawn.png",
 
     //Reebok
-    "0xaaaAAAAA0000c464000000000000000000000000": "token-reebok.png"
+    "0xaaaAAAAA0000c464000000000000000000000000": "token-reebok.png",
+
+    //RootNameService
+    //NameWrapper (ERC-1155)
+    "0x44640D662A423d738D5ebF8B51E57AfC0f2cf4Df": "token-rns.png",
+    //BaseRegistrarImplementation (ERC-721)
+    "0xEeD3C3c547751e23020f4cb506FbA37baEb3308D": "token-rns.png",
   },
   7672: {
     // Root

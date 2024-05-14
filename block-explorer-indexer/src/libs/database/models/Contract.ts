@@ -7,7 +7,7 @@ const schema = new Schema<IAddress, Mongoose.Model<IAddress>>({
   rns: { type: String },
   nameTag: { type: String },
   isContract: { type: Boolean },
-  balance: { type: Object }
+  balance: { type: Object },
 });
 
 schema.index({ address: 1 }, { unique: true });

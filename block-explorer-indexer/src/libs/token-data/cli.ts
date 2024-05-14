@@ -1,9 +1,9 @@
 import { program } from 'commander';
+import fs from 'node:fs/promises';
 import { Address, PublicClient, createPublicClient, defineChain, getAddress, http, isAddress } from 'viem';
 
-import fs from 'node:fs/promises';
-import ERC1155_ABI from './abi/erc1155.json';
 import ERC721_ABI from './abi/erc721.json';
+import ERC1155_ABI from './abi/erc1155.json';
 
 program.option('--network'); // 0
 program.option('--contractaddress'); // 1
@@ -18,11 +18,10 @@ const C_REGEX_NORMAL_TOKEN_METADATA_URL = /^.*\/(\d+)$/;
 
 // a polyfill for it would be:
 AbortSignal.timeout ??= function timeout(ms) {
-  const ctrl = new AbortController()
-  setTimeout(() => ctrl.abort(), ms)
-  return ctrl.signal
-}
-
+  const ctrl = new AbortController();
+  setTimeout(() => ctrl.abort(), ms);
+  return ctrl.signal;
+};
 
 if (!options?.network || !options?.contractaddress || !options?.type) {
   console.error(`Missing one of the required arguments.`);
@@ -71,24 +70,24 @@ export const root = defineChain({
   nativeCurrency: {
     decimals: 18,
     name: 'Ripple',
-    symbol: 'XRP'
+    symbol: 'XRP',
   },
   contracts: {
     multicall3: {
       address: '0xc9C2E2429AeC354916c476B30d729deDdC94988d',
-      blockCreated: 9218338
-    }
+      blockCreated: 9218338,
+    },
   },
   rpcUrls: {
     default: {
       http: [HTTP_URL],
-      webSocket: [WS_URL]
+      webSocket: [WS_URL],
     },
     public: {
       http: [HTTP_URL],
-      webSocket: [WS_URL]
-    }
-  }
+      webSocket: [WS_URL],
+    },
+  },
 });
 
 export const porcini = defineChain({
@@ -98,24 +97,24 @@ export const porcini = defineChain({
   nativeCurrency: {
     decimals: 18,
     name: 'Ripple',
-    symbol: 'XRP'
+    symbol: 'XRP',
   },
   contracts: {
     multicall3: {
       address: '0xc9c2e2429aec354916c476b30d729deddc94988d',
-      blockCreated: 10555692
-    }
+      blockCreated: 10555692,
+    },
   },
   rpcUrls: {
     default: {
       http: [HTTP_URL],
-      webSocket: [WS_URL]
+      webSocket: [WS_URL],
     },
     public: {
       http: [HTTP_URL],
-      webSocket: [WS_URL]
-    }
-  }
+      webSocket: [WS_URL],
+    },
+  },
 });
 
 export const ethereumChain = defineChain({
@@ -125,7 +124,7 @@ export const ethereumChain = defineChain({
   nativeCurrency: {
     decimals: 18,
     name: 'ETH',
-    symbol: 'ETH'
+    symbol: 'ETH',
   },
   rpcUrls: {
     default: {
@@ -133,40 +132,39 @@ export const ethereumChain = defineChain({
     },
     public: {
       http: [HTTP_ETHEREUM_URL],
-    }
-  }
+    },
+  },
 });
-
 
 export const evmClient: PublicClient = createPublicClient({
   chain: network === 'root' ? root : porcini,
-  transport: http()
+  transport: http(),
 });
 export const ethereumClient: PublicClient = createPublicClient({
   chain: ethereumChain,
-  transport: http()
+  transport: http(),
 });
 
 const getTokenMetadataUrl = async (tokenId = 1): Promise<string> => {
-  let data
+  let data;
   if (tokenType === 'erc721') {
-     data = (await evmClient.readContract({
+    data = (await evmClient.readContract({
       address: contractAddress as Address,
       abi: ERC721_ABI,
       functionName: 'tokenURI',
-      args: [tokenId]
+      args: [tokenId],
     })) as string;
-  
+
     if (data?.startsWith('ethereum://')) {
       // get ethereum address from url string
-      const parts = data.split(/[:/]/).filter(part => part !== '');
+      const parts = data.split(/[:/]/).filter((part) => part !== '');
       ethereumContractAddress = getAddress(parts[1]);
 
       data = (await ethereumClient.readContract({
         address: ethereumContractAddress as Address,
         abi: ERC721_ABI,
         functionName: 'tokenURI',
-        args: [tokenId]
+        args: [tokenId],
       })) as string;
     }
     return data;
@@ -177,7 +175,7 @@ const getTokenMetadataUrl = async (tokenId = 1): Promise<string> => {
       address: contractAddress as Address,
       abi: ERC1155_ABI,
       functionName: 'uri',
-      args: [tokenId]
+      args: [tokenId],
     })) as string;
   }
   if (!data) {
@@ -195,13 +193,13 @@ const getTotalSupply = async () => {
     data = (await ethereumClient.readContract({
       address: ethereumContractAddress as Address,
       abi: ERC721_ABI,
-      functionName: 'totalSupply'
+      functionName: 'totalSupply',
     })) as string;
   } else {
     data = (await evmClient.readContract({
       address: contractAddress as Address,
       abi: tokenType === 'erc721' ? ERC721_ABI : ERC1155_ABI,
-      functionName: 'totalSupply'
+      functionName: 'totalSupply',
     })) as string;
   }
   console.log('Total tokens: ', data);
@@ -213,14 +211,13 @@ const getTotalSupply = async () => {
 
 const run = async () => {
   const uri = await getTokenMetadataUrl(1);
-  const getTokenMetadataUrlFn = 
-    C_REGEX_NORMAL_TOKEN_METADATA_URL.test(uri!) ?
-      (tokenId) => {
+  const getTokenMetadataUrlFn = C_REGEX_NORMAL_TOKEN_METADATA_URL.test(uri!)
+    ? (tokenId) => {
         const uri2 = uri.substring(0, uri?.length - 1);
-        return `${uri2}${tokenId}`
-      }: 
-      getTokenMetadataUrl;
-  
+        return `${uri2}${tokenId}`;
+      }
+    : getTokenMetadataUrl;
+
   const totalSupply = await getTotalSupply();
   console.log(`Detected ${uri} as URI with a totalSupply of ${totalSupply}`);
   const fileDir = `./blockchains/${network}/${contractAddress}.json`;
@@ -235,7 +232,7 @@ const run = async () => {
   }
 
   for (let tokenId = 0; tokenId < totalSupply; tokenId++) {
-    const url = await getTokenMetadataUrlFn(tokenId)
+    const url = await getTokenMetadataUrlFn(tokenId);
     console.log(`Fetching ${tokenId} ${url}`);
     const exists = data?.find((a) => Number(a.tokenId) === tokenId);
     if (exists) {
@@ -267,7 +264,7 @@ const run = async () => {
     }
     if (tokenId % 100 === 0 || tokenId + 1 >= totalSupply) {
       await fs.writeFile(fileDir, JSON.stringify(data, null, 0));
-      console.log('saved')
+      console.log('saved');
     }
   }
 };

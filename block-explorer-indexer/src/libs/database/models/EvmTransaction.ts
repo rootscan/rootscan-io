@@ -30,7 +30,7 @@ const schema = new Schema<IEVMTransaction, Mongoose.Model<IEVMTransaction>>({
   logs: [{ type: Object }],
   input: { type: String },
   from: { type: String },
-  to: { type: String }
+  to: { type: String },
 });
 
 schema.index({ hash: 1 });
@@ -54,7 +54,7 @@ schema.virtual('fromLookup', {
   localField: 'from',
   foreignField: 'address',
   select: 'isContract address rns nameTag',
-  justOne: true
+  justOne: true,
 });
 
 schema.virtual('toLookup', {
@@ -62,7 +62,7 @@ schema.virtual('toLookup', {
   localField: 'to',
   foreignField: 'address',
   select: 'isContract address rns nameTag',
-  justOne: true
+  justOne: true,
 });
 
 schema.plugin(mongoosePaginate);

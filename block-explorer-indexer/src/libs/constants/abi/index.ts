@@ -1,27 +1,28 @@
 import {
   DEX_PRECOMPILE_ABI,
-  ERC1155_ABI,
-  ERC1155_PRECOMPILE_ABI,
   ERC20_ABI,
   ERC20_PRECOMPILE_ABI,
   ERC721_ABI,
   ERC721_PRECOMPILE_ABI,
+  ERC1155_ABI,
+  ERC1155_PRECOMPILE_ABI,
   FEE_PROXY_ABI,
   FEE_PROXY_PRECOMPILE_ABI,
   FUTUREPASS_PRECOMPILE_ABI,
   FUTUREPASS_REGISTRAR_PRECOMPILE_ABI,
   NFT_PRECOMPILE_ABI,
-  SFT_PRECOMPILE_ABI
+  SFT_PRECOMPILE_ABI,
 } from '@therootnetwork/evm';
-import ERC1155_ORIGINAL from './erc1155.json';
-import ERC165_ORIGINAL from './erc165.json';
+import { parseAbi } from 'viem';
+
 import ERC20_ORIGINAL from './erc20.json';
+import ERC165_ORIGINAL from './erc165.json';
 import ERC721_ORIGINAL from './erc721.json';
 import ERC721A_ORIGINAL from './erc721a.json';
+import ERC1155_ORIGINAL from './erc1155.json';
 import UNISWAPV2_FACTORY from './uniswapv2-factory.json';
 import UNISWAPV2_ROUTER from './uniswapv2-router.json';
 
-import { parseAbi } from 'viem';
 /** @dev - List is exported basedon PRIORITY */
 export default {
   ERC20_ORIGINAL,
@@ -43,5 +44,5 @@ export default {
   SFT_PRECOMPILE_ABI: parseAbi(SFT_PRECOMPILE_ABI),
   FEE_PROXY_ABI: parseAbi(FEE_PROXY_ABI),
   FEE_PROXY_PRECOMPILE_ABI: parseAbi(FEE_PROXY_PRECOMPILE_ABI),
-  UNISWAPV2_FACTORY
+  UNISWAPV2_FACTORY,
 };

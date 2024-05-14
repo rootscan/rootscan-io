@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { defineChain } from 'viem';
+
 dotenv.config();
 
 if (!process?.env?.RPC_WS_URL || !process?.env?.RPC_HTTP_URL) {
@@ -19,24 +20,24 @@ export const root = defineChain({
   nativeCurrency: {
     decimals: 18,
     name: 'Ripple',
-    symbol: 'XRP'
+    symbol: 'XRP',
   },
   contracts: {
     multicall3: {
       address: '0xc9C2E2429AeC354916c476B30d729deDdC94988d',
-      blockCreated: 9218338
-    }
+      blockCreated: 9218338,
+    },
   },
   rpcUrls: {
     default: {
       http: [HTTP_URL],
-      webSocket: [WS_URL]
+      webSocket: [WS_URL],
     },
     public: {
       http: [HTTP_URL],
-      webSocket: [WS_URL]
-    }
-  }
+      webSocket: [WS_URL],
+    },
+  },
 });
 
 export const porcini = defineChain({
@@ -46,24 +47,24 @@ export const porcini = defineChain({
   nativeCurrency: {
     decimals: 18,
     name: 'Ripple',
-    symbol: 'XRP'
+    symbol: 'XRP',
   },
   contracts: {
     multicall3: {
       address: '0xc9c2e2429aec354916c476b30d729deddc94988d',
-      blockCreated: 10555692
-    }
+      blockCreated: 10555692,
+    },
   },
   rpcUrls: {
     default: {
       http: [HTTP_URL],
-      webSocket: [WS_URL]
+      webSocket: [WS_URL],
     },
     public: {
       http: [HTTP_URL],
-      webSocket: [WS_URL]
-    }
-  }
+      webSocket: [WS_URL],
+    },
+  },
 });
 
 export const ethereum = defineChain({
@@ -73,7 +74,7 @@ export const ethereum = defineChain({
   nativeCurrency: {
     decimals: 18,
     name: 'ETH',
-    symbol: 'ETH'
+    symbol: 'ETH',
   },
   rpcUrls: {
     default: {
@@ -81,7 +82,6 @@ export const ethereum = defineChain({
     },
     public: {
       http: [HTTP_ETHEREUM_URL],
-    }
-  }
+    },
+  },
 });
-

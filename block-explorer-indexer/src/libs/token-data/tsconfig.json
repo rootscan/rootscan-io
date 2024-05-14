@@ -21,6 +21,6 @@
     "noImplicitAny": false,
     "jsx": "preserve",
     "rootDir": ".",
-    "outDir": "build",
+    "outDir": "build"
   }
 }

@@ -1,6 +1,6 @@
 export default function FuturepassLogo({ className }: { className?: string }) {
   return (
-    <div className={className ? className : ""}>
+    <div className={className ? className : ''}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="100%"
@@ -19,5 +19,5 @@ export default function FuturepassLogo({ className }: { className?: string }) {
         ></path>
       </svg>
     </div>
-  )
+  );
 }

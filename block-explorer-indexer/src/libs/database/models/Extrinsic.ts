@@ -20,7 +20,7 @@ const schema = new Schema<IExtrinsic, Mongoose.Model<IExtrinsic>>({
   errorInfo: { type: String },
   isProxy: { type: Boolean },
   proxiedSections: [{ type: String }],
-  proxiedMethods: [{ type: String }]
+  proxiedMethods: [{ type: String }],
 });
 
 schema.index({ extrinsicId: 1 });
@@ -45,7 +45,6 @@ schema.index({ signer: 1, block: -1 });
 schema.index({ 'args.futurepass': 1, block: -1 });
 schema.index({ signer: 1, 'args.futurepass': 1, block: -1 });
 
-
 // Use case specific Indexes
 /** XRPL Bridge */
 schema.index({ 'args.transaction.payment.address': 1 });
@@ -59,7 +58,7 @@ schema.virtual('proxyFeeToken', {
   ref: 'Token',
   localField: 'proxyFee.paymentAsset',
   foreignField: 'assetId',
-  justOne: true
+  justOne: true,
 });
 
 // Bridge processingOk lookups
@@ -69,27 +68,27 @@ schema.virtual('xrplProcessingOk', {
   ref: 'Event',
   localField: 'args.transaction_hash',
   foreignField: 'args.XrplTxHash',
-  justOne: true
+  justOne: true,
 });
 
 schema.virtual('allEvents', {
   ref: 'Event',
   localField: 'extrinsicId',
-  foreignField: 'extrinsicId'
+  foreignField: 'extrinsicId',
 });
 
 schema.virtual('bridgeErc20Token', {
   ref: 'Token',
   localField: 'args.erc20Value.tokenAddress',
   foreignField: 'ethereumContractAddress',
-  justOne: true
+  justOne: true,
 });
 
 schema.virtual('bridgeErc721Token', {
   ref: 'Token',
   localField: 'args.erc721Value.tokenAddress',
   foreignField: 'ethereumContractAddress',
-  justOne: true
+  justOne: true,
 });
 
 schema.plugin(mongoosePaginate);

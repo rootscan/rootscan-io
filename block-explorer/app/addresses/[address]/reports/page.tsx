@@ -1,12 +1,14 @@
-"use client"
-import { DatePickerWithRange } from "@/components/date-picker-with-range"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Link from "next/link"
-import { useState } from "react"
+'use client';
+
+import { useState } from 'react';
+
+import { DatePickerWithRange } from '@/components/date-picker-with-range';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Link from 'next/link';
 
 export default function Page({ params }) {
-  const [date, setDate] = useState({ from: undefined, to: undefined })
+  const [date, setDate] = useState({ from: undefined, to: undefined });
   return (
     <Card>
       <CardHeader>
@@ -15,12 +17,11 @@ export default function Page({ params }) {
       <CardContent>
         <div className="flex flex-col gap-4">
           <p className="text-muted-foreground">
-            You are able to export your transaction history in CSV format for a
-            certain date range.
+            You are able to export your transaction history in CSV format for a certain date range.
           </p>
           <p className="text-muted-foreground">
-            Please note: If you have a large transaction history for the
-            selected date range, it will take longer to generate the reports.
+            Please note: If you have a large transaction history for the selected date range, it will take longer to
+            generate the reports.
           </p>
           <div className="flex flex-col gap-2">
             <label className="text-sm">Date Range</label>
@@ -29,7 +30,9 @@ export default function Page({ params }) {
           {date?.from && date?.to ? (
             <div>
               <Link
-                href={`/api/report?from=${new Date(date.from).toISOString()}&to=${new Date(date.to).toISOString()}&address=${params.address}`}
+                href={`/api/report?from=${new Date(date.from).toISOString()}&to=${new Date(
+                  date.to,
+                ).toISOString()}&address=${params.address}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -44,5 +47,5 @@ export default function Page({ params }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

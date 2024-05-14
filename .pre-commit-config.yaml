@@ -1,0 +1,21 @@
+exclude: ^(.idea/.*|.run/.*|node_modules/.*|pnpm-lock.yaml|lib/.*|dist/.*)$
+#fail_fast: true
+repos:
+  - repo: https://github.com/pre-commit/mirrors-prettier.git
+    rev: v3.0.3
+    hooks:
+      - id: prettier
+        name: prettier https://prettier.io/docs/en/ .
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 3.0.0
+    hooks:
+      - id: markdownlint # Configure in .mdlrc
+        name: Check markdown files https://github.com/jumanjihouse/pre-commit-hooks#markdownlint .
+        args: [-r, '~MD013,~MD004,~MD026,~MD033']
+  #      - id: shellcheck
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-nodejs
+    rev: v1.1.2
+    hooks:
+      #      - id: dockerfile_lint
+      - id: markdown-toc
+        args: ['--bullets', '+', '-i']

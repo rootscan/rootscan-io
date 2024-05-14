@@ -11,7 +11,7 @@ const schema = new Schema<INFT, Mongoose.Model<INFT>>({
   image: { type: String },
   type: { type: String },
   animation_url: { type: String },
-  attributes: { type: Object }
+  attributes: { type: Object },
 });
 
 schema.index({ contractAddress: 1, tokenId: 1 });
@@ -25,7 +25,7 @@ schema.virtual('nftCollection', {
   ref: 'Token',
   localField: 'contractAddress',
   foreignField: 'contractAddress',
-  justOne: true
+  justOne: true,
 });
 
 schema.plugin(mongoosePaginate);

@@ -1,5 +1,5 @@
-import { Response } from 'express';
 import logger from '@/logger';
+import { Response } from 'express';
 
 export const processError = (e: any, res: Response) => {
   logger.error(e);

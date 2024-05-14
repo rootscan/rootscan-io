@@ -1,24 +1,21 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { camelCaseToWords } from "@/lib/utils"
-import { ChevronRight, SortDesc } from "lucide-react"
-import Link from "next/link"
-import { Fragment } from "react"
-import AddressDisplay from "./address-display"
-import ExtrinsicStatus from "./extrinsic-status"
-import NoData from "./no-data"
-import TimeAgoDate from "./time-ago-date"
-import Tooltip from "./tooltip"
-import { Badge } from "./ui/badge"
+'use client';
+
+import { Fragment } from 'react';
+
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { camelCaseToWords } from '@/lib/utils';
+import { ChevronRight, SortDesc } from 'lucide-react';
+import Link from 'next/link';
+
+import AddressDisplay from './address-display';
+import ExtrinsicStatus from './extrinsic-status';
+import NoData from './no-data';
+import TimeAgoDate from './time-ago-date';
+import Tooltip from './tooltip';
+import { Badge } from './ui/badge';
 
 export default function ExtrinsicsTable({ extrinsics }) {
-  if (!extrinsics?.length) return <NoData />
+  if (!extrinsics?.length) return <NoData />;
   return (
     <Table>
       <TableHeader>
@@ -43,9 +40,7 @@ export default function ExtrinsicsTable({ extrinsics }) {
               <ExtrinsicStatus extrinsic={extrinsic} />
             </TableCell>
             <TableCell>
-              <Link href={`/extrinsics/${extrinsic.extrinsicId}`}>
-                {extrinsic.extrinsicId}
-              </Link>
+              <Link href={`/extrinsics/${extrinsic.extrinsicId}`}>{extrinsic.extrinsicId}</Link>
             </TableCell>
             <TableCell>
               <Link href={`/blocks/${extrinsic.block}`}>{extrinsic.block}</Link>
@@ -55,17 +50,13 @@ export default function ExtrinsicsTable({ extrinsics }) {
             </TableCell>
             <TableCell className="capitalize">
               <div className="flex flex-wrap items-center gap-1">
-                <Badge>
-                  {extrinsic?.section
-                    ? camelCaseToWords(extrinsic?.section)
-                    : null}
-                </Badge>
+                <Badge>{extrinsic?.section ? camelCaseToWords(extrinsic?.section) : null}</Badge>
                 {extrinsic?.isProxy ? (
                   <Fragment>
                     {extrinsic?.proxiedSections.map((item, _) => (
                       <Tooltip text="Proxied" key={_}>
                         <div className="flex items-center gap-1">
-                          <ChevronRight className="size-4 text-muted-foreground" />
+                          <ChevronRight className="text-muted-foreground size-4" />
                           <Badge>{item ? camelCaseToWords(item) : null}</Badge>
                         </div>
                       </Tooltip>
@@ -76,17 +67,13 @@ export default function ExtrinsicsTable({ extrinsics }) {
             </TableCell>
             <TableCell className="capitalize">
               <div className="flex flex-wrap items-center gap-1">
-                <Badge>
-                  {extrinsic?.method
-                    ? camelCaseToWords(extrinsic?.method)
-                    : null}
-                </Badge>
+                <Badge>{extrinsic?.method ? camelCaseToWords(extrinsic?.method) : null}</Badge>
                 {extrinsic?.isProxy ? (
                   <Fragment>
                     {extrinsic?.proxiedMethods.map((item, _) => (
                       <Tooltip text="Proxied" key={_}>
                         <div className="flex items-center gap-1">
-                          <ChevronRight className="size-4 text-muted-foreground" />
+                          <ChevronRight className="text-muted-foreground size-4" />
                           <Badge>{item ? camelCaseToWords(item) : null}</Badge>
                         </div>
                       </Tooltip>
@@ -96,18 +83,11 @@ export default function ExtrinsicsTable({ extrinsics }) {
               </div>
             </TableCell>
             <TableCell>
-              {extrinsic?.signer ? (
-                <AddressDisplay
-                  address={extrinsic?.signer}
-                  useShortenedAddress
-                />
-              ) : (
-                "-"
-              )}
+              {extrinsic?.signer ? <AddressDisplay address={extrinsic?.signer} useShortenedAddress /> : '-'}
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

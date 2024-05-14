@@ -14,7 +14,7 @@ const schema = new Schema<IToken, Mongoose.Model<IToken>>({
   collectionId: { type: Number },
   totalSupply: { type: Number },
   totalSupplyFormatted: { type: Number },
-  priceData: { type: Object }
+  priceData: { type: Object },
 });
 
 schema.index({ contractAddress: 1 }, { unique: true });

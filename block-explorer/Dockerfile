@@ -1,4 +1,4 @@
-FROM node:20.12.1-alpine AS build
+FROM node:20.13-alpine AS build
 
 RUN apk update && apk upgrade && apk add python3 make g++ --no-cache && rm -rf /var/cache/apk/*
 RUN npm install -g pnpm
@@ -12,7 +12,7 @@ RUN pnpm install --frozen-lockfile --unsafe-perm --force
 COPY . .
 RUN BASE_URL='http://api' pnpm run build
 
-FROM node:20.12.1-alpine AS deps
+FROM node:20.13-alpine AS deps
 
 RUN apk update && apk upgrade && apk add python3 make g++ --no-cache && rm -rf /var/cache/apk/*
 RUN npm install -g pnpm
@@ -25,7 +25,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile --no-optional --force
 
 
-FROM node:20.12.1-alpine AS runner
+FROM node:20.13-alpine AS runner
 
 RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 RUN addgroup  --system --gid 1001 nodejs

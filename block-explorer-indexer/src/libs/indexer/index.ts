@@ -11,20 +11,20 @@ import {
   INativeBalance,
   IVerifiedContract,
   TExtrinsicId,
-  TRetroExtrinsicId
+  TRetroExtrinsicId,
 } from '@/types';
 import {
   createTransactionsJobs,
   decodeBridgeMessage,
   extraArgsFromEvent,
   isExtrinsicSuccess,
-  refetchBalancesForAddressesInObject
+  refetchBalancesForAddressesInObject,
 } from '@/utils';
 import { getTokenDetails } from '@/utils/tokenInformation';
 import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
 import { BlockHash, Extrinsic } from '@polkadot/types/interfaces';
-import { assetIdToERC20Address, collectionIdToERC1155Address, collectionIdToERC721Address } from '@therootnetwork/evm';
+import { assetIdToERC20Address, collectionIdToERC721Address, collectionIdToERC1155Address } from '@therootnetwork/evm';
 import { Interface, InterfaceAbi, formatUnits } from 'ethers';
 import { Models } from 'mongoose';
 import {
@@ -39,7 +39,7 @@ import {
   decodeFunctionData,
   getAddress,
   parseEventLogs,
-  slice
+  slice,
 } from 'viem';
 import { DecodeFunctionDataReturnType } from 'viem/_types/utils/abi/decodeFunctionData';
 
@@ -65,10 +65,10 @@ export default class Indexer {
 
     const [block, substrateBlock, at] = await Promise.all([
       this.client.getBlock({
-        blockNumber
+        blockNumber,
       }),
       this.api.rpc.chain.getBlock(blockHash),
-      this.api.at(blockHash)
+      this.api.at(blockHash),
     ]);
 
     // Check out the extrinsics in this block
@@ -77,7 +77,7 @@ export default class Indexer {
     const [chainEvents, runtimeVersion, timestamp] = await Promise.all([
       at.query.system.events(),
       at.query.system.lastRuntimeUpgrade(),
-      at.query.timestamp.now()
+      at.query.timestamp.now(),
     ]);
 
     const spec = `${runtimeVersion.value.specName}/${runtimeVersion.value.specVersion}`;
@@ -89,15 +89,17 @@ export default class Indexer {
       extrinsic: Extrinsic,
       events,
       index: number,
-      retroExtrinsicId: TRetroExtrinsicId
+      retroExtrinsicId: TRetroExtrinsicId,
     ) => {
       try {
         const method: string = extrinsic.method.method;
         const section: string = extrinsic.method.section;
         if (this.skipSections.includes(section)) return;
         const isSigned: boolean = extrinsic?.isSigned;
-        const signature: string | undefined = isSigned && extrinsic?.signature ? extrinsic?.signature?.toString() : undefined;
-        const signer: Address | undefined = isSigned && extrinsic?.signer ? getAddress(extrinsic?.signer?.toString()) : undefined;
+        const signature: string | undefined =
+          isSigned && extrinsic?.signature ? extrinsic?.signature?.toString() : undefined;
+        const signer: Address | undefined =
+          isSigned && extrinsic?.signer ? getAddress(extrinsic?.signer?.toString()) : undefined;
 
         const methodPrim = extrinsic?.method.toPrimitive() as { args?: object };
         const args = methodPrim?.args;
@@ -111,7 +113,7 @@ export default class Indexer {
           args,
           method,
           section,
-          isSigned
+          isSigned,
         };
 
         if (isSigned) {
@@ -175,7 +177,9 @@ export default class Indexer {
 
         if (events?.length) {
           /** @dev Figure out the gas fee that was paid for this Extrinsic */
-          const txFeeEvent = events?.find((a) => a?.event?.method === 'TransactionFeePaid' && a?.event?.section === 'transactionPayment');
+          const txFeeEvent = events?.find(
+            (a) => a?.event?.method === 'TransactionFeePaid' && a?.event?.section === 'transactionPayment',
+          );
           if (txFeeEvent) {
             const { event, phase } = txFeeEvent;
             const { data: eventData } = event;
@@ -187,7 +191,7 @@ export default class Indexer {
                   actualFee: actualFee.toPrimitive(),
                   actualFeeFormatted: Number(formatUnits(actualFee.toPrimitive(), 6)),
                   tip: tip.toPrimitive(),
-                  tipFormatted: Number(formatUnits(actualFee.toPrimitive(), 6))
+                  tipFormatted: Number(formatUnits(actualFee.toPrimitive(), 6)),
                 };
               }
             }
@@ -195,7 +199,7 @@ export default class Indexer {
 
           /** @dev - Figure out if there was a CallWithFreePreferences event */
           const additionalTxFeeEvent = events?.find(
-            (a) => a?.event?.method === 'CallWithFeePreferences' && a?.event?.section === 'feeProxy'
+            (a) => a?.event?.method === 'CallWithFeePreferences' && a?.event?.section === 'feeProxy',
           );
 
           if (additionalTxFeeEvent) {
@@ -221,7 +225,7 @@ export default class Indexer {
                   who: swapFeeEventArgs.trader,
                   paymentAsset: swapFeeEventArgs.trading_path[0],
                   swappedAmount: Number(amount),
-                  swappedAmountFormatted: Number(formatUnits(amount, tokenDetails?.decimals))
+                  swappedAmountFormatted: Number(formatUnits(amount, tokenDetails?.decimals)),
                 };
               }
             }
@@ -229,7 +233,9 @@ export default class Indexer {
 
           /** @dev - Save the Ethereum Transaction from the event to the extrinsic to make our lives easier */
           if (method === 'transact' && section === 'ethereum') {
-            const executedEvent = events?.find((a) => a?.event?.method === 'Executed' && a?.event?.section === 'ethereum');
+            const executedEvent = events?.find(
+              (a) => a?.event?.method === 'Executed' && a?.event?.section === 'ethereum',
+            );
             if (executedEvent) {
               const { event, phase } = executedEvent;
               const { data: eventData } = event;
@@ -241,7 +247,9 @@ export default class Indexer {
 
           /** @dev - Parse all information from the ethBridge */
           if (method === 'submitEvent' && section === 'ethBridge') {
-            const typeEvent = events?.find((a) => a?.event?.method === 'EventSend' || a?.event?.method === 'EventSubmit');
+            const typeEvent = events?.find(
+              (a) => a?.event?.method === 'EventSend' || a?.event?.method === 'EventSubmit',
+            );
             const eventText = data?.args?.event;
 
             const [, source, , message] = decodeAbiParameters(
@@ -250,9 +258,9 @@ export default class Indexer {
                 { name: 'source', type: 'address' },
                 { name: 'destination', type: 'address' },
                 { name: 'message', type: 'bytes' },
-                { name: 'fee', type: 'uint256' }
+                { name: 'fee', type: 'uint256' },
               ],
-              eventText as Hex
+              eventText as Hex,
             );
 
             if (typeEvent) {
@@ -263,7 +271,7 @@ export default class Indexer {
                 data.args = {
                   ...data.args,
                   type,
-                  ...decodeBridgeMessage(source, message, type)
+                  ...decodeBridgeMessage(source, message, type),
                 };
               }
             }
@@ -280,9 +288,10 @@ export default class Indexer {
       let index = 0;
       for (const extrinsic of blockExtrinsics) {
         const extrinsicId: TExtrinsicId = `${String(block.number)}-${String(index)}`;
-        const retroExtrinsicId: TRetroExtrinsicId = `${String(block.number).padStart(10, '0')}-${String(index).padStart(6, '0')}-${String(
-          blockHash
-        ).substring(2, 7)}`;
+        const retroExtrinsicId: TRetroExtrinsicId = `${String(block.number).padStart(10, '0')}-${String(index).padStart(
+          6,
+          '0',
+        )}-${String(blockHash).substring(2, 7)}`;
 
         if (extrinsic?.method?.section !== 'timestamp' && extrinsic?.method?.method !== 'set') {
           await parseExtrinsic(extrinsicId, extrinsic, chainEvents, index, retroExtrinsicId);
@@ -318,7 +327,7 @@ export default class Indexer {
         method,
         section,
         doc: meta?.docs?.[0]?.toString() || undefined,
-        args
+        args,
       };
       if (extrinsicId) {
         parsedEvent.extrinsicId = extrinsicId;
@@ -366,10 +375,10 @@ export default class Indexer {
           updateOne: {
             filter: { eventId: parsedEvent.eventId },
             update: {
-              $set: parsedEvent
+              $set: parsedEvent,
             },
-            upsert: true
-          }
+            upsert: true,
+          },
         });
       }
       eventIndex++;
@@ -401,20 +410,20 @@ export default class Indexer {
         hash: block?.hash?.toString(),
         parentHash: block?.parentHash?.toString(),
         stateRoot: block?.stateRoot?.toString(),
-        miner: getAddress(block?.miner)
+        miner: getAddress(block?.miner),
       },
       extrinsicsCount: extrinsics?.length,
       transactionsCount: block?.transactions?.length,
       eventsCount: parsedEvents?.length,
-      spec
+      spec,
     };
 
     await this.DB.Block.updateOne(
       { number: blockData.number },
       {
-        $set: blockData
+        $set: blockData,
       },
-      { upsert: true }
+      { upsert: true },
     );
 
     if (extrinsics?.length) {
@@ -426,10 +435,10 @@ export default class Indexer {
           updateOne: {
             filter: { extrinsicId: extrinsic.extrinsicId },
             update: {
-              $set: extrinsic
+              $set: extrinsic,
             },
-            upsert: true
-          }
+            upsert: true,
+          },
         });
       }
 
@@ -455,28 +464,28 @@ export default class Indexer {
 
         await this.DB.Address.updateOne(
           {
-            address: getAddress(tx.creates)
+            address: getAddress(tx.creates),
           },
           {
             $set: {
               address: getAddress(tx.creates),
-              isContract: true
-            }
+              isContract: true,
+            },
           },
           {
-            upsert: true
-          }
+            upsert: true,
+          },
         );
 
         await this.DB.VerifiedContract.updateOne(
           {
-            address: getAddress(tx.creates)
+            address: getAddress(tx.creates),
           },
           {
             address: getAddress(tx.creates),
             deployer: getAddress(tx.from),
-            deployedBlock: Number(tx.blockNumber)
-          }
+            deployedBlock: Number(tx.blockNumber),
+          },
         );
 
         /** If it just got deployed, we should try to fetch tokenDetails */
@@ -487,7 +496,7 @@ export default class Indexer {
       }
 
       const isVerifiedContract: IVerifiedContract | null = await this.DB.VerifiedContract.findOne({
-        address: getAddress(tx.to as Address)
+        address: getAddress(tx.to as Address),
       }).lean();
       const verifiedAbi = isVerifiedContract?.abi as Abi;
 
@@ -502,7 +511,7 @@ export default class Indexer {
           try {
             const decoded: DecodeFunctionDataReturnType = decodeFunctionData({
               abi: verifiedAbi,
-              data: tx.input
+              data: tx.input,
             });
             if (decoded?.functionName) {
               tx.functionName = decoded.functionName;
@@ -532,7 +541,7 @@ export default class Indexer {
               inputs: parsedTx?.fragment?.inputs ? JSON.parse(JSON.stringify(parsedTx?.fragment?.inputs)) : {},
               name: parsedTx?.name,
               selector: parsedTx?.selector,
-              signature: parsedTx?.signature
+              signature: parsedTx?.signature,
             };
           } catch {
             /*eslint no-empty: "error"*/
@@ -541,15 +550,18 @@ export default class Indexer {
           if (tx?.creates && verifiedAbi) {
             try {
               const code = await evmClient.getBytecode({
-                address: tx?.creates
+                address: tx?.creates,
               });
               if (code) {
                 /** Since we have now know the bytecode let's save it */
-                await this.DB.VerifiedContract.updateOne({ address: getAddress(tx.creates) }, { bytecode: String(code) });
+                await this.DB.VerifiedContract.updateOne(
+                  { address: getAddress(tx.creates) },
+                  { bytecode: String(code) },
+                );
                 deployData = decodeDeployData({
                   abi: verifiedAbi,
                   bytecode: code,
-                  data: tx?.input
+                  data: tx?.input,
                 });
               }
             } catch {
@@ -563,7 +575,7 @@ export default class Indexer {
             try {
               const decoded: DecodeFunctionDataReturnType = decodeFunctionData({
                 abi,
-                data: tx.input
+                data: tx.input,
               });
               if (decoded?.functionName) {
                 tx.functionName = decoded.functionName;
@@ -590,7 +602,7 @@ export default class Indexer {
         if (verifiedAbi) {
           const parsedLogs = parseEventLogs({
             abi: verifiedAbi,
-            logs: tx.logs
+            logs: tx.logs,
           });
           if (parsedLogs?.length) {
             tx.logs = parsedLogs;
@@ -600,7 +612,7 @@ export default class Indexer {
             try {
               const parsedLogs = parseEventLogs({
                 abi: ABIs[abiKey],
-                logs: tx.logs
+                logs: tx.logs,
               });
               if (parsedLogs?.length) {
                 tx.logs = parsedLogs;
@@ -623,7 +635,7 @@ export default class Indexer {
           from: tx?.from,
           to: tx?.to,
           value: Number(tx.value),
-          valueFormatted: tx.value ? formatUnits(tx.value, 18) : '0'
+          valueFormatted: tx.value ? formatUnits(tx.value, 18) : '0',
         };
 
         tx.functionName = 'Transfer';
@@ -659,15 +671,15 @@ export default class Indexer {
         logs,
         input: tx?.input,
         from: getAddress(tx.from),
-        to: tx?.to ? getAddress(tx.to) : null
+        to: tx?.to ? getAddress(tx.to) : null,
       };
 
       await this.DB.EvmTransaction.updateOne(
         { hash: hash },
         {
-          $set: finalTransaction
+          $set: finalTransaction,
         },
-        { upsert: true }
+        { upsert: true },
       );
 
       /** Refetch the balances for every address that was involved in this transaction */
@@ -691,7 +703,7 @@ export default class Indexer {
       miscFrozen: nativeBalancePrimitive?.miscFrozen as number,
       miscFrozenFormatted: formatUnits(String(nativeBalancePrimitive?.miscFrozen), nativeDecimals),
       feeFrozen: nativeBalancePrimitive?.feeFrozen as number,
-      feeFrozenFormatted: formatUnits(String(nativeBalancePrimitive?.feeFrozen), nativeDecimals)
+      feeFrozenFormatted: formatUnits(String(nativeBalancePrimitive?.feeFrozen), nativeDecimals),
     };
 
     await this.DB.Address.updateOne(
@@ -699,12 +711,12 @@ export default class Indexer {
       {
         $set: {
           address: getAddress(address),
-          balance: nativeBalance
-        }
+          balance: nativeBalance,
+        },
       },
       {
-        upsert: true
-      }
+        upsert: true,
+      },
     );
 
     /** Fetch all ERC20's that we know of */
@@ -713,7 +725,7 @@ export default class Indexer {
       this.DB.Token.find({ type: 'ERC20', totalSupply: { $gt: 0 } }).lean(),
       this.DB.Balance.find({ address: getAddress(address) })
         .select('contractAddress address')
-        .lean()
+        .lean(),
     ]);
 
     if (!tokens?.length) return true;
@@ -723,9 +735,9 @@ export default class Indexer {
         address: token.contractAddress,
         abi: ABIs.ERC20_ORIGINAL as Abi,
         functionName: 'balanceOf',
-        args: [address]
+        args: [address],
       })),
-      allowFailure: true
+      allowFailure: true,
     });
 
     for (let i = 0; i < multicall.length; i++) {
@@ -739,31 +751,33 @@ export default class Indexer {
           updateOne: {
             filter: {
               address: getAddress(address),
-              contractAddress: getAddress(token.contractAddress)
+              contractAddress: getAddress(token.contractAddress),
             },
             update: {
               $set: {
                 address: getAddress(address),
                 contractAddress: getAddress(token.contractAddress),
                 balance: Number(balance),
-                balanceFormatted: formatUnits(String(balance), token.decimals)
-              }
+                balanceFormatted: formatUnits(String(balance), token.decimals),
+              },
             },
-            upsert: true
-          }
+            upsert: true,
+          },
         });
       } else if (Number(balance) === 0) {
         const hadBalance = currentBalances?.find(
-          (a) => getAddress(a.address) === getAddress(address) && getAddress(a.contractAddress) === getAddress(token.contractAddress)
+          (a) =>
+            getAddress(a.address) === getAddress(address) &&
+            getAddress(a.contractAddress) === getAddress(token.contractAddress),
         );
         if (hadBalance) {
           ops.push({
             deleteOne: {
               filter: {
                 address: getAddress(address),
-                contractAddress: getAddress(token.contractAddress)
-              }
-            }
+                contractAddress: getAddress(token.contractAddress),
+              },
+            },
           });
         }
       }
@@ -786,9 +800,9 @@ export default class Indexer {
       { isFinalized: { $ne: true }, number: { $lte: blockNumber } },
       {
         $set: {
-          isFinalized: true
-        }
-      }
+          isFinalized: true,
+        },
+      },
     );
   }
 
@@ -799,8 +813,8 @@ export default class Indexer {
         { blocknumber: blockNumber },
         {
           priority: 1,
-          jobId: `BLOCK_${blockNumber}`
-        }
+          jobId: `BLOCK_${blockNumber}`,
+        },
       );
     }
     return true;
@@ -813,7 +827,7 @@ export default class Indexer {
       allowDiskUse: true,
       skipFullCount: true,
       select: 'address',
-      lean: true
+      lean: true,
     };
     // @ts-expect-error paginate is defined
     let data = await this.DB.Address.paginate({}, options);

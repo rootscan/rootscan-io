@@ -1,32 +1,26 @@
-import AddressDisplay from "@/components/address-display"
-import TransactionStatusBadge from "@/components/transaction-status-badge"
-import { Badge } from "@/components/ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { getShortenedHash } from "@/lib/constants/knownAddresses"
-import { camelCaseToWords, cn, formatNumber } from "@/lib/utils"
-import { AlertCircle, ChevronRight, SortDesc } from "lucide-react"
-import Link from "next/link"
-import { Address } from "viem"
-import { CopyButton } from "./copy-button"
-import InOutBadge from "./in-out-badge"
-import TimeAgoDate from "./time-ago-date"
-import Tooltip from "./tooltip"
+import AddressDisplay from '@/components/address-display';
+import TransactionStatusBadge from '@/components/transaction-status-badge';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { getShortenedHash } from '@/lib/constants/knownAddresses';
+import { camelCaseToWords, cn, formatNumber } from '@/lib/utils';
+import { AlertCircle, ChevronRight, SortDesc } from 'lucide-react';
+import Link from 'next/link';
+import { Address } from 'viem';
+
+import { CopyButton } from './copy-button';
+import InOutBadge from './in-out-badge';
+import TimeAgoDate from './time-ago-date';
+import Tooltip from './tooltip';
 
 export default function TransactionsTable({
   transactions,
   isAddressPage,
   address,
 }: {
-  transactions: any[]
-  isAddressPage?: boolean
-  address?: Address
+  transactions: any[];
+  isAddressPage?: boolean;
+  address?: Address;
 }) {
   return (
     <Table>
@@ -49,10 +43,7 @@ export default function TransactionsTable({
       </TableHeader>
       <TableBody>
         {transactions.map((tx, _) => (
-          <TableRow
-            key={tx._id}
-            className={cn([tx?.status === "pending" ? "italic" : ""])}
-          >
+          <TableRow key={tx._id} className={cn([tx?.status === 'pending' ? 'italic' : ''])}>
             {!isAddressPage ? (
               <TableCell>
                 <TransactionStatusBadge status={tx?.status} />
@@ -60,11 +51,8 @@ export default function TransactionsTable({
             ) : null}
             <TableCell className="truncate">
               <div className="flex items-center gap-2 truncate">
-                <Link
-                  href={`/tx/${tx.hash}`}
-                  className="flex items-center gap-2"
-                >
-                  {tx.status === "reverted" ? (
+                <Link href={`/tx/${tx.hash}`} className="flex items-center gap-2">
+                  {tx.status === 'reverted' ? (
                     <Tooltip text="Reverted">
                       <AlertCircle className="size-4   text-red-500" />
                     </Tooltip>
@@ -79,8 +67,8 @@ export default function TransactionsTable({
                 {tx?.functionName
                   ? camelCaseToWords(tx?.functionName)
                   : tx?.functionSignature
-                    ? tx?.functionSignature
-                    : "-"}
+                  ? tx?.functionSignature
+                  : '-'}
               </Badge>
             </TableCell>
             <TableCell>
@@ -104,13 +92,13 @@ export default function TransactionsTable({
               </TableCell>
             ) : (
               <TableCell className="max-w-[25px]">
-                <ChevronRight className="size-4 text-muted-foreground" />
+                <ChevronRight className="text-muted-foreground size-4" />
               </TableCell>
             )}
 
             <TableCell>
               {tx?.creates ? (
-                "Contract Deployment"
+                'Contract Deployment'
               ) : (
                 <AddressDisplay
                   address={tx.to}
@@ -122,14 +110,13 @@ export default function TransactionsTable({
               )}
             </TableCell>
             <TableCell className="text-center">
-              <span className="text-xs text-muted-foreground">
-                {tx?.valueFormatted ? formatNumber(tx?.valueFormatted) : "0"}{" "}
-                XRP
+              <span className="text-muted-foreground text-xs">
+                {tx?.valueFormatted ? formatNumber(tx?.valueFormatted) : '0'} XRP
               </span>
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

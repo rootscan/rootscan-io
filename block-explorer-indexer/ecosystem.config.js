@@ -7,7 +7,7 @@ module.exports = {
       name: 'Worker',
       script: './build/libs/worker/index.js',
       instances: 50,
-      combine_logs: true
-    }
-  ]
+      combine_logs: true,
+    },
+  ],
 };

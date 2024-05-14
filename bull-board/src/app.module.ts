@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bullmq';
-import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { BullModule } from '@nestjs/bullmq';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import {LocalRedisModule} from "./local-redis.module";
+
+import { LocalRedisModule } from './local-redis.module';
 
 @Module({
   imports: [

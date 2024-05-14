@@ -26,7 +26,7 @@ export const checkForNewlyVerifiedContracts = async () => {
       if (alreadyVerified) continue;
       // @dev look up abi and create record
       const lookUpAbi = await fetch(
-        `https://repo.sourcify.dev/contracts/full_match/${chainId}/${getAddress(contractAddress)}/metadata.json`
+        `https://repo.sourcify.dev/contracts/full_match/${chainId}/${getAddress(contractAddress)}/metadata.json`,
       )
         .then(async (resp) => {
           if (!resp.ok) {
@@ -40,17 +40,18 @@ export const checkForNewlyVerifiedContracts = async () => {
         });
       if (!lookUpAbi) continue;
       const verifiedAbi = lookUpAbi?.output?.abi;
-      const contractName = lookUpAbi?.settings?.compilationTarget?.[Object.keys(lookUpAbi?.settings?.compilationTarget)?.[0]];
+      const contractName =
+        lookUpAbi?.settings?.compilationTarget?.[Object.keys(lookUpAbi?.settings?.compilationTarget)?.[0]];
       await DB.VerifiedContract.updateOne(
         {
-          address: getAddress(contractAddress)
+          address: getAddress(contractAddress),
         },
         {
           address: getAddress(contractAddress),
           contractName,
-          abi: verifiedAbi
+          abi: verifiedAbi,
         },
-        { upsert: true }
+        { upsert: true },
       );
 
       // @dev - reindex all transactions that ever happened to and from this contract

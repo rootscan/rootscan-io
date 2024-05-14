@@ -17,7 +17,7 @@ if (!process.env.MONGO_URI) {
 
 /** @dev Connect to MongoDB */
 Mongoose.connect(process.env.MONGO_URI, {
-  socketTimeoutMS: 60_000
+  socketTimeoutMS: 60_000,
 }).catch((e) => {
   logger.info(`Unable to connect to database => ${e.message}`);
 });

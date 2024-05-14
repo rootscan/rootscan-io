@@ -1,0 +1,12 @@
+# Add files here to ignore them from prettier formatting
+dist
+.vscode
+.idea
+.nx
+lib
+/coverage
+*.yaml
+*.yml
+node_modules
+build
+block-explorer-indexer/src/libs/token-data/blockchains

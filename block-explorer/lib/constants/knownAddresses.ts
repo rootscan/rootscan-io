@@ -34,11 +34,7 @@ export const getAddressName = (
       "..." +
       address?.substring(address?.length - 4, address?.length)
 
-  return knownAddressNames[address]
-    ? knownAddressNames[address]
-    : useShortenedAddress
-      ? shortenedAddress
-      : address
+  return knownAddressNames[address] || (useShortenedAddress ? shortenedAddress : address)
 }
 
 export const getShortenedHash = (address: string) => {

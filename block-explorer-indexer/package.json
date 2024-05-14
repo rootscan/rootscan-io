@@ -13,7 +13,6 @@
     "alias": "tsc-alias -p ./tsconfig.json",
     "dev": "tsx watch src/index.ts",
     "format": "prettier --config .prettierrc src/**/*.ts --write",
-    "lint": "eslint . --ext .ts --ext .mts",
     "clean": "rm -rf lib"
   },
   "devDependencies": {
@@ -22,8 +21,6 @@
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "@typescript-eslint/parser": "^6.11.0",
     "eslint": "^8.53.0",
-    "prettier": "^3.1.0",
-    "prettier-plugin-organize-imports": "^3.2.4",
     "tsc-alias": "^1.8.8"
   },
   "dependencies": {

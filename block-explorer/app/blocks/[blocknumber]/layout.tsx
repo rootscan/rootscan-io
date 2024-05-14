@@ -1,11 +1,12 @@
-import Breadcrumbs from "@/components/breadcrumbs"
-import Container from "@/components/container"
-import SectionTitle from "@/components/section-title"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import Link from "next/link"
-import Menu from "./components/menu"
-import TestnetWarning from "@/components/testnet-warning"
+import Breadcrumbs from '@/components/breadcrumbs';
+import Container from '@/components/container';
+import SectionTitle from '@/components/section-title';
+import TestnetWarning from '@/components/testnet-warning';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+
+import Menu from './components/menu';
 
 export async function generateMetadata({ params }) {
   return {
@@ -13,14 +14,8 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function Layout({
-  children,
-  params,
-}: {
-  children: React.ReactNode
-  params: any
-}) {
-  const { blocknumber } = params
+export default async function Layout({ children, params }: { children: React.ReactNode; params: any }) {
+  const { blocknumber } = params;
 
   return (
     <Container>
@@ -50,5 +45,5 @@ export default async function Layout({
         {children}
       </div>
     </Container>
-  )
+  );
 }

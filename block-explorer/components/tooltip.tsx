@@ -1,11 +1,8 @@
-"use client"
+'use client';
 
-import {
-  TooltipContent,
-  Tooltip as TooltipShad,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { ReactNode } from "react"
+import { ReactNode } from 'react';
+
+import { TooltipContent, Tooltip as TooltipShad, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function Tooltip({
   children,
@@ -13,13 +10,13 @@ export default function Tooltip({
   disabled,
   asChild,
 }: {
-  children: ReactNode
-  text: string
-  disabled?: boolean
-  asChild?: boolean
+  children: ReactNode;
+  text: string;
+  disabled?: boolean;
+  asChild?: boolean;
 }) {
   if (disabled) {
-    return children
+    return children;
   }
   return (
     <TooltipShad delayDuration={0}>
@@ -28,5 +25,5 @@ export default function Tooltip({
         <p className="whitespace-pre-line">{text}</p>
       </TooltipContent>
     </TooltipShad>
-  )
+  );
 }

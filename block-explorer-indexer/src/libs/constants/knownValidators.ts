@@ -26,7 +26,7 @@ const addresses: { [key: Address]: string } = {
   '0x0Fa787f51333D9cA66a4A6563b56EececDA49a06': 'Futureverse Node 1',
   '0xfFFFfFFf000000000000000000000000000369c0': 'MaxStealth-Genesis',
   '0x177d1dB531459229Ed67Ae2aC90E544D62A230b1': 'Futureverse Node 10',
-  '0xcb1de4FADCA68F601871f7E6E47fd43D707c779A': 'Futureverse Node 16'
+  '0xcb1de4FADCA68F601871f7E6E47fd43D707c779A': 'Futureverse Node 16',
 };
 
 export default addresses;

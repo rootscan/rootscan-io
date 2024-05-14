@@ -1,42 +1,36 @@
-import AddressDisplay from "@/components/address-display"
-import Breadcrumbs from "@/components/breadcrumbs"
-import Container from "@/components/container"
-import PaginationSuspense from "@/components/pagination-suspense"
-import SectionTitle from "@/components/section-title"
-import TimeAgoDate from "@/components/time-ago-date"
-import { Badge } from "@/components/ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { getBlocks } from "@/lib/api"
-import { getAddressName } from "@/lib/constants/knownAddresses"
-import { getPaginationData } from "@/lib/utils"
-import { SortDesc } from "lucide-react"
-import { Metadata } from "next"
-import Link from "next/link"
-import { Fragment, Suspense } from "react"
+import { Fragment, Suspense } from 'react';
+
+import AddressDisplay from '@/components/address-display';
+import Breadcrumbs from '@/components/breadcrumbs';
+import Container from '@/components/container';
+import PaginationSuspense from '@/components/pagination-suspense';
+import SectionTitle from '@/components/section-title';
+import TimeAgoDate from '@/components/time-ago-date';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { getBlocks } from '@/lib/api';
+import { getAddressName } from '@/lib/constants/knownAddresses';
+import { getPaginationData } from '@/lib/utils';
+import { SortDesc } from 'lucide-react';
+import { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Blocks'
-}
+  title: 'Blocks',
+};
 
 const getData = async ({ searchParams }: { searchParams: any }) => {
   let data = await getBlocks({
     page: searchParams?.page ? searchParams?.page : 1,
     limit: 25,
-  })
+  });
 
-  return data
-}
+  return data;
+};
 
 export default async function Page({ searchParams }: { searchParams: any }) {
-  const data: any = await getData({ searchParams })
-  const blocks = data.docs
+  const data: any = await getData({ searchParams });
+  const blocks = data.docs;
   return (
     <Container>
       <div className="flex flex-col gap-4">
@@ -80,19 +74,14 @@ export default async function Page({ searchParams }: { searchParams: any }) {
                   <TimeAgoDate date={block?.timestamp} />
                 </TableCell>
                 <TableCell>
-                  <AddressDisplay
-                    address={block.evmBlock.miner}
-                    useShortenedAddress
-                  />
+                  <AddressDisplay address={block.evmBlock.miner} useShortenedAddress />
                 </TableCell>
-                <TableCell className="text-center">
-                  {getAddressName(block.hash, true)}
-                </TableCell>
+                <TableCell className="text-center">{getAddressName(block.hash, true)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
     </Container>
-  )
+  );
 }

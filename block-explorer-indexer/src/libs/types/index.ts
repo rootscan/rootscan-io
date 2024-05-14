@@ -64,7 +64,7 @@ export interface IToken {
 
 export interface INFT {
   contractAddress: string;
-  type: 'ERC721' | 'ERC1155'
+  type: 'ERC721' | 'ERC1155';
   tokenId: number;
   amount?: number;
   owner: Address;

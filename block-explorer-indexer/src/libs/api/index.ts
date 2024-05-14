@@ -1,14 +1,26 @@
 import DB from '@/database';
 import logger from '@/logger';
-import { IAddress, IBalance, IEVMTransaction, IEvent, IExtrinsic, INFT, IStakingValidator, IToken, TTokenType } from '@/types';
+import {
+  IAddress,
+  IBalance,
+  IEVMTransaction,
+  IEvent,
+  IExtrinsic,
+  INFT,
+  IStakingValidator,
+  IToken,
+  TTokenType,
+} from '@/types';
 import cors from 'cors';
 import { ZeroAddress } from 'ethers';
 import express, { Next, Request, Response } from 'express';
 import helmet from 'helmet';
 import moment from 'moment';
-import { Address, Hash, formatUnits, getAddress } from 'viem';
-import { processError } from './utils';
 import { FilterQuery, PaginateOptions } from 'mongoose';
+import { Address, Hash, formatUnits, getAddress } from 'viem';
+
+import { processError } from './utils';
+
 const app = express();
 
 /** @dev Middlewares */
@@ -44,7 +56,7 @@ app.post('/getBlocks', async (req: Request, res: Response) => {
       sort: '-number',
       skipFullCount: true,
       allowDiskUse: true,
-      lean: true
+      lean: true,
     };
     const data = await DB.Block.paginate({}, options);
     return res.json(data);
@@ -57,13 +69,15 @@ app.post('/getEvents', async (req: Request, res: Response) => {
   try {
     const { page, limit, query }: { page: number; limit: number; query: Record<string, unknown> } = req.body;
 
-    const filter: FilterQuery<IEvent> = {}
+    const filter: FilterQuery<IEvent> = {};
 
     if (query?.extrinsicId) {
-      filter.extrinsicId = query.extrinsicId
+      filter.extrinsicId = query.extrinsicId;
       // if sent retroExtrinsicId (0011766360-000001-2d9a4) - get real extrinsicId from retroExtrinsicId
       if (/^\d{10}-\d{6}-[0-9a-f]{5}$/gm.test(String(filter.extrinsicId))) {
-        const extrinsic: IExtrinsic | null = await DB.Extrinsic.findOne({ retroExtrinsicId: String(filter.extrinsicId) }).lean();
+        const extrinsic: IExtrinsic | null = await DB.Extrinsic.findOne({
+          retroExtrinsicId: String(filter.extrinsicId),
+        }).lean();
         filter.extrinsicId = extrinsic?.extrinsicId || filter.extrinsicId;
       }
     }
@@ -85,12 +99,12 @@ app.post('/getEvents', async (req: Request, res: Response) => {
           $match: filter,
         },
         {
-          $addFields: { 
-            numericPart: { $toInt: { $arrayElemAt: [ { $split: ["$eventId", "-"] }, 1 ] } }
-          }
+          $addFields: {
+            numericPart: { $toInt: { $arrayElemAt: [{ $split: ['$eventId', '-'] }, 1] } },
+          },
         },
-        { $sort: { "numericPart": 1 } }, 
-      ])
+        { $sort: { numericPart: 1 } },
+      ]);
       // @ts-expect-error aggregatePipeline does exist
       const data = await DB.Event.aggregatePaginate(pipeline, options);
       return res.json(data);
@@ -123,7 +137,7 @@ app.post('/getExtrinsic', async (req: Request, res: Response) => {
   try {
     const { extrinsicId }: { extrinsicId: string } = req.body;
     const data: (IExtrinsic & { events?: IEvent[] }) | null = await DB.Extrinsic.findOne({
-      $or: [{ extrinsicId: String(extrinsicId) }, { retroExtrinsicId: String(extrinsicId) }]
+      $or: [{ extrinsicId: String(extrinsicId) }, { retroExtrinsicId: String(extrinsicId) }],
     })
       .populate('proxyFeeToken')
       .lean();
@@ -143,16 +157,18 @@ app.post('/getExtrinsic', async (req: Request, res: Response) => {
 
 app.post('/getToken', async (req: Request, res: Response) => {
   try {
-    const { contractAddress }: { contractAddress: Address } = req.body;
+    const contractAddress = getAddress(req.body.contractAddress).toString();
 
-    const data: (IToken & { holders?: number }) | null = await DB.Token.findOne({ contractAddress: getAddress(contractAddress) }).lean();
+    const data: (IToken & { holders?: number }) | null = await DB.Token.findOne({
+      contractAddress,
+    }).lean();
 
     if (data) {
       if (data?.type === 'ERC20') {
-        const holders = await DB.Balance.find({ contractAddress: getAddress(contractAddress) }).countDocuments();
+        const holders = await DB.Balance.find({ contractAddress }).countDocuments();
         data.holders = holders;
       } else if (data?.type === 'ERC721' || data?.type === 'ERC1155') {
-        const holders = await DB.Nft.find({ contractAddress: getAddress(contractAddress) }).distinct('owner');
+        const holders = await DB.Nft.find({ contractAddress }).distinct('owner');
         data.holders = holders?.length;
       }
     }
@@ -164,89 +180,92 @@ app.post('/getToken', async (req: Request, res: Response) => {
 
 app.post('/getTokenHolders', async (req: Request, res: Response) => {
   try {
-    const { contractAddress, page }: { contractAddress: Address; page: number } = req.body;
+    const page = req.body.page ? Number(req.body.page) : 1;
+    const contractAddress = getAddress(req.body.contractAddress).toString();
 
-    const data: (IToken & { holders?: number }) | null = await DB.Token.findOne({ contractAddress: getAddress(contractAddress) }).lean();
+    const data: (IToken & { holders?: number }) | null = await DB.Token.findOne({
+      contractAddress,
+    }).lean();
 
     let holders: { docs?: (IBalance | INFT)[]; type?: TTokenType } = {};
     if (data) {
       if (data?.type === 'ERC20') {
         const options: PaginateOptions = {
-          page: page ? Number(page) : 1,
+          page,
           limit: 25,
           sort: '-balance',
           populate: 'tokenDetails',
           allowDiskUse: true,
           skipFullCount: true,
-          lean: true
+          lean: true,
         };
 
-        holders = await DB.Balance.paginate({ contractAddress: getAddress(contractAddress) }, options);
+        holders = await DB.Balance.paginate({ contractAddress }, options);
       } else if (data?.type === 'ERC721') {
         const options = {
-          page: page ? Number(page) : 1,
-          limit: 25
+          page,
+          limit: 25,
         };
         const pipeline = DB.Nft.aggregate([
           {
             $match: {
-              contractAddress: getAddress(contractAddress)
-            }
+              contractAddress,
+            },
           },
           {
             $group: {
               _id: '$owner',
               count: {
-                $sum: 1
-              }
-            }
+                $sum: 1,
+              },
+            },
           },
           {
             $sort: {
-              count: -1
-            }
+              count: -1,
+            },
           },
           {
             $project: {
               _id: 0,
               owner: '$_id',
-              count: 1
-            }
-          }
+              count: 1,
+            },
+          },
         ]);
         // @ts-expect-error aggregatePipeline does exist
         holders = await DB.Nft.aggregatePaginate(pipeline, options);
       } else if (data?.type === 'ERC1155') {
         const options = {
           page: page ? Number(page) : 1,
-          limit: 25
+          limit: 25,
         };
         const pipeline = DB.Nft.aggregate([
           {
             $match: {
-              contractAddress: getAddress(contractAddress)
-            }
+              contractAddress,
+            },
           },
           {
             $group: {
               _id: '$owner',
               count: {
-                $sum: '$amount'
-              }
-            }
+                $sum: '$amount',
+              },
+            },
           },
           {
             $sort: {
-              count: -1
-            }
+              count: -1,
+            },
           },
           {
             $project: {
               _id: 0,
               owner: '$_id',
-              count: 1
-            }
-          }
+              count: 1,
+            },
+          },
         ]);
         // @ts-expect-error aggregatePipeline does exist
         holders = await DB.Nft.aggregatePaginate(pipeline, options);
@@ -273,7 +292,9 @@ app.post('/getExtrinsicsInBlock', async (req: Request, res: Response) => {
 
 app.post('/getExtrinsicsForAddress', async (req: Request, res: Response) => {
   try {
-    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const { page, limit }: { page: number; limit: number; address: Address } = req.body;
+    const address = getAddress(req.body.address).toString();
+
     const options = {
       page: page ? Number(page) : 1,
       limit: limit ? limit : 25,
@@ -281,13 +302,10 @@ app.post('/getExtrinsicsForAddress', async (req: Request, res: Response) => {
       paginate: false,
       skipFullCount: true,
       allowDiskUse: true,
-      lean: true
+      lean: true,
     };
 
-    const data = await DB.Extrinsic.paginate(
-      { $or: [{ signer: getAddress(address) }, { 'args.futurepass': getAddress(address) }] },
-      options
-    );
+    const data = await DB.Extrinsic.paginate({ $or: [{ signer: address }, { 'args.futurepass': address }] }, options);
 
     return res.json(data);
   } catch (e) {
@@ -297,16 +315,20 @@ app.post('/getExtrinsicsForAddress', async (req: Request, res: Response) => {
 
 app.post('/getNftsForAddress', async (req: Request, res: Response) => {
   try {
-    const { page, limit, address, contractAddress }: { page: number; limit: number; address: Address; contractAddress: Address } = req.body;
+    const { page, limit }: { page: number; limit: number } = req.body;
+
+    const address = getAddress(req.body.address).toString();
+    const contractAddress = getAddress(req.body.contractAddress).toString();
+
     const options = {
       page: page ? Number(page) : 1,
       limit: limit ? limit : 25,
       skipFullCount: true,
       allowDiskUse: true,
       sort: '-contractAddress tokenId',
-      lean: true
+      lean: true,
     };
-    const data = await DB.Nft.paginate({ owner: getAddress(address), contractAddress: getAddress(contractAddress) }, options);
+    const data = await DB.Nft.paginate({ owner: address, contractAddress }, options);
     return res.json(data);
   } catch (e) {
     processError(e, res);
@@ -315,34 +337,36 @@ app.post('/getNftsForAddress', async (req: Request, res: Response) => {
 
 app.post('/getNftCollectionsForAddress', async (req: Request, res: Response) => {
   try {
-    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const { page, limit }: { page: number; limit: number } = req.body;
+    const address = getAddress(req.body.address).toString();
+
     const options = {
       page: page ? Number(page) : 1,
       limit: limit ? limit : 25,
-      allowDiskUse: true
+      allowDiskUse: true,
     };
 
     const pipeline = DB.Nft.aggregate([
       {
         $match: {
-          owner: getAddress(address)
-        }
+          owner: address,
+        },
       },
       {
         $group: {
           _id: '$contractAddress',
           count: {
-            $sum: 1
-          }
-        }
+            $sum: 1,
+          },
+        },
       },
       {
         $lookup: {
           from: 'tokens',
           localField: '_id',
           foreignField: 'contractAddress',
-          as: 'tokenLookUp'
-        }
+          as: 'tokenLookUp',
+        },
       },
       {
         $project: {
@@ -350,10 +374,10 @@ app.post('/getNftCollectionsForAddress', async (req: Request, res: Response) => 
           contractAddress: '$_id',
           count: 1,
           tokenLookUp: {
-            $arrayElemAt: ['$tokenLookUp', 0]
-          }
-        }
-      }
+            $arrayElemAt: ['$tokenLookUp', 0],
+          },
+        },
+      },
     ]);
 
     // @ts-expect-error aggregatePipeline does exist
@@ -375,7 +399,7 @@ app.post('/getTransactions', async (req: Request, res: Response) => {
       populate: 'fromLookup toLookup',
       skipFullCount: true,
       allowDiskUse: true,
-      lean: true
+      lean: true,
     };
     const data = await DB.EvmTransaction.paginate({}, options);
     return res.json(data);
@@ -394,7 +418,7 @@ app.post('/getTransactionsInBlock', async (req: Request, res: Response) => {
       populate: 'fromLookup toLookup',
       allowDiskUse: true,
       skipFullCount: true,
-      lean: true
+      lean: true,
     };
     const data = await DB.EvmTransaction.paginate({ blockNumber: block }, options);
     return res.json(data);
@@ -405,7 +429,9 @@ app.post('/getTransactionsInBlock', async (req: Request, res: Response) => {
 
 app.post('/getEVMTransactionsForWallet', async (req: Request, res: Response) => {
   try {
-    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const { page, limit }: { page: number; limit: number } = req.body;
+    const address = getAddress(req.body.address).toString();
+
     const options = {
       page: page ? Number(page) : 1,
       limit: limit ? limit : 25,
@@ -413,10 +439,10 @@ app.post('/getEVMTransactionsForWallet', async (req: Request, res: Response) => 
       populate: 'fromLookup toLookup',
       skipFullCount: true,
       allowDiskUse: true,
-      lean: true
+      lean: true,
     };
 
-    const data = await DB.EvmTransaction.paginate({ $or: [{ from: getAddress(address) }, { to: getAddress(address) }] }, options);
+    const data = await DB.EvmTransaction.paginate({ $or: [{ from: address }, { to: address }] }, options);
 
     return res.json(data);
   } catch (e) {
@@ -426,7 +452,9 @@ app.post('/getEVMTransactionsForWallet', async (req: Request, res: Response) => 
 
 app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) => {
   try {
-    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const { page, limit }: { page: number; limit: number } = req.body;
+    const address = getAddress(req.body.address).toString();
+
     const options = {
       page: page ? Number(page) : 1,
       limit: limit ? limit : 25,
@@ -434,35 +462,35 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
       skipFullCount: true,
       allowDiskUse: true,
       populate: 'extrinsicData tokenNative nftCollection',
-      lean: true
+      lean: true,
     };
 
     const data = await DB.Event.paginate(
       {
         $or: [
           // Assets Pallet
-          { section: 'assets', method: 'Transferred', 'args.from': getAddress(address) },
-          { section: 'assets', method: 'Transferred', 'args.to': getAddress(address) },
-          { section: 'assets', method: 'ApprovedTransfer', 'args.source': getAddress(address) },
-          { section: 'assets', method: 'Issued', 'args.source': getAddress(address) },
-          { section: 'assets', method: 'Issued', 'args.owner': getAddress(address) },
-          { section: 'assets', method: 'Burned', 'args.owner': getAddress(address) },
+          { section: 'assets', method: 'Transferred', 'args.from': address },
+          { section: 'assets', method: 'Transferred', 'args.to': address },
+          { section: 'assets', method: 'ApprovedTransfer', 'args.source': address },
+          { section: 'assets', method: 'Issued', 'args.source': address },
+          { section: 'assets', method: 'Issued', 'args.owner': address },
+          { section: 'assets', method: 'Burned', 'args.owner': address },
           // Balances Pallet
-          { section: 'balances', method: 'Reserved', 'args.who': getAddress(address) },
-          { section: 'balances', method: 'Transfer', 'args.from': getAddress(address) },
-          { section: 'balances', method: 'Transfer', 'args.to': getAddress(address) },
-          { section: 'balances', method: 'Unreserved', 'args.who': getAddress(address) },
+          { section: 'balances', method: 'Reserved', 'args.who': address },
+          { section: 'balances', method: 'Transfer', 'args.from': address },
+          { section: 'balances', method: 'Transfer', 'args.to': address },
+          { section: 'balances', method: 'Unreserved', 'args.who': address },
           // NFT Transfer
-          { section: 'nft', method: 'Transfer', 'args.previousOwner': getAddress(address) },
-          { section: 'nft', method: 'Transfer', 'args.newOwner': getAddress(address) },
-          { section: 'nft', method: 'Mint', 'args.owner': getAddress(address) },
+          { section: 'nft', method: 'Transfer', 'args.previousOwner': address },
+          { section: 'nft', method: 'Transfer', 'args.newOwner': address },
+          { section: 'nft', method: 'Mint', 'args.owner': address },
           // SFT
-          { section: 'sft', method: 'Mint', 'args.owner': getAddress(address) },
-          { section: 'sft', method: 'Transfer', 'args.previousOwner': getAddress(address) },
-          { section: 'sft', method: 'Transfer', 'args.newOwner': getAddress(address) }
-        ]
+          { section: 'sft', method: 'Mint', 'args.owner': address },
+          { section: 'sft', method: 'Transfer', 'args.previousOwner': address },
+          { section: 'sft', method: 'Transfer', 'args.newOwner': address },
+        ],
       },
-      options
+      options,
     );
 
     return res.json(data);
@@ -480,7 +508,7 @@ app.post('/getTokens', async (req: Request, res: Response) => {
       allowDiskUse: true,
       skipFullCount: true,
       sort: 'assetId collectionId',
-      lean: true
+      lean: true,
     };
     const query: { type?: string } = {};
     if (type) {
@@ -502,7 +530,7 @@ app.post('/getExtrinsics', async (req: Request, res: Response) => {
       sort: '-block -timestamp',
       allowDiskUse: true,
       skipFullCount: true,
-      lean: true
+      lean: true,
     };
     const data = await DB.Extrinsic.paginate({ section: { $ne: 'timestamp' }, method: { $ne: 'set' } }, options);
     return res.json(data);
@@ -513,12 +541,14 @@ app.post('/getExtrinsics', async (req: Request, res: Response) => {
 
 app.post('/getTokenTransfersFromAddress', async (req: Request, res: Response) => {
   try {
-    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const { page, limit }: { page: number; limit: number } = req.body;
+    const address = getAddress(req.body.address).toString();
+
     const options = {
       page: page ? Number(page) : 1,
       limit: limit ? limit : 25,
       sort: '-blockNumber',
-      allowDiskUse: true
+      allowDiskUse: true,
     };
 
     const pipeline = DB.EvmTransaction.aggregate([
@@ -527,13 +557,13 @@ app.post('/getTokenTransfersFromAddress', async (req: Request, res: Response) =>
           'events.eventName': 'Transfer',
           $or: [
             {
-              'events.from': getAddress(address)
+              'events.from': address,
             },
             {
-              'events.to': getAddress(address)
-            }
-          ]
-        }
+              'events.to': address,
+            },
+          ],
+        },
       },
       {
         $project: {
@@ -541,8 +571,8 @@ app.post('/getTokenTransfersFromAddress', async (req: Request, res: Response) =>
           accessList: 0,
           input: 0,
           from: 0,
-          to: 0
-        }
+          to: 0,
+        },
       },
       { $unwind: '$events' },
       {
@@ -550,21 +580,21 @@ app.post('/getTokenTransfersFromAddress', async (req: Request, res: Response) =>
           'events.eventName': 'Transfer',
           $or: [
             {
-              'events.from': getAddress(address)
+              'events.from': address,
             },
             {
-              'events.to': getAddress(address)
-            }
-          ]
-        }
+              'events.to': address,
+            },
+          ],
+        },
       },
       {
         $replaceRoot: {
           newRoot: {
-            $mergeObjects: ['$events', '$$ROOT']
-          }
-        }
-      }
+            $mergeObjects: ['$events', '$$ROOT'],
+          },
+        },
+      },
     ]);
 
     // @ts-expect-error aggregatePipeline does exist
@@ -588,7 +618,6 @@ app.post('/getTransaction', async (req: Request, res: Response) => {
     if (data && xrpPrice?.priceData) {
       data.xrpPriceData = xrpPrice?.priceData;
     }
-    console.log(data)
     return res.json(data);
   } catch (e) {
     processError(e, res);
@@ -597,11 +626,10 @@ app.post('/getTransaction', async (req: Request, res: Response) => {
 
 app.post('/getNft', async (req: Request, res: Response) => {
   try {
-    const { contractAddress, tokenId }: { contractAddress: Address; tokenId: number } = req.body;
+    const contractAddress = getAddress(req.body.contractAddress).toString();
+    const tokenId = Number(req.body.tokenId);
 
-    const data = await DB.Nft.findOne({ contractAddress: getAddress(contractAddress), tokenId: Number(tokenId) })
-      .populate('nftCollection')
-      .lean();
+    const data = await DB.Nft.findOne({ contractAddress, tokenId }).populate('nftCollection').lean();
     return res.json(data);
   } catch (e) {
     processError(e, res);
@@ -610,12 +638,16 @@ app.post('/getNft', async (req: Request, res: Response) => {
 
 app.post('/getAddress', async (req: Request, res: Response) => {
   try {
-    const { address }: { address: Address } = req.body;
-    const data: (IAddress & { rootPriceData?: object | null }) | null = await DB.Address.findOne({ address: getAddress(address) })
+    const address = getAddress(req.body.address).toString();
+    const data: (IAddress & { rootPriceData?: object | null }) | null = await DB.Address.findOne({
+      address,
+    })
       .populate('isVerifiedContract token')
       .lean();
     if (data?.balance?.freeFormatted) {
-      const rootPriceData = await DB.Token.findOne({ contractAddress: getAddress('0xcCcCCccC00000001000000000000000000000000') })
+      const rootPriceData = await DB.Token.findOne({
+        contractAddress: getAddress('0xcCcCCccC00000001000000000000000000000000'),
+      })
         .select('priceData')
         .lean();
       data.rootPriceData = rootPriceData?.priceData;
@@ -634,7 +666,7 @@ app.post('/getTokenBalances', async (req: Request, res: Response) => {
       limit: limit ? limit : 25,
       allowDiskUse: true,
       populate: 'tokenDetails',
-      lean: true
+      lean: true,
     };
     const data = await DB.Balance.paginate({ address: getAddress(address) }, options);
 
@@ -646,21 +678,22 @@ app.post('/getTokenBalances', async (req: Request, res: Response) => {
 
 app.post('/getFuturepasses', async (req: Request, res: Response) => {
   try {
-    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const { page, limit }: { page: number; limit: number } = req.body;
+    const address = getAddress(req.body.address).toString();
     const options = {
       page: page ? Number(page) : 1,
       limit: limit ? limit : 25,
       allowDiskUse: true,
       skipFullCount: true,
-      lean: true
+      lean: true,
     };
 
     const data = await DB.Event.paginate(
       {
         method: 'FuturepassCreated',
-        'args.delegate': getAddress(address),
+        'args.delegate': address,
       },
-      options
+      options,
     );
 
     return res.json(data);
@@ -671,7 +704,8 @@ app.post('/getFuturepasses', async (req: Request, res: Response) => {
 
 app.post('/generateReport', async (req: Request, res: Response) => {
   try {
-    const { from, to, address }: { address: Address; from: Date; to: Date } = req.body;
+    const { from, to }: { from: Date; to: Date } = req.body;
+    const address = getAddress(req.body.address).toString();
 
     if (!moment(from).isValid()) {
       throw new Error('Invalid from date provided');
@@ -687,7 +721,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
 
     const extrinsicsTokenLookupCache: { [key: string]: { [key: number]: IToken } } = {
       false: {},
-      true: {}
+      true: {},
     };
     const getEpochTime = (time, endOfDay = false) => {
       if (!endOfDay) {
@@ -697,7 +731,10 @@ app.post('/generateReport', async (req: Request, res: Response) => {
       }
     };
 
-    const timestampQueryExtrinsics = { $gte: Math.floor(getEpochTime(from) / 1000), $lte: Math.floor(getEpochTime(to, true) / 1000) };
+    const timestampQueryExtrinsics = {
+      $gte: Math.floor(getEpochTime(from) / 1000),
+      $lte: Math.floor(getEpochTime(to, true) / 1000),
+    };
     const extrinsics = await DB.Event.find({
       $or: [
         // Assets Pallet
@@ -705,44 +742,44 @@ app.post('/generateReport', async (req: Request, res: Response) => {
           timestamp: timestampQueryExtrinsics,
           section: 'assets',
           method: 'Transferred',
-          'args.from': getAddress(address)
+          'args.from': address,
         },
         {
           timestamp: timestampQueryExtrinsics,
           section: 'assets',
           method: 'Transferred',
-          'args.to': getAddress(address)
+          'args.to': address,
         },
         {
           timestamp: timestampQueryExtrinsics,
           section: 'assets',
           method: 'Issued',
-          'args.source': getAddress(address)
+          'args.source': address,
         },
         {
           timestamp: timestampQueryExtrinsics,
           section: 'assets',
           method: 'Issued',
-          'args.owner': getAddress(address)
+          'args.owner': address,
         },
         {
           timestamp: timestampQueryExtrinsics,
           section: 'assets',
           method: 'Burned',
-          'args.owner': getAddress(address)
+          'args.owner': address,
         },
         // NFT Pallet
         {
           timestamp: timestampQueryExtrinsics,
           section: 'nft',
           method: 'Transfer',
-          'args.previousOwner': getAddress(address)
+          'args.previousOwner': address,
         },
         {
           timestamp: timestampQueryExtrinsics,
           section: 'nft',
           method: 'Transfer',
-          'args.newOwner': getAddress(address)
+          'args.newOwner': address,
         },
 
         // Balances Pallet
@@ -750,27 +787,27 @@ app.post('/generateReport', async (req: Request, res: Response) => {
           timestamp: timestampQueryExtrinsics,
           section: 'balances',
           method: 'Reserved',
-          'args.who': getAddress(address)
+          'args.who': address,
         },
         {
           timestamp: timestampQueryExtrinsics,
           section: 'balances',
           method: 'Transfer',
-          'args.from': getAddress(address)
+          'args.from': address,
         },
         {
           timestamp: timestampQueryExtrinsics,
           section: 'balances',
           method: 'Transfer',
-          'args.to': getAddress(address)
+          'args.to': address,
         },
         {
           timestamp: timestampQueryExtrinsics,
           section: 'balances',
           method: 'Unreserved',
-          'args.who': getAddress(address)
-        }
-      ]
+          'args.who': address,
+        },
+      ],
     })
       .sort('-timestamp')
       .lean();
@@ -802,9 +839,9 @@ app.post('/generateReport', async (req: Request, res: Response) => {
       if (extrinsic.method === 'Transferred') {
         from = args?.from;
         to = args?.to;
-        if (from === getAddress(address)) {
+        if (from === address) {
           type = 'out';
-        } else if (to === getAddress(address)) {
+        } else if (to === address) {
           type = 'in';
         }
         const tokenLookup = await findAndCacheToken(args.assetId);
@@ -894,13 +931,13 @@ app.post('/generateReport', async (req: Request, res: Response) => {
           'events.eventName': 'Transfer',
           $or: [
             {
-              'events.from': getAddress(address)
+              'events.from': address,
             },
             {
-              'events.to': getAddress(address)
-            }
-          ]
-        }
+              'events.to': address,
+            },
+          ],
+        },
       },
       {
         $project: {
@@ -908,8 +945,8 @@ app.post('/generateReport', async (req: Request, res: Response) => {
           accessList: 0,
           input: 0,
           from: 0,
-          to: 0
-        }
+          to: 0,
+        },
       },
       { $unwind: '$events' },
       {
@@ -917,21 +954,21 @@ app.post('/generateReport', async (req: Request, res: Response) => {
           'events.eventName': 'Transfer',
           $or: [
             {
-              'events.from': getAddress(address)
+              'events.from': address,
             },
             {
-              'events.to': getAddress(address)
-            }
-          ]
-        }
+              'events.to': address,
+            },
+          ],
+        },
       },
       {
         $replaceRoot: {
           newRoot: {
-            $mergeObjects: ['$events', '$$ROOT']
-          }
-        }
-      }
+            $mergeObjects: ['$events', '$$ROOT'],
+          },
+        },
+      },
     ]);
 
     for (const evmTx of evmTransactions) {
@@ -940,7 +977,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
       const txHash = evmTx.hash;
       const from = args?.from;
       const to = args?.to;
-      const type = from === getAddress(address) ? 'out' : 'in';
+      const type = from === address ? 'out' : 'in';
       const amount = args?.type === 'ERC20' ? args.formattedAmount : args.tokenId;
       const currency = args?.name;
 
@@ -962,7 +999,7 @@ app.post('/getAddresses', async (req: Request, res: Response) => {
       allowDiskUse: true,
       skipFullCount: true,
       sort: '-balance.free',
-      lean: true
+      lean: true,
     };
 
     const data: { docs?: ({ xrpBalance?: number } & IAddress)[] } = await DB.Address.paginate({}, options);
@@ -972,7 +1009,7 @@ app.post('/getAddresses', async (req: Request, res: Response) => {
 
       const xrpBalances: IBalance[] = await DB.Balance.find({
         address: { $in: addresses },
-        contractAddress: '0xCCCCcCCc00000002000000000000000000000000'
+        contractAddress: '0xCCCCcCCc00000002000000000000000000000000',
       })
         .select('address balance')
         .lean();
@@ -993,7 +1030,8 @@ app.post('/getAddresses', async (req: Request, res: Response) => {
 
 app.post('/getBridgeTransactions', async (req: Request, res: Response) => {
   try {
-    const { page, limit, address }: { page: number; limit: number; address: Address } = req.body;
+    const { page, limit }: { page: number; limit: number } = req.body;
+
     const options = {
       page: page ? Number(page) : 1,
       limit: limit ? limit : 25,
@@ -1001,13 +1039,13 @@ app.post('/getBridgeTransactions', async (req: Request, res: Response) => {
       allowDiskUse: true,
       skipFullCount: true,
       sort: '-block',
-      lean: true
+      lean: true,
     };
 
     const genPartialKey = (key: string, isLowerCase: boolean) => {
-      if (!address) return {};
-
-      return { [key]: isLowerCase ? address.toLowerCase() : getAddress(address) };
+      if (!req.body.address) return {};
+      const address = getAddress(req.body.address).toString();
+      return { [key]: isLowerCase ? address.toLowerCase() : address };
     };
 
     const data = await DB.Extrinsic.paginate(
@@ -1020,16 +1058,16 @@ app.post('/getBridgeTransactions', async (req: Request, res: Response) => {
           {
             method: 'submitTransaction',
             section: 'xrplBridge',
-            ...genPartialKey('args.transaction.payment.address', true)
+            ...genPartialKey('args.transaction.payment.address', true),
           },
           {
             section: 'ethBridge',
             method: 'submitEvent',
-            ...genPartialKey('args.to', false)
-          }
-        ]
+            ...genPartialKey('args.to', false),
+          },
+        ],
       },
-      options
+      options,
     );
 
     return res.json(data);
@@ -1046,7 +1084,7 @@ app.post('/getVerifiedContracts', async (req: Request, res: Response) => {
       limit: limit ? limit : 25,
       sort: '-deployedBlock',
       allowDiskUse: true,
-      lean: true
+      lean: true,
     };
 
     const data = await DB.VerifiedContract.paginate({}, options);
@@ -1065,44 +1103,47 @@ app.post('/getStakingValidators', async (req: Request, res: Response) => {
       limit: limit ? limit : 25,
       allowDiskUse: true,
       sort: '-nominators',
-      lean: true
+      lean: true,
     };
 
-    const data: { docs: (IStakingValidator & { blocksValidated?: number })[] } = await DB.StakingValidator.paginate({}, options);
+    const data: { docs: (IStakingValidator & { blocksValidated?: number })[] } = await DB.StakingValidator.paginate(
+      {},
+      options,
+    );
 
     const addresses = data?.docs?.map((a) => getAddress(a.validator));
     const aggPipe = await DB.Block.aggregate([
       {
         $sort: {
-          number: -1
-        }
+          number: -1,
+        },
       },
       {
         // 86400 seconds / 4 second block time = 21600
-        $limit: 21600
+        $limit: 21600,
       },
       {
         $match: {
           'evmBlock.miner': {
-            $in: addresses
-          }
-        }
+            $in: addresses,
+          },
+        },
       },
       {
         $group: {
           _id: '$evmBlock.miner',
           count: {
-            $sum: 1
-          }
-        }
+            $sum: 1,
+          },
+        },
       },
       {
         $project: {
           _id: 0,
           address: '$_id',
-          count: 1
-        }
-      }
+          count: 1,
+        },
+      },
     ]);
 
     for (const address of data.docs) {
@@ -1127,18 +1168,18 @@ app.post('/getDex', async (req: Request, res: Response) => {
       skipFullCount: true,
       sort: '-blockNumber',
       populate: 'swapFromToken swapToToken',
-      lean: true
+      lean: true,
     };
     const data = await DB.Event.paginate(
       {
         $or: [
           {
             method: 'Swap',
-            section: 'dex'
-          }
-        ]
+            section: 'dex',
+          },
+        ],
       },
-      options
+      options,
     );
 
     return res.json(data);
@@ -1174,20 +1215,20 @@ app.get('/getRequiredComponents', async (req: Request, res: Response) => {
         $group: {
           _id: '$section',
           methods: {
-            $addToSet: '$method'
-          }
-        }
-      }
+            $addToSet: '$method',
+          },
+        },
+      },
     ]);
     const extrinsics = await DB.Extrinsic.aggregate([
       {
         $group: {
           _id: '$section',
           methods: {
-            $addToSet: '$method'
-          }
-        }
-      }
+            $addToSet: '$method',
+          },
+        },
+      },
     ]);
     return res.json({ events, extrinsics });
   } catch (e) {

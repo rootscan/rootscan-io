@@ -81,7 +81,7 @@ declare module 'mongoose' {
     paginate<O extends PaginateOptions>(
       query?: FilterQuery<T>,
       options?: O,
-      callback?: (err: any, result: PaginateResult<PaginateDocument<T, TMethods, O>>) => void
+      callback?: (err: any, result: PaginateResult<PaginateDocument<T, TMethods, O>>) => void,
     ): Promise<PaginateResult<PaginateDocument<T, TMethods, O>>>;
   }
 
@@ -89,7 +89,7 @@ declare module 'mongoose' {
     paginate<UserType = T, O extends PaginateOptions = PaginateOptions>(
       query?: FilterQuery<T>,
       options?: O,
-      callback?: (err: any, result: PaginateResult<PaginateDocument<UserType, TMethods, O>>) => void
+      callback?: (err: any, result: PaginateResult<PaginateDocument<UserType, TMethods, O>>) => void,
     ): Promise<PaginateResult<PaginateDocument<UserType, TMethods, O>>>;
   }
 
@@ -97,7 +97,7 @@ declare module 'mongoose' {
     paginate<UserType = T>(
       query?: FilterQuery<T>,
       options?: PaginateOptions,
-      callback?: (err: any, result: PaginateResult<PaginateDocument<UserType, TMethods, PaginateOptions>>) => void
+      callback?: (err: any, result: PaginateResult<PaginateDocument<UserType, TMethods, PaginateOptions>>) => void,
     ): Promise<PaginateResult<PaginateDocument<UserType, TMethods, PaginateOptions>>>;
   }
 }
