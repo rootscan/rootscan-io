@@ -4,8 +4,8 @@ module.exports = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  env:{
-    CHAIN_ID: process.env.CHAIN_ID
+  env: {
+    CHAIN_ID: process.env.CHAIN_ID,
   },
   reactStrictMode: true,
   async redirects() {

@@ -66,7 +66,7 @@ const ETHBridgeSubmitEvent = ({ tx }) => {
       <TableCell>Ethereum</TableCell>
       <TableCell className="max-w-[150px] truncate">-</TableCell>
       <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay isNeedRnsName={false} address={tx?.args?.to} useShortenedAddress />
+        <AddressDisplay address={tx?.args?.to} useShortenedAddress />
       </TableCell>
       <TableCell>
         {tx?.args?.erc20Value ? (

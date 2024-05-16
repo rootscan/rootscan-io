@@ -33,23 +33,25 @@ export default async function Page({ params, searchParams }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tokens.map((item, _) => (
-              <TableRow key={item?.address}>
-                <TableCell>
-                  <TokenDisplay token={item?.tokenLookUp} hideCopyButton overrideImageSizeClass="h-10 w-10 mr-2" />
-                </TableCell>
-                <TableCell>{item?.count}</TableCell>
-                <TableCell>
-                  <div className="my-auto flex justify-end">
-                    <Link href={`/addresses/${params.address}/nft-inventory/${item.contractAddress}`}>
-                      <Button size="sm" variant="outline">
-                        View NFTs
-                      </Button>
-                    </Link>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+            {tokens.map((item) => {
+              return (
+                <TableRow key={item?.address}>
+                  <TableCell>
+                    <TokenDisplay token={item?.tokenLookUp} hideCopyButton overrideImageSizeClass="h-10 w-10 mr-2" />
+                  </TableCell>
+                  <TableCell>{item?.count}</TableCell>
+                  <TableCell>
+                    <div className="my-auto flex justify-end">
+                      <Link href={`/addresses/${params.address}/nft-inventory/${item.contractAddress}`}>
+                        <Button size="sm" variant="outline">
+                          {item.tokenLookUp.type === 'ERC1155' ? 'View SFTs' : 'View NFTs'}
+                        </Button>
+                      </Link>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       ) : (

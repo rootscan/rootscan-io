@@ -53,12 +53,12 @@ export default async function Page({ params }) {
                         </CardDetail.Title>
                         <CardDetail.Content>
                           {Object.keys(item.args)?.map((key, x) => (
-                            <div key={x}>
+                            <p key={x}>
                               {key}:{' '}
                               {typeof item?.args?.[key] === 'object'
                                 ? JSON.stringify(item?.args?.[key])
                                 : String(item?.args?.[key])}
-                            </div>
+                            </p>
                           ))}
                         </CardDetail.Content>
                       </CardDetail.Wrapper>
@@ -67,18 +67,14 @@ export default async function Page({ params }) {
                       <CardDetail.Title>
                         <div>Topics</div>
                       </CardDetail.Title>
-                      <CardDetail.Content>
-                        {item.topics?.map((topic, x) => <div key={x}>{topic}</div>)}
-                      </CardDetail.Content>
+                      <CardDetail.Content>{item.topics?.map((topic, x) => <p key={x}>{topic}</p>)}</CardDetail.Content>
                     </CardDetail.Wrapper>
                     <CardDetail.Wrapper>
                       <CardDetail.Title>
                         <div>Data</div>
                       </CardDetail.Title>
                       <CardDetail.Content>
-                        <div className="truncate">
-                          <span className="truncate">{item.data}</span>
-                        </div>
+                        <p className="break-anywhere">{item.data}</p>
                       </CardDetail.Content>
                     </CardDetail.Wrapper>
                   </div>

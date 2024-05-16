@@ -30,7 +30,7 @@ export const root = defineChain({
   },
   subgraphs: {
     ens: {
-      url: 'https://subgraph.rootnameservice.com/subgraphs/name/graphprotocol/ens/graphql',
+      url: 'https://subgraph.rootnameservice.com/subgraphs/name/graphprotocol/rns/graphql',
     },
   },
 })
@@ -63,7 +63,7 @@ export const porcini = defineChain({
   },
   subgraphs: {
     ens: {
-      url: 'https://subgraph.rootnameservice.com/subgraphs/name/graphprotocol/ens/graphql',
+      url: 'https://subgraph.rootnameservice.com/subgraphs/name/graphprotocol/rns/graphql',
     },
   },
   testnet: true,

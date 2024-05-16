@@ -1,21 +1,24 @@
-"use client"
-import { CornerDownLeft, Search } from "lucide-react"
-import {ChangeEvent, useState} from "react"
-import { Input } from "./ui/input"
-import {performSearchMainSearch} from "@/lib/helpers";
+'use client';
+
+import { ChangeEvent, useState } from 'react';
+
+import { performSearchMainSearch } from '@/lib/helpers';
+import { CornerDownLeft, Search } from 'lucide-react';
+
+import { Input } from './ui/input';
 
 export default function MainSearch() {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState('');
 
   const handlePress = async (e: any) => {
-    if (e?.key === "Enter") {
-      await performSearchMainSearch(value)
+    if (e?.key === 'Enter') {
+      await performSearchMainSearch(value);
     }
-  }
+  };
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value)
-  }
+    setValue(e.target.value);
+  };
 
   return (
     <div className="relative">

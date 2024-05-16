@@ -1,19 +1,20 @@
+import AddressDisplay from '@/components/address-display';
+import Breadcrumbs from '@/components/breadcrumbs';
+import Container from '@/components/container';
+import OnlyMainnet from '@/components/layouts/only-mainnet';
+import TokenDisplay from '@/components/token-display';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import CardDetail from '@/components/ui/card-detail';
+import { getAddress, getRnsName } from '@/lib/api';
+import { ROOT_TOKEN } from '@/lib/constants/tokens';
+import { formatNumberDollars } from '@/lib/utils';
+import { generateAvatarURL } from '@cfx-kit/wallet-avatar';
+import Image from 'next/image';
+import { getAddress as getAddressViem } from 'viem';
+
 import Menu from './components/menu';
 import QrCode from './components/qr-code';
-import AddressDisplay from "@/components/address-display"
-import Breadcrumbs from "@/components/breadcrumbs"
-import Container from "@/components/container"
-import OnlyMainnet from "@/components/layouts/only-mainnet"
-import TokenDisplay from "@/components/token-display"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import CardDetail from "@/components/ui/card-detail"
-import {getAddress, getRnsName} from "@/lib/api"
-import { ROOT_TOKEN } from "@/lib/constants/tokens"
-import { formatNumberDollars } from "@/lib/utils"
-import { generateAvatarURL } from "@cfx-kit/wallet-avatar"
-import Image from "next/image"
-import { getAddress as getAddressViem } from "viem"
 
 export async function generateMetadata({ params }) {
   return {
@@ -26,19 +27,13 @@ const getData = async ({ params }) => {
   return data;
 };
 
-export default async function Layout({
-  children,
-  params,
-}: {
-  children: React.ReactNode
-  params: any
-}) {
-  const { address } = params
-  const data = await getData({ params })
-  const rnsName = await getRnsName(address)
-  const tags: string[] = []
-  if (getAddressViem(address)?.toLowerCase()?.startsWith("0xffffffff")) {
-    tags.push("Futurepass")
+export default async function Layout({ children, params }: { children: React.ReactNode; params: any }) {
+  const { address } = params;
+  const data = await getData({ params });
+  const rnsName = await getRnsName(address);
+  const tags: string[] = [];
+  if (getAddressViem(address)?.toLowerCase()?.startsWith('0xffffffff')) {
+    tags.push('Futurepass');
   }
   if (getAddressViem(address)?.toLowerCase()?.startsWith('0xaaaaaaaa')) {
     tags.push('ERC721 Precompile');
@@ -85,19 +80,19 @@ export default async function Layout({
                   <CardDetail.Title>Address</CardDetail.Title>
                   <CardDetail.Content>
                     <div className="flex items-center gap-2">
-                      <AddressDisplay isNeedRnsName={false} address={address} className="truncate" />
+                      <AddressDisplay address={address} className="truncate" />
                       <QrCode address={address} />
                     </div>
                   </CardDetail.Content>
                 </CardDetail.Wrapper>
-                {rnsName && <CardDetail.Wrapper>
-                  <CardDetail.Title>RSN</CardDetail.Title>
-                  <CardDetail.Content>
-                    <div className="flex items-center gap-2">
-                      {rnsName.name}
-                    </div>
-                  </CardDetail.Content>
-                </CardDetail.Wrapper>}
+                {rnsName && (
+                  <CardDetail.Wrapper>
+                    <CardDetail.Title>RSN</CardDetail.Title>
+                    <CardDetail.Content>
+                      <div className="flex items-center gap-2">{rnsName.name}</div>
+                    </CardDetail.Content>
+                  </CardDetail.Wrapper>
+                )}
               </div>
               <CardDetail.Wrapper>
                 <CardDetail.Title>Root Balance</CardDetail.Title>

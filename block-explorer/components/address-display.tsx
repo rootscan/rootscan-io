@@ -1,40 +1,25 @@
-import { Suspense } from "react"
-import {
-  getAddressName,
-  knownAddressNames,
-} from "@/lib/constants/knownAddresses"
-import { cn } from "@/lib/utils"
-import { FileText } from "lucide-react"
-import Link from "next/link"
-import { Address, getAddress, isAddress } from "viem"
-import { CopyButton } from "./copy-button"
-import Logo from "./logo"
-import Tooltip from "./tooltip"
-import {getRnsName} from "@/lib/api";
-import {Skeleton} from "@/components/ui/skeleton";
+import { getAddressName, knownAddressNames } from '@/lib/constants/knownAddresses';
+import { cn } from '@/lib/utils';
+import { FileText } from 'lucide-react';
+import Link from 'next/link';
+import { Address, getAddress, isAddress } from 'viem';
+
+import { CopyButton } from './copy-button';
+import Logo from './logo';
+import Tooltip from './tooltip';
 
 interface AddressDisplayProps {
-  address: Address
-  nameTag?: string
-  rnsName?: string | null
-  isContract?: boolean
-  hideCopyButton?: boolean
-  useShortenedAddress?: boolean
-  className?: string
-  isTokenTracker?: boolean
-  isNeedRnsName?: boolean
+  address: Address;
+  nameTag?: string;
+  rnsName?: string | null;
+  isContract?: boolean;
+  hideCopyButton?: boolean;
+  useShortenedAddress?: boolean;
+  className?: string;
+  isTokenTracker?: boolean;
 }
 
-export default function AddressDisplay(props: AddressDisplayProps) {
-  return (
-    <Suspense fallback={<Skeleton className="w-32 h-7" />}>
-      <AddressView {...props} />
-    </Suspense>
-  )
-}
-
-
-async function AddressView({
+export default function AddressDisplay({
   address,
   nameTag,
   rnsName,
@@ -43,17 +28,15 @@ async function AddressView({
   useShortenedAddress = false,
   className,
   isTokenTracker,
-                             isNeedRnsName = true,
 }: AddressDisplayProps) {
-  const currRnsName = (!isNeedRnsName || hideCopyButton) ? null : await getRnsName(address);
-  if (!address || !isAddress(address)) return null
+  if (!address || !isAddress(address)) return null;
   const name = knownAddressNames[getAddress(address)]
     ? knownAddressNames[getAddress(address)]
-    : (rnsName || currRnsName)
-      ? rnsName ?? currRnsName?.name
-      : nameTag
-        ? nameTag
-        : getAddressName(address, useShortenedAddress)
+    : rnsName
+    ? rnsName
+    : nameTag
+    ? nameTag
+    : getAddressName(address, useShortenedAddress);
 
   const isFuturepass = address?.toLowerCase()?.startsWith('0xffffffff');
 
