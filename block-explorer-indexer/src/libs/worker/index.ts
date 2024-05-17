@@ -25,7 +25,6 @@ const start = async () => {
   const evmApi = evmClient;
 
   const indexer = new Indexer(evmApi, api, DB);
-  const nftIndexer = new NftIndexer(evmApi, api, DB);
 
   /** @dev: Task processor picks up task from the pool, and then verifies that we have a function to actually process it. */
   const handleTask = async (job: Job) => {
@@ -55,10 +54,10 @@ const start = async () => {
         await findAllEthereumBridgeContractAddresses();
         break;
       case 'FIND_NFT_METADATA':
-        await nftIndexer.fetchMetadataOfToken();
+        await new NftIndexer(evmApi, api, DB, job).fetchMetadataOfToken();
         break;
       case 'REFETCH_NFT_HOLDERS':
-        await nftIndexer.fetchHoldersOfCollection(job.data.contractAddress);
+        await new NftIndexer(evmApi, api, DB, job).fetchHoldersOfCollection(job.data.contractAddress);
         break;
       case 'INDEX_BLOCK_RANGES':
         await indexer.reindexBlockRange(job.data.from, job.data.to);
@@ -67,7 +66,7 @@ const start = async () => {
         await indexer.refetchAllBalances();
         break;
       case 'REFETCH_NFT_HOLDERS_GEN_TASKS':
-        await nftIndexer.createNftHolderRefreshTasks();
+        await new NftIndexer(evmApi, api, DB, job).createNftHolderRefreshTasks();
         break;
       case 'UPDATE_TOKEN_PRICING_DETAILS':
         await updateTokenPricingDetails();

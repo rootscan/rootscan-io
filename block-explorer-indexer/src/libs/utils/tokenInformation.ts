@@ -8,12 +8,11 @@ import { Abi, Address, formatUnits, getAddress, zeroAddress } from 'viem';
 import { contractAddressToNativeId } from '.';
 
 export const getTokenDetails = async (
-  contractAddress: Address,
+  contractAddressRaw: Address,
   forceRefresh = false,
 ): Promise<Omit<IToken, 'contractAddress'> | null> => {
-  const tokenLookUp: IToken | null = await DB.Token.findOne({
-    contractAddress: getAddress(contractAddress),
-  })
+  const contractAddress = getAddress(contractAddressRaw);
+  const tokenLookUp: IToken | null = await DB.Token.findOne({ contractAddress })
     .select('name symbol decimals type uri ethereumContractAddress')
     .lean();
 
@@ -24,9 +23,9 @@ export const getTokenDetails = async (
   }
 
   if (forceRefresh || !tokenLookUp || !tokenLookUp?.type || !tokenLookUp?.name) {
-    const erc20Contract = { address: contractAddress as Address, abi: ABIs.ERC20_ORIGINAL as Abi };
-    const erc721Contract = { address: contractAddress as Address, abi: ABIs.ERC721_ORIGINAL as Abi };
-    const erc1155Contract = { address: contractAddress as Address, abi: ABIs.ERC1155_ORIGINAL as Abi };
+    const erc20Contract = { address: contractAddress, abi: ABIs.ERC20_ORIGINAL as Abi };
+    const erc721Contract = { address: contractAddress, abi: ABIs.ERC721_ORIGINAL as Abi };
+    const erc1155Contract = { address: contractAddress, abi: ABIs.ERC1155_ORIGINAL as Abi };
     const multicall: any[] = await evmClient.multicall({
       contracts: [
         {
@@ -198,11 +197,11 @@ export const getTokenDetails = async (
     if (resolvedData?.name === undefined) return null;
 
     await DB.Token.updateOne(
-      { contractAddress: getAddress(contractAddress) },
+      { contractAddress },
       {
         $set: {
           ...resolvedData,
-          contractAddress: getAddress(contractAddress),
+          contractAddress,
           type: tokenType,
         },
       },
@@ -212,10 +211,10 @@ export const getTokenDetails = async (
     );
 
     await DB.Address.updateOne(
-      { address: getAddress(contractAddress) },
+      { address: contractAddress },
       {
         $set: {
-          address: getAddress(contractAddress),
+          address: contractAddress,
           isContract: true,
         },
       },

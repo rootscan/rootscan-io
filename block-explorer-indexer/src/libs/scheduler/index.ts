@@ -64,7 +64,7 @@ const scheduler = async () => {
     {
       jobId: 'REFETCH_NFT_HOLDERS_GEN_TASKS',
       repeat: {
-        every: 60_000 * 15, // Every 15 minutes
+        every: 60_000 * 60, // Every 60 minutes
         immediately: true,
       },
     },
