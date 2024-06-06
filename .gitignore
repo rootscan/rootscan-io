@@ -23,6 +23,7 @@ out
 
 # Gatsby files
 .nx/cache
+.nx/workspace-data
 
 # Build files
 dist

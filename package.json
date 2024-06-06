@@ -17,20 +17,20 @@
   },
   "private": true,
   "devDependencies": {
-    "@nx/eslint": "19.0.2",
-    "@nx/eslint-plugin": "^19.0.2",
+    "@nx/eslint": "19.2.0",
+    "@nx/eslint-plugin": "19.2.0",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "eslint": "~8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "nx": "19.0.2",
+    "nx": "19.2.0",
     "prettier-plugin-tailwindcss": "^0.5.14"
   },
   "engines": {
     "node": ">=18",
     "npm": "please-use-pnpm",
     "yarn": "please-use-pnpm",
-    "pnpm": ">=8.6.0"
+    "pnpm": ">=9.1.0"
   },
   "optionalDependencies": {
     "husky": "^9.0.11"
