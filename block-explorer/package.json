@@ -53,8 +53,8 @@
     "recharts": "^2.11.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "2.0.6",
-    "wagmi": "^1.4.13"
+    "viem": "2.15.1",
+    "wagmi": "^2.0.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.5",
