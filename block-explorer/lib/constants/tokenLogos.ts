@@ -90,6 +90,9 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0xCcccCccC00018064000000000000000000000000": "token-30mm.png",
     //Prysm
     "0xCCcccccc0001A064000000000000000000000000": "token-prysm.png",
+    "0xaaAAaAAa0000B464000000000000000000000000": "nft-prysms.gif",
+    //SS
+    "0xaAaaaaaa0000b864000000000000000000000000": "nft-ss.gif",
 
     //RichieRich Collection / Prawn Tokens
     "0xAAaaaAaa00002864000000000000000000000000": "token-richie-rich.png",
@@ -104,6 +107,21 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0x44640D662A423d738D5ebF8B51E57AfC0f2cf4Df": "token-rns.png",
     //BaseRegistrarImplementation (ERC-721)
     "0xEeD3C3c547751e23020f4cb506FbA37baEb3308D": "token-rns.png",
+    
+    //PorkJet
+    "0xCcCcccCc0000d464000000000000000000000000": "token-porkjet.png",
+    "0xAaAAaAAA0000d064000000000000000000000000": "nft-porkjet.gif",
+
+    //MoM 2nd Edition
+    "0xAAAAAaAA0000C864000000000000000000000000": "nft-mom2nd.webp",
+    "0xAaaaaaAA0000CC64000000000000000000000000": "nft-mom2nd.webp",
+
+    //JEN
+    "0xaAaaAAAA0000D864000000000000000000000000": "nft-jenuine.gif",
+
+    //RCADE
+    "0xccCcCCcc00019C64000000000000000000000000": "token-rcade.png",
+
   },
   7672: {
     // Root
