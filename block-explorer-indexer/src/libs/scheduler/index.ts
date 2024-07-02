@@ -58,17 +58,19 @@ const scheduler = async () => {
     },
   );
 
-  await queue.add(
-    'REFETCH_NFT_HOLDERS_GEN_TASKS',
-    {},
-    {
-      jobId: 'REFETCH_NFT_HOLDERS_GEN_TASKS',
-      repeat: {
-        every: 60_000 * 60, // Every 60 minutes
-        immediately: true,
+  if (process.env.REFETCH_NFT_HOLDERS_PERIOD) {
+    await queue.add(
+      'REFETCH_NFT_HOLDERS_GEN_TASKS',
+      {},
+      {
+        jobId: 'REFETCH_NFT_HOLDERS_GEN_TASKS',
+        repeat: {
+          every: 60_000 * parseInt(process.env.REFETCH_NFT_HOLDERS_PERIOD),
+          immediately: true,
+        },
       },
-    },
-  );
+    );
+  }
 
   await queue.add(
     'FIND_MISSING_BLOCKS',
