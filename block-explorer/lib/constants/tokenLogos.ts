@@ -95,7 +95,7 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0xaAaaaaaa0000b864000000000000000000000000": "nft-ss.gif",
 
     //RichieRich Collection / Prawn Tokens
-    "0xAAaaaAaa00002864000000000000000000000000": "token-richie-rich.png",
+    "0xAAaaaAaa00002864000000000000000000000000": "nft-richie-rich.png",
     "0xCCccCcCC00014C64000000000000000000000000": "token-prawn.png",
     "0xcCcCCCcc00015064000000000000000000000000": "token-king-prawn.png",
 
@@ -107,7 +107,7 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     "0x44640D662A423d738D5ebF8B51E57AfC0f2cf4Df": "token-rns.png",
     //BaseRegistrarImplementation (ERC-721)
     "0xEeD3C3c547751e23020f4cb506FbA37baEb3308D": "token-rns.png",
-    
+
     //PorkJet
     "0xCcCcccCc0000d464000000000000000000000000": "token-porkjet.png",
     "0xAaAAaAAA0000d064000000000000000000000000": "nft-porkjet.gif",
@@ -121,6 +121,9 @@ const logos: { [key: number]: { [key: Address]: string } } = {
 
     //RCADE
     "0xccCcCCcc00019C64000000000000000000000000": "token-rcade.png",
+
+    //RootPunks
+    "0xAAAAaAAa0000d464000000000000000000000000": "nft-rootpunks.png",
 
   },
   7672: {
