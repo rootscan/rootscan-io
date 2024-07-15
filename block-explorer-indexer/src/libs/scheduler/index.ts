@@ -58,17 +58,19 @@ const scheduler = async () => {
     },
   );
 
-  await queue.add(
-    'REFETCH_NFT_HOLDERS_GEN_TASKS',
-    {},
-    {
-      jobId: 'REFETCH_NFT_HOLDERS_GEN_TASKS',
-      repeat: {
-        every: 60_000 * 60, // Every 60 minutes
-        immediately: true,
-      },
-    },
-  );
+  // if (process.env.REFETCH_NFT_HOLDERS_PERIOD) {
+  //   await queue.add(
+  //     'REFETCH_NFT_HOLDERS_GEN_TASKS',
+  //     {},
+  //     {
+  //       jobId: 'REFETCH_NFT_HOLDERS_GEN_TASKS',
+  //       repeat: {
+  //         every: 60_000 * parseInt(process.env.REFETCH_NFT_HOLDERS_PERIOD),
+  //         immediately: true,
+  //       },
+  //     },
+  //   );
+  // }
 
   await queue.add(
     'FIND_MISSING_BLOCKS',
@@ -77,6 +79,20 @@ const scheduler = async () => {
       jobId: 'FIND_MISSING_BLOCKS',
       repeat: {
         every: 60_000 * 60 * 6, // Every 6 hours
+        immediately: true,
+      },
+    },
+  );
+
+  await queue.add(
+    'PROCESS_NFT_OWNERS',
+    {},
+    {
+      jobId: 'PROCESS_NFT_OWNERS',
+      priority: 6,
+      attempts: 1,
+      repeat: {
+        every: 60_000 * 60, // Every 60 mins
         immediately: true,
       },
     },

@@ -31,6 +31,7 @@ const schema = new Schema<IEVMTransaction, Mongoose.Model<IEVMTransaction>>({
   input: { type: String },
   from: { type: String },
   to: { type: String },
+  _nftOwnersProcessed: { type: Boolean },
 });
 
 schema.index({ hash: 1 });

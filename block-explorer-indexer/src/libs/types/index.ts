@@ -11,7 +11,8 @@ export interface IEvent {
   method: string;
   section: string;
   doc?: string;
-  args: any;
+  args: Record<string, any>;
+  _nftOwnersProcessed?: boolean;
 }
 
 export interface IExtrinsic {
@@ -71,6 +72,22 @@ export interface INFT {
   image?: string;
   animation_url?: string;
   attributes?: object;
+}
+export interface INftOwner {
+  contractAddress: string;
+  collectionId?: number;
+  type: 'ERC721' | 'ERC1155';
+  tokenId: number;
+  amount?: number;
+  owner: Address;
+  blockNumber?: number;
+  method?: string;
+  eventId?: string;
+  timestamp?: number;
+  image?: string;
+  animation_url?: string;
+  attributes?: object;
+  transactionHash?: string;
 }
 
 export interface INativeBalance {
@@ -164,10 +181,11 @@ export interface IEVMTransaction {
   input?: string;
   from: Address;
   to?: Address | null;
+  _nftOwnersProcessed?: boolean;
 }
 
-export interface IBulkWriteUpdateOp {
-  updateOne: { filter: object; update: { $set: object }; upsert?: boolean };
+export interface IBulkWriteUpdateOp<T = object> {
+  updateOne: { filter: Partial<T>; update: { $set: Partial<T>; $inc?: Partial<T> }; upsert?: boolean };
 }
 
 export interface IBulkWriteDeleteOp {

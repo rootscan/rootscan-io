@@ -6,6 +6,7 @@
     "setup": "pnpm i && docker compose up -d",
     "api": "nx run block-explorer-indexer:api",
     "api-dev": "nx run block-explorer-indexer:api-dev",
+    "dev": "nx run block-explorer-indexer:dev",
     "scheduler": "nx run block-explorer-indexer:scheduler",
     "worker": "nx run block-explorer-indexer:worker",
     "bull-board": "nx run bull-board:start",

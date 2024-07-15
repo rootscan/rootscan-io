@@ -6,7 +6,7 @@ import {
   IEVMTransaction,
   IEvent,
   IExtrinsic,
-  INFT,
+  INftOwner,
   IStakingValidator,
   IToken,
   TTokenType,
@@ -169,7 +169,7 @@ app.post('/getToken', async (req: Request, res: Response) => {
         const holders = await DB.Balance.find({ contractAddress }).countDocuments();
         data.holders = holders;
       } else if (data?.type === 'ERC721' || data?.type === 'ERC1155') {
-        const holders = await DB.Nft.find({ contractAddress }).distinct('owner');
+        const holders = await DB.NftOwner.find({ contractAddress }).distinct('owner');
         data.holders = holders?.length;
       }
     }
@@ -187,7 +187,7 @@ app.post('/getTokenHolders', async (req: Request, res: Response) => {
       contractAddress,
     }).lean();
 
-    let holders: { docs?: (IBalance | INFT)[]; type?: TTokenType } = {};
+    let holders: { docs?: (IBalance | INftOwner)[]; type?: TTokenType } = {};
     if (data) {
       if (data?.type === 'ERC20') {
         const options: PaginateOptions = {
@@ -202,7 +202,7 @@ app.post('/getTokenHolders', async (req: Request, res: Response) => {
 
         holders = await DB.Balance.paginate({ contractAddress }, options);
       } else if (data?.type === 'ERC721') {
-        const pipeline = DB.Nft.aggregate([
+        const pipeline = DB.NftOwner.aggregate([
           {
             $match: {
               contractAddress,
@@ -230,9 +230,9 @@ app.post('/getTokenHolders', async (req: Request, res: Response) => {
           },
         ]);
         // @ts-expect-error aggregatePipeline does exist
-        holders = await DB.Nft.aggregatePaginate(pipeline, { page, limit });
+        holders = await DB.NftOwner.aggregatePaginate(pipeline, { page, limit });
       } else if (data?.type === 'ERC1155') {
-        const pipeline = DB.Nft.aggregate([
+        const pipeline = DB.NftOwner.aggregate([
           {
             $match: {
               contractAddress,
@@ -260,7 +260,7 @@ app.post('/getTokenHolders', async (req: Request, res: Response) => {
           },
         ]);
         // @ts-expect-error aggregatePipeline does exist
-        holders = await DB.Nft.aggregatePaginate(pipeline, { page, limit });
+        holders = await DB.NftOwner.aggregatePaginate(pipeline, { page, limit });
       }
       if (holders) {
         holders.type = data?.type as TTokenType;
@@ -320,7 +320,7 @@ app.post('/getNftsForAddress', async (req: Request, res: Response) => {
       sort: '-contractAddress tokenId',
       lean: true,
     };
-    const data = await DB.Nft.paginate({ owner: address, contractAddress }, options);
+    const data = await DB.NftOwner.paginate({ owner: address, contractAddress }, options);
     return res.json(data);
   } catch (e) {
     processError(e, res);
@@ -336,7 +336,7 @@ app.post('/getNftCollectionsForAddress', async (req: Request, res: Response) => 
       allowDiskUse: true,
     };
 
-    const pipeline = DB.Nft.aggregate([
+    const pipeline = DB.NftOwner.aggregate([
       {
         $match: {
           owner: address,
@@ -371,7 +371,7 @@ app.post('/getNftCollectionsForAddress', async (req: Request, res: Response) => 
     ]);
 
     // @ts-expect-error aggregatePipeline does exist
-    const data = await DB.Nft.aggregatePaginate(pipeline, options);
+    const data = await DB.NftOwner.aggregatePaginate(pipeline, options);
 
     return res.json(data);
   } catch (e) {
@@ -617,7 +617,7 @@ app.post('/getNft', async (req: Request, res: Response) => {
     const contractAddress = getAddress(req.body.contractAddress).toString();
     const tokenId = Number(req.body.tokenId);
 
-    const data = await DB.Nft.findOne({ contractAddress, tokenId }).populate('nftCollection').lean();
+    const data = await DB.NftOwner.findOne({ contractAddress, tokenId }).populate('nftCollection').lean();
     return res.json(data);
   } catch (e) {
     processError(e, res);

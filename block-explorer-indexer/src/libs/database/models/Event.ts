@@ -13,6 +13,7 @@ const schema = new Schema<IEvent, Mongoose.Model<IEvent>>({
   section: { type: String },
   doc: { type: String },
   args: { type: Object },
+  _nftOwnersProcessed: { type: Boolean },
 });
 
 schema.plugin(mongoosePaginate);

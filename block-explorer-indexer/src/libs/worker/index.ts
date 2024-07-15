@@ -11,6 +11,7 @@ import {
 } from '@/indexer/tasks/prepopulate';
 import logger from '@/logger';
 import NftIndexer from '@/nft-indexer';
+import { NftOwnersIndexer } from '@/nft-indexer/nft-owners-indexer';
 import { updateTokenPricingDetails } from '@/price-fetcher';
 import redisClient from '@/redis';
 import { evmClient, substrateClient } from '@/rpc';
@@ -57,8 +58,11 @@ const start = async () => {
       case 'FIND_NFT_METADATA':
         await new NftIndexer(evmApi, api, DB, job).fetchMetadataOfToken();
         break;
-      case 'REFETCH_NFT_HOLDERS':
-        await new NftIndexer(evmApi, api, DB, job).fetchHoldersOfCollection(job.data.contractAddress);
+      // case 'REFETCH_NFT_HOLDERS':
+      //   await new NftIndexer(evmApi, api, DB, job).fetchHoldersOfCollection(job.data.contractAddress);
+      //   break;
+      case 'PROCESS_NFT_OWNERS':
+        await new NftOwnersIndexer(DB, evmApi, job).processMissed();
         break;
       case 'INDEX_BLOCK_RANGES':
         await indexer.reindexBlockRange(job.data.from, job.data.to);
@@ -66,9 +70,9 @@ const start = async () => {
       case 'REFETCH_ALL_BALANCES':
         await indexer.refetchAllBalances();
         break;
-      case 'REFETCH_NFT_HOLDERS_GEN_TASKS':
-        await new NftIndexer(evmApi, api, DB, job).createNftHolderRefreshTasks();
-        break;
+      // case 'REFETCH_NFT_HOLDERS_GEN_TASKS':
+      //   await new NftIndexer(evmApi, api, DB, job).createNftHolderRefreshTasks();
+      //   break;
       case 'UPDATE_TOKEN_PRICING_DETAILS':
         await updateTokenPricingDetails();
         break;

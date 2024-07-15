@@ -186,9 +186,7 @@ export default async function Page({ params }: { params: { id: Hash } }) {
                                 <span>{event.tokenId}</span>
                               )}
 
-                              <Link href={`/addresses/${event.address}`}>
-                                {event.name} {event.symbol && `(${event.symbol})`}
-                              </Link>
+                              <Link href={`/addresses/${event.address}`}>{event.name}</Link>
                             </div>
                           </div>
                         );
@@ -243,10 +241,7 @@ export default async function Page({ params }: { params: { id: Hash } }) {
                             </div>
                           </div>
                         );
-                      if (
-                        event?.type === 'ERC1155' &&
-                        (event?.eventName === 'TransferSingle' || event?.eventName === 'TransferBatch')
-                      )
+                      if (event?.type === 'ERC1155' && event?.eventName === 'TransferSingle')
                         return (
                           <div className="flex flex-col flex-wrap" key={_}>
                             <span className="text-muted-foreground">
@@ -269,6 +264,36 @@ export default async function Page({ params }: { params: { id: Hash } }) {
                               )}
                               <span className="text-muted-foreground">Qty</span>
                               <span>{event?.value ? formatNumber(event?.value) : '0'}</span>
+                            </div>
+                            <Link href={`/addresses/${event.address}`}>{event.name}</Link>
+                          </div>
+                        );
+                      if (event?.type === 'ERC1155' && event?.eventName === 'TransferBatch')
+                        return (
+                          <div className="flex flex-col flex-wrap" key={_}>
+                            <span className="text-muted-foreground">
+                              {event.eventName} ({event?.type})
+                            </span>
+                            <div className="flex flex-wrap items-center gap-2 truncate">
+                              <span>From</span>
+                              <AddressDisplay address={event.from} useShortenedAddress />
+                              <span>To</span>
+                              <AddressDisplay address={event.to} useShortenedAddress />
+
+                              {event.ids &&
+                                event.ids.map((id, index) => (
+                                  <>
+                                    <span>TokenID</span>
+                                    {String(id).length > 8 ? (
+                                      <Tooltip text={id}>{String(id).slice(0, 8)}...</Tooltip>
+                                    ) : (
+                                      <span>{id}</span>
+                                    )}
+                                    <span className="text-muted-foreground">Qty</span>
+                                    <span>{event?.values ? formatNumber(event?.values[index]) : '0'}</span>
+                                  </>
+                                ))}
+                              <Link href={`/addresses/${event.address}`}>{event.name}</Link>
                             </div>
                           </div>
                         );

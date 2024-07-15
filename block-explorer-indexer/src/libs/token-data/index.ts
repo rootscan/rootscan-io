@@ -1,23 +1,43 @@
+import { LRUCache } from 'lru-cache';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Address, getAddress } from 'viem';
 
-let localCache: any = {};
+interface NftTokenMetadata {
+  name: string;
+  image: string;
+  animation_url: string;
+  attributes: Record<string, string>[];
+  tokenId: number;
+}
 
-export const getTokenMetadata = async (contractAddress: Address, tokenId: number, network: 'root' | 'porcini') => {
-  if (!localCache[getAddress(contractAddress)]) {
+const cache = new LRUCache<string, NftTokenMetadata[]>({
+  ttl: 1000 * 60 * 5,
+  ttlAutopurge: true,
+});
+
+export const getTokenMetadata = async (
+  contractAddress: Address,
+  tokenId: number | string,
+  network: 'root' | 'porcini',
+): Promise<NftTokenMetadata> => {
+  const key = getAddress(contractAddress);
+
+  if (!cache.has(key)) {
     const fileDir = path.resolve(__dirname, `blockchains`, network, `${getAddress(contractAddress)}.json`);
-    const readData = await fs.readFile(fileDir, 'utf-8').catch(() => {
+    const readData = await fs.readFile(fileDir, 'utf-8').catch((e) => {
       return null;
     });
 
     if (!readData) {
-      return {};
+      // to avoid multiple disk access, when file not found
+      cache.set(key, []);
+      return {} as NftTokenMetadata;
     }
-    localCache[getAddress(contractAddress)] = JSON.parse(readData);
+    cache.set(key, JSON.parse(readData));
   }
 
-  const metadata = localCache[getAddress(contractAddress)]?.find((a) => Number(a?.tokenId) === Number(tokenId));
+  const metadata = cache.get(key)?.find((a) => a?.tokenId == tokenId);
 
-  return metadata || {};
+  return metadata || ({} as NftTokenMetadata);
 };

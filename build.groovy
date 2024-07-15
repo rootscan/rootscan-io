@@ -149,6 +149,8 @@ pipeline {
                         script {
                             redeployProjects(APPS, 'rootscan-odev-porcini', '/project/local:p-cq7nh/workload/deployment')
                             redeployProjects(APPS, 'rootscan-odev-root', '/project/local:p-cq7nh/workload/deployment')
+                            redeployProjects(APPS, 'rootscan-odevnet-porcini', '/project/local:p-cq7nh/workload/deployment')
+                            redeployProjects(APPS, 'rootscan-odevnet-root', '/project/local:p-cq7nh/workload/deployment')
                         }
                     }
                 }
