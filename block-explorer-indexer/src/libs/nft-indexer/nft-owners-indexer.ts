@@ -179,7 +179,7 @@ export class NftOwnersIndexer {
       },
     ]);
 
-    this.#log(`Processing ${eventIds.length} events, found ${data.length} transfers}`);
+    this.#log(`Processing ${eventIds.length} events, found ${data.length} transfers`);
     const nftEvents: INftOwner[][] = [];
     for (const event of data) {
       const parserName = `${event.section}${event.method}`;
