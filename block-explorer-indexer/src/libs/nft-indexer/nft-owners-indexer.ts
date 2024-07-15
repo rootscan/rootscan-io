@@ -46,17 +46,6 @@ export class NftOwnersIndexer {
       const chunks = chunk(eventIds, C_CHUNK_SIZE);
       for (const chunkedEventIds of chunks) {
         await this.processEvents(chunkedEventIds);
-
-        await this.#db.Event.updateMany(
-          {
-            eventId: { $in: chunkedEventIds },
-          },
-          {
-            $set: {
-              _nftOwnersProcessed: true,
-            },
-          },
-        );
       }
 
       finished = eventIds.length < requestLimit;
@@ -76,17 +65,6 @@ export class NftOwnersIndexer {
       const chunks = chunk(hashes, C_CHUNK_SIZE);
       for (const chunkedHashes of chunks) {
         await this.processEvmTransactions(chunkedHashes);
-
-        await this.#db.EvmTransaction.updateMany(
-          {
-            hash: { $in: chunkedHashes },
-          },
-          {
-            $set: {
-              _nftOwnersProcessed: true,
-            },
-          },
-        );
       }
 
       finished = hashes.length < requestLimit;
@@ -161,6 +139,16 @@ export class NftOwnersIndexer {
     }
     const nftOwners = nftEvents.filter(Boolean).flat(1);
     await this.#insertNftOwners(nftOwners);
+    await this.#db.EvmTransaction.updateMany(
+      {
+        hash: { $in: hashes },
+      },
+      {
+        $set: {
+          _nftOwnersProcessed: true,
+        },
+      },
+    );
   }
 
   async processEvents(eventIds: string[]): Promise<void> {
@@ -179,7 +167,7 @@ export class NftOwnersIndexer {
       },
     ]);
 
-    this.#log(`Processing ${eventIds.length} events, found ${data.length} transfers}`);
+    this.#log(`Processing ${eventIds.length} events, found ${data.length} transfers`);
     const nftEvents: INftOwner[][] = [];
     for (const event of data) {
       const parserName = `${event.section}${event.method}`;
@@ -192,6 +180,16 @@ export class NftOwnersIndexer {
     const nftOwners = nftEvents.filter(Boolean).flat(1);
 
     await this.#insertNftOwners(nftOwners);
+    await this.#db.Event.updateMany(
+      {
+        eventId: { $in: eventIds },
+      },
+      {
+        $set: {
+          _nftOwnersProcessed: true,
+        },
+      },
+    );
   }
 
   async #log(message: string) {
