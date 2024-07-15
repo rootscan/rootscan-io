@@ -82,10 +82,11 @@ export const getTokenDetails = async (
     const nativeId = contractAddressToNativeId(contractAddress);
 
     // Get real total supply from Ethereum if is bridged-collection
-    if (tokenLookUp?.symbol === 'bridged-collection' && tokenLookUp?.type === 'ERC721') {
-      if (!tokenLookUp?.ethereumContractAddress) {
-        throw Error(`Ethereum contract not provided for contract address: ${contractAddress}`);
-      }
+    if (
+      tokenLookUp?.symbol === 'bridged-collection' &&
+      tokenLookUp?.type === 'ERC721' &&
+      tokenLookUp?.ethereumContractAddress
+    ) {
       const totalSupplyRes = (await ethereumClient.readContract({
         address: tokenLookUp?.ethereumContractAddress as Address,
         abi: ABIs.ERC721_ORIGINAL,
