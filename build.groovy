@@ -13,6 +13,16 @@ def redeployProjects(String deploymentsString, String namespace, String link) {
     }
 }
 
+def redeploySCMAINProjects(String deploymentsString, String namespace, String link) {
+    Collection deployments = deploymentsString.split(' ')
+    deployments.each { project ->
+        def workloadPath = "${link}:${namespace}:${project}"
+        echo "Deploying ${project} in ${namespace}"
+        rancherRedeploy alwaysPull: true, images: '', credential: 'RANCHER_SCPROD', workload: workloadPath
+    }
+}
+
+
 static Boolean isMainBranch(String branchName) {
     return branchName == 'dev' || branchName == 'prod'
 }
@@ -164,6 +174,8 @@ pipeline {
                         script {
                             redeployProjects(APPS, 'rootscan-oprod-porcini', '/project/local:p-cq7nh/workload/deployment')
                             redeployProjects(APPS, 'rootscan-oprod-root', '/project/local:p-cq7nh/workload/deployment')
+                            redeploySCMAINProjects(APPS, 'rootscan-o-porcini', '/project/c-m-cjkvztpw:p-chkm4/workload/deployment')
+                            redeploySCMAINProjects(APPS, 'rootscan-o-root', '/project/c-m-cjkvztpw:p-chkm4/workload/deployment')
                         }
                     }
                 }
