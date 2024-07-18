@@ -83,7 +83,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           defer
           data-domain={process.env.PLAUSIBLE_DATA_DOMAIN}
           src="https://plausible.rootscan.io/js/script.js"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
       )}
     </html>

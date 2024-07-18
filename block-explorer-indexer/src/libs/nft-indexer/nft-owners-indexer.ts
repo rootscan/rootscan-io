@@ -1,6 +1,7 @@
 import logger from '@/logger';
 import { getTokenMetadata } from '@/token-data';
 import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, IEVMTransaction, IEvent, INftOwner } from '@/types';
+import { isRootChain } from '@/utils';
 import { Job } from 'bullmq';
 import { chunk } from 'lodash';
 import moment from 'moment';
@@ -207,7 +208,7 @@ export class NftOwnersIndexer {
       const metadata = await getTokenMetadata(
         item.contractAddress as any,
         item.tokenId,
-        this.#currentChainId === 7668 ? 'root' : 'porcini',
+        isRootChain(this.#currentChainId) ? 'root' : 'porcini',
       );
 
       item.attributes = metadata?.attributes;

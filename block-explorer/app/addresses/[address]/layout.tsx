@@ -133,7 +133,13 @@ export default async function Layout({ children, params }: { children: React.Rea
                               token={ROOT_TOKEN}
                               amount={Number(
                                 BigInt(data?.balance?.free) -
-                                  BigInt(Math.max(...[data?.balance?.miscFrozen || 0, data?.balance?.feeFrozen || 0])),
+                                  BigInt(
+                                    Math.max(
+                                      data?.balance?.frozen || 0,
+                                      data?.balance?.miscFrozen || 0,
+                                      data?.balance?.feeFrozen || 0,
+                                    ),
+                                  ),
                               )}
                               hideCopyButton
                             />

@@ -2,7 +2,7 @@ import ABIs from '@/constants/abi';
 import logger from '@/logger';
 import { getTokenMetadata } from '@/token-data';
 import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, IToken } from '@/types';
-import { contractAddressToNativeId } from '@/utils';
+import { contractAddressToNativeId, isRootChain } from '@/utils';
 import { getTokenDetails } from '@/utils/tokenInformation';
 import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
@@ -147,7 +147,7 @@ export default class NftIndexer {
               const metadata = await getTokenMetadata(
                 collection.contractAddress,
                 Number(tokenId),
-                Number(currentChainId) === 7668 ? 'root' : 'porcini',
+                isRootChain(currentChainId) ? 'root' : 'porcini',
               );
 
               ops.push({
@@ -221,7 +221,7 @@ export default class NftIndexer {
               const metadata = await getTokenMetadata(
                 collection.contractAddress,
                 Number(tokenId),
-                Number(currentChainId) === 7668 ? 'root' : 'porcini',
+                isRootChain(currentChainId) ? 'root' : 'porcini',
               );
               const owner: Address = getAddress(result?.result as string);
               ops.push({
@@ -349,10 +349,6 @@ export default class NftIndexer {
     }
 
     return Array.from(addresses.keys()) as string[];
-  }
-
-  async fetchMetadataOfToken() {
-    return true;
   }
 
   async createNftHolderRefreshTasks() {

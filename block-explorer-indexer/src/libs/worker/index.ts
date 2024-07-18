@@ -55,12 +55,6 @@ const start = async () => {
       case 'FIND_ETH_BRIDGE_CONTRACT_ADDRESSES':
         await findAllEthereumBridgeContractAddresses();
         break;
-      case 'FIND_NFT_METADATA':
-        await new NftIndexer(evmApi, api, DB, job).fetchMetadataOfToken();
-        break;
-      // case 'REFETCH_NFT_HOLDERS':
-      //   await new NftIndexer(evmApi, api, DB, job).fetchHoldersOfCollection(job.data.contractAddress);
-      //   break;
       case 'PROCESS_NFT_OWNERS':
         await new NftOwnersIndexer(DB, evmApi, job).processMissed();
         break;
@@ -70,9 +64,6 @@ const start = async () => {
       case 'REFETCH_ALL_BALANCES':
         await indexer.refetchAllBalances();
         break;
-      // case 'REFETCH_NFT_HOLDERS_GEN_TASKS':
-      //   await new NftIndexer(evmApi, api, DB, job).createNftHolderRefreshTasks();
-      //   break;
       case 'UPDATE_TOKEN_PRICING_DETAILS':
         await updateTokenPricingDetails();
         break;
@@ -97,6 +88,7 @@ const start = async () => {
 
   const worker = new Worker(process.env.WORKERPOOL_QUEUE, handleTask, {
     connection: redisClient,
+    concurrency: parseInt(process.env.WORKERPOOL_CONCURRENCY || '1'),
     removeOnComplete: { count: 100 },
     removeOnFail: { count: 5000 },
   });

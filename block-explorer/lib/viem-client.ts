@@ -2,9 +2,13 @@ import { createPublicClient, defineChain, http } from "viem"
 import {addresses} from "./rootnameservice";
 export const CHAIN_ID = Number(process?.env?.CHAIN_ID)
 
+export function isRootChain(chainId: number) {
+  return ([7668, 17668].includes(Number(chainId)))
+}
+
 export const root = defineChain({
   id: 7668,
-  name: "TRN - Mainnet",
+  name: "The Root Network - Mainnet",
   network: "trn-mainnet",
   nativeCurrency: {
     decimals: 18,
@@ -33,11 +37,12 @@ export const root = defineChain({
       url: 'https://subgraph.rootnameservice.com/subgraphs/name/graphprotocol/rns/graphql',
     },
   },
+  blockExplorerUrls: ["https://rootscan.io/"],
 })
 
 export const porcini = defineChain({
   id: 7672,
-  name: "TRN - Porcini",
+  name: "The Root Network - Porcini",
   network: "trn-porcini",
   nativeCurrency: {
     decimals: 18,
@@ -67,6 +72,7 @@ export const porcini = defineChain({
     },
   },
   testnet: true,
+  blockExplorersUrls: ["https://porcini.rootscan.io/"],
 })
 
 export const rootClient = createPublicClient({

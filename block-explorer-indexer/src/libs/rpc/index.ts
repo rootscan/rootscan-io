@@ -1,11 +1,12 @@
 import { ethereum, porcini, root } from '@/chains';
+import { isRootChain } from '@/utils';
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api';
 import { getApiOptions } from '@therootnetwork/api';
 import '@therootnetwork/api-types';
 import { PublicClient, createPublicClient, http } from 'viem';
 
 export const evmClient: PublicClient = createPublicClient({
-  chain: process?.env?.CHAIN_ID === '7668' ? root : porcini,
+  chain: isRootChain(Number(process?.env?.CHAIN_ID)) ? root : porcini,
   transport: http(),
 });
 

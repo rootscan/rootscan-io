@@ -1,6 +1,6 @@
 'use client';
 
-import { porcini, root } from '@/lib/viem-client';
+import { isRootChain, porcini, root } from '@/lib/viem-client';
 import { RainbowKitProvider, darkTheme, getDefaultWallets, lightTheme } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import { useTheme } from 'next-themes';
@@ -9,7 +9,7 @@ import { publicProvider } from 'wagmi/providers/public';
 
 export default function WalletProvider({ children, chainId }) {
   const { theme } = useTheme();
-  const { chains, publicClient } = configureChains([Number(chainId) === 7668 ? root : porcini], [publicProvider()]);
+  const { chains, publicClient } = configureChains([isRootChain(chainId) ? root : porcini], [publicProvider()]);
 
   const { connectors } = getDefaultWallets({
     appName: 'TRN - Block Explorer',

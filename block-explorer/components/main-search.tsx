@@ -13,6 +13,7 @@ export default function MainSearch() {
   const handlePress = async (e: any) => {
     if (e?.key === 'Enter') {
       await performSearchMainSearch(value);
+      setValue('');
     }
   };
 
@@ -25,6 +26,7 @@ export default function MainSearch() {
       <Search className="text-muted-foreground absolute left-2.5 top-2.5 -z-10 size-5" />
       <Input
         onChange={handleChangeValue}
+        value={value}
         placeholder="Search by address / txn hash / block..."
         onKeyDown={handlePress}
         className="px-10"

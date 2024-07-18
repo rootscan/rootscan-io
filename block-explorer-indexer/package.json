@@ -9,6 +9,7 @@
     "api-dev": "tsx watch src/libs/api/index.ts",
     "worker": "node build/libs/worker/index.js",
     "scheduler": "node build/libs/scheduler/index.js",
+    "scheduler-dev": "tsx watch src/libs/scheduler/index.ts",
     "build": "tsc -p ./tsconfig.json && tsc-alias -p ./tsconfig.json && cp -R ./src/libs/token-data/blockchains build/libs/token-data",
     "alias": "tsc-alias -p ./tsconfig.json",
     "dev": "tsx watch src/index.ts",

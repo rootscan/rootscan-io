@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { porciniClient, rootClient } from '@/lib/viem-client';
+import { isRootChain, porciniClient, rootClient } from '@/lib/viem-client';
 import { useMutation } from '@tanstack/react-query';
 import { CornerLeftUp, Loader2 } from 'lucide-react';
 
@@ -14,7 +14,7 @@ export default function ReadItem({ abi, item, devDoc, index, address, chainId })
   const devDocKey = `${item?.name}(${item?.inputs?.map((a) => `${a.type}`)})`;
   const currentDevDoc = devDoc[devDocKey];
 
-  const client = chainId === 7668 ? rootClient : porciniClient;
+  const client = isRootChain(chainId) ? rootClient : porciniClient;
   const updateArgsIndex = (index, value) => {
     const newArgs = structuredClone(args);
     newArgs[index] = value;

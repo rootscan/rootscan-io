@@ -701,16 +701,27 @@ export default class Indexer {
     const account = await this.api.query.system.account(address);
     const nativeBalancePrimitive = account?.data?.toPrimitive();
     // Root Native Balance
+
+    // TODO: in trn-seed with new substrate need to modify logic for frozen parameter
+    // https://github.com/futureversecom/trn-seed/issues/860
     const nativeDecimals = 6;
     const nativeBalance: INativeBalance = {
       free: nativeBalancePrimitive?.free as number,
       freeFormatted: formatUnits(String(nativeBalancePrimitive?.free), nativeDecimals),
       reserved: nativeBalancePrimitive?.reserved as number,
       reservedFormatted: formatUnits(String(nativeBalancePrimitive?.reserved), nativeDecimals),
+      frozen: nativeBalancePrimitive?.frozen as number,
+      frozenFormatted: nativeBalancePrimitive?.frozen
+        ? formatUnits(String(nativeBalancePrimitive?.frozen), nativeDecimals)
+        : null,
       miscFrozen: nativeBalancePrimitive?.miscFrozen as number,
-      miscFrozenFormatted: formatUnits(String(nativeBalancePrimitive?.miscFrozen), nativeDecimals),
+      miscFrozenFormatted: nativeBalancePrimitive?.miscFrozen
+        ? formatUnits(String(nativeBalancePrimitive?.miscFrozen), nativeDecimals)
+        : null,
       feeFrozen: nativeBalancePrimitive?.feeFrozen as number,
-      feeFrozenFormatted: formatUnits(String(nativeBalancePrimitive?.feeFrozen), nativeDecimals),
+      feeFrozenFormatted: nativeBalancePrimitive?.feeFrozen
+        ? formatUnits(String(nativeBalancePrimitive?.feeFrozen), nativeDecimals)
+        : null,
     };
 
     await this.DB.Address.updateOne(

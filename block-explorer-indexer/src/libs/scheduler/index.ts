@@ -1,13 +1,14 @@
 import DB from '@/database';
+import { getMissingBlocks } from '@/indexer/tasks/prepopulate';
 import logger from '@/logger';
-import { evmClient, substrateClient } from '@/rpc';
+import { evmClient } from '@/rpc';
 import queue from '@/workerpool';
+import { TaskQueueLimiter } from '@/workerpool/task-queue-limiter';
 import '@therootnetwork/api-types';
 import express from 'express';
+import { range } from 'lodash';
 
 const scheduler = async () => {
-  const api = await substrateClient();
-
   /** Create repeating jobs first */
   await queue.add(
     'FIND_FINALIZED_BLOCKS',
@@ -58,20 +59,6 @@ const scheduler = async () => {
     },
   );
 
-  // if (process.env.REFETCH_NFT_HOLDERS_PERIOD) {
-  //   await queue.add(
-  //     'REFETCH_NFT_HOLDERS_GEN_TASKS',
-  //     {},
-  //     {
-  //       jobId: 'REFETCH_NFT_HOLDERS_GEN_TASKS',
-  //       repeat: {
-  //         every: 60_000 * parseInt(process.env.REFETCH_NFT_HOLDERS_PERIOD),
-  //         immediately: true,
-  //       },
-  //     },
-  //   );
-  // }
-
   await queue.add(
     'FIND_MISSING_BLOCKS',
     {},
@@ -114,32 +101,36 @@ const scheduler = async () => {
     },
   );
 
+  const blocksQueue = new TaskQueueLimiter<number>(1000, (blocknumber) => ({
+    name: 'PROCESS_BLOCK',
+    data: { blocknumber },
+    opts: {
+      priority: 1,
+      jobId: `BLOCK_${blocknumber}`,
+    },
+  }));
+
   /** @dev - Figure out where scheduler has stalled and recreate tasks for missed blocks */
   const currentBlockLookUp = await DB.Block.findOne().sort('-number').lean();
-  const currentDBBlock = currentBlockLookUp?.number ? currentBlockLookUp?.number - 250 : 0;
+  const currentDBBlock = currentBlockLookUp ? currentBlockLookUp.number + 1 : 0;
   const currentChainBlock: bigint = await evmClient.getBlockNumber();
 
-  if (currentDBBlock === 0) {
-    await queue.add(
-      'CREATE_FIND_PRECOMPILE_TOKENS_TASKS',
-      {},
-      {
-        jobId: 'CREATE_FIND_PRECOMPILE_TOKENS_TASKS',
-      },
-    );
-  }
+  // TODO: check is this need
+  // if (currentDBBlock === 0) {
+  //   await queue.add(
+  //     'CREATE_FIND_PRECOMPILE_TOKENS_TASKS',
+  //     {},
+  //     {
+  //       jobId: 'CREATE_FIND_PRECOMPILE_TOKENS_TASKS',
+  //     },
+  //   );
+  // }
 
-  for (let block = Number(currentDBBlock); block < Number(currentChainBlock); block++) {
-    const blockNumber = Number(block);
-    await queue.add(
-      'PROCESS_BLOCK',
-      { blocknumber: blockNumber },
-      {
-        priority: 1,
-        jobId: `BLOCK_${blockNumber}`,
-      },
-    );
-  }
+  // Add missing blocks to queue
+  blocksQueue.addBulk(await getMissingBlocks());
+
+  // Add not processed blocks to queue
+  blocksQueue.addBulk(range(currentDBBlock, Number(currentChainBlock)));
 
   /** Start listening to new blocks */
   evmClient.watchBlockNumber({
@@ -147,16 +138,10 @@ const scheduler = async () => {
     emitOnBegin: true,
     onBlockNumber: async (blockNumber) => {
       logger.info(`Chain is on block ${Number(blockNumber)}`);
-      await queue.add(
-        'PROCESS_BLOCK',
-        { blocknumber: Number(blockNumber) },
-        {
-          priority: 1,
-          jobId: `BLOCK_${Number(blockNumber)}`,
-        },
-      );
+      blocksQueue.add(Number(blockNumber));
     },
   });
+  await blocksQueue.run();
 };
 
 const port = process?.env?.SCHEDULER_HEALTH_PORT;

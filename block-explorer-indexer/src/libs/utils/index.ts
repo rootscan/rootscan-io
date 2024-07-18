@@ -2,6 +2,10 @@ import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
 import { Address, Hash, Hex, decodeAbiParameters, getAddress, isAddress, zeroAddress } from 'viem';
 
+export function isRootChain(chainId: number) {
+  return [7668, 17668].includes(Number(chainId));
+}
+
 export const sleep = (ms: number): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {

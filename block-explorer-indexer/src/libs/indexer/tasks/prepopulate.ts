@@ -153,7 +153,7 @@ export const updateStakingValidators = async () => {
   return true;
 };
 
-export const findMissingBlocks = async () => {
+export async function getMissingBlocks(): Promise<number[]> {
   const missingBlocks = await DB.Block.aggregate(
     [
       {
@@ -162,7 +162,7 @@ export const findMissingBlocks = async () => {
         },
       },
       {
-        $limit: 100_000,
+        $limit: 10_000,
       },
       {
         $group: {
@@ -195,8 +195,11 @@ export const findMissingBlocks = async () => {
       allowDiskUse: true,
     },
   );
+  return missingBlocks?.[0]?.numbers || [];
+}
 
-  const misBlocks = missingBlocks?.[0]?.numbers || [];
+export const findMissingBlocks = async () => {
+  const misBlocks = await getMissingBlocks();
 
   for (const missingBlock of misBlocks) {
     const blockNumber = Number(missingBlock);

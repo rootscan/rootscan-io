@@ -95,10 +95,13 @@ export interface INativeBalance {
   freeFormatted: string;
   reserved: number;
   reservedFormatted: string;
-  miscFrozen: number;
-  miscFrozenFormatted: string;
-  feeFrozen: number;
-  feeFrozenFormatted: string;
+  frozen?: number;
+  frozenFormatted?: string | null;
+  // parameters bottom are deprecated with new substrate version 1.0
+  miscFrozen?: number;
+  miscFrozenFormatted?: string | null;
+  feeFrozen?: number;
+  feeFrozenFormatted?: string | null;
 }
 
 export interface IAddress {
