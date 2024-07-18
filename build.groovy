@@ -18,7 +18,7 @@ def redeploySCMAINProjects(String deploymentsString, String namespace, String li
     deployments.each { project ->
         def workloadPath = "${link}:${namespace}:${project}"
         echo "Deploying ${project} in ${namespace}"
-        rancherRedeploy alwaysPull: true, images: '', credential: 'RANCHER_SCPROD', workload: workloadPath
+        rancherRedeploy alwaysPull: true, images: '', credential: 'RANCHER_SCMAIN', workload: workloadPath
     }
 }
 
