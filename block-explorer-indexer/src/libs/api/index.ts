@@ -290,7 +290,6 @@ app.post('/getExtrinsicsForAddress', async (req: Request, res: Response) => {
       ...getPageAndLimit(req.body),
       sort: '-block',
       paginate: false,
-      skipFullCount: true,
       allowDiskUse: true,
       lean: true,
     };
@@ -404,7 +403,6 @@ app.post('/getTransactionsInBlock', async (req: Request, res: Response) => {
       sort: '-blockNumber',
       populate: 'fromLookup toLookup',
       allowDiskUse: true,
-      skipFullCount: true,
       lean: true,
     };
     const data = await DB.EvmTransaction.paginate({ blockNumber }, options);
@@ -422,7 +420,6 @@ app.post('/getEVMTransactionsForWallet', async (req: Request, res: Response) => 
       ...getPageAndLimit(req.body),
       sort: '-blockNumber',
       populate: 'fromLookup toLookup',
-      skipFullCount: true,
       allowDiskUse: true,
       lean: true,
     };
@@ -442,7 +439,6 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
     const options = {
       ...getPageAndLimit(req.body),
       sort: '-blockNumber',
-      skipFullCount: true,
       allowDiskUse: true,
       populate: 'extrinsicData tokenNative nftCollection',
       lean: true,
@@ -488,7 +484,6 @@ app.post('/getTokens', async (req: Request, res: Response) => {
     const options = {
       ...getPageAndLimit(req.body),
       allowDiskUse: true,
-      skipFullCount: true,
       sort: 'assetId collectionId',
       lean: true,
     };
@@ -656,7 +651,6 @@ app.post('/getTokenBalances', async (req: Request, res: Response) => {
       lean: true,
     };
     const data = await DB.Balance.paginate({ address }, options);
-
     return res.json(data);
   } catch (e) {
     processError(e, res);
@@ -1037,7 +1031,7 @@ app.post('/getBridgeTransactions', async (req: Request, res: Response) => {
       ...getPageAndLimit(req.body),
       populate: 'xrplProcessingOk bridgeErc20Token bridgeErc721Token',
       allowDiskUse: true,
-      skipFullCount: true,
+      skipFullCount: !req.body.address,
       sort: '-block',
       lean: true,
     };
