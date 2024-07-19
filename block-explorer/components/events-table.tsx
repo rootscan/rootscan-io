@@ -1,12 +1,13 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { camelCaseToWords } from '@/lib/utils';
+import { IEvent } from '@/types/models';
 import { SortDesc } from 'lucide-react';
 import Link from 'next/link';
 
 import TimeAgoDate from './time-ago-date';
 import { Badge } from './ui/badge';
 
-export default function EventsTable({ events }) {
+export default function EventsTable({ events }: { events: IEvent[] }) {
   return (
     <Table>
       <TableHeader>
@@ -24,25 +25,25 @@ export default function EventsTable({ events }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {events.map((event: any) => (
-          <TableRow key={event._id}>
+        {events.map((event) => (
+          <TableRow key={event.eventId}>
             <TableCell>
               <Link href={`/events/${event.eventId}`}>{event.eventId}</Link>
             </TableCell>
             <TableCell>
-              <Link href={`/blocks/${event?.blockNumber}`}>{event?.blockNumber}</Link>
+              <Link href={`/blocks/${event.blockNumber}`}>{event.blockNumber}</Link>
             </TableCell>
             <TableCell>
-              {event?.extrinsicId ? <Link href={`/extrinsics/${event?.extrinsicId}`}>{event?.extrinsicId}</Link> : '-'}
+              {event.extrinsicId ? <Link href={`/extrinsics/${event.extrinsicId}`}>{event.extrinsicId}</Link> : '-'}
             </TableCell>
             <TableCell>
-              <TimeAgoDate date={event?.timestamp * 1000} />
+              <TimeAgoDate date={event.timestamp * 1000} />
             </TableCell>
             <TableCell className="capitalize">
-              <Badge>{event?.section ? camelCaseToWords(event?.section) : null}</Badge>
+              <Badge>{event.section ? camelCaseToWords(event.section) : null}</Badge>
             </TableCell>
             <TableCell className="capitalize">
-              <Badge>{event?.method ? camelCaseToWords(event?.method) : null}</Badge>
+              <Badge>{event.method ? camelCaseToWords(event.method) : null}</Badge>
             </TableCell>
           </TableRow>
         ))}

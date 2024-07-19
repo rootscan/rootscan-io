@@ -5,24 +5,27 @@ import Tooltip from '@/components/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { getNftsForAddress } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
+import { Address } from 'viem';
 
-const getData = async ({ params, searchParams }) => {
-  const data = await getNftsForAddress({
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { contractaddress: Address; address: Address };
+  searchParams: { page?: number };
+}) {
+  const data = await request(ApiCommand.getNftsForAddress, {
     address: params.address,
-    page: searchParams?.page,
     contractAddress: params?.contractaddress,
+    page: searchParams?.page || 1,
   });
 
-  return data;
-};
-
-export default async function Page({ params, searchParams }) {
-  const data = await getData({ params, searchParams });
   const tokens = data?.docs;
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -33,7 +36,7 @@ export default async function Page({ params, searchParams }) {
             </Button>
           </Link>
         </Tooltip>
-        <PaginationSuspense pagination={getPaginationData(data)} />
+        {tokens?.length ? <PaginationSuspense pagination={getPaginationData(data)} /> : null}
       </div>
       {tokens?.length ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">

@@ -1,16 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CardDetail from '@/components/ui/card-detail';
 import { getContractVerification } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { AlertTriangle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Address } from 'viem';
 
 import CodeEditor from './components/code-editor';
 
-const getData = async ({ params }) => {
+const getData = async ({ params }: { params: { address: Address } }) => {
   const fetchData = await getContractVerification({
     contractAddress: params.address,
-  }).catch((e) => {
+  }).catch(() => {
     return null;
   });
 
@@ -18,7 +20,7 @@ const getData = async ({ params }) => {
     return null;
   }
 
-  let parsedData: { metadata?: any; files: any[] } = {
+  const parsedData: { metadata?: any; files: any[] } = {
     metadata: undefined,
     files: [],
   };
@@ -37,14 +39,14 @@ const getData = async ({ params }) => {
   return parsedData;
 };
 
-export default async function Page({ params }) {
+export default async function Page({ params }: { params: { address: Address } }) {
   const data = await getData({ params });
 
   if (!data) {
     return (
       <div className="flex flex-col gap-4">
         <p>This contract is not verified.</p>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           If you wish to verify this contract please follow the tutorial{' '}
           <Link href="https://docs.sourcify.dev/docs/how-to-verify/" className="text-primary" target="_blank">
             here.
@@ -91,7 +93,7 @@ export default async function Page({ params }) {
                   className={cn([item?.className ? item.className : '', 'size-12'])}
                   alt="foundry"
                 />
-                <p className="text-muted-foreground text-xs">{item?.title}</p>
+                <p className="text-xs text-muted-foreground">{item?.title}</p>
               </div>
             </Link>
           ))}
@@ -103,7 +105,7 @@ export default async function Page({ params }) {
   return (
     <div className="flex flex-col gap-6">
       <p className="text-muted-foreground">Contract Source Code Verified (Exact Match)</p>
-      <p className="text-muted-foreground flex items-center gap-2 text-xs">
+      <p className="flex items-center gap-2 text-xs text-muted-foreground">
         <AlertTriangle className="size-5 text-orange-400" />
         Source code verification does not imply that the contract is safe to interact with.
       </p>

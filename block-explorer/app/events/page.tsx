@@ -4,7 +4,7 @@ import EventsTable from '@/components/events-table';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
 import SectionTitle from '@/components/section-title';
-import { getEvents } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
 import { Metadata } from 'next';
 
@@ -12,22 +12,22 @@ export const metadata: Metadata = {
   title: 'Events',
 };
 
-const getData = async ({ searchParams }) => {
-  const data = await getEvents({ page: searchParams?.page });
-  return data;
-};
-
-export default async function Page({ searchParams }) {
-  const data = await getData({ searchParams });
+export default async function Page({ searchParams }: { searchParams: { page?: number } }) {
+  const data = await request(ApiCommand.getEvents, { page: searchParams?.page || 1 });
   const events = data?.docs;
   return (
     <Container>
       <div className="flex flex-col gap-4">
         <Breadcrumbs />
         <SectionTitle>Events</SectionTitle>
-        <PaginationSuspense pagination={getPaginationData(data)} />
-
-        {!events?.length ? <NoData /> : <EventsTable events={events} />}
+        {!events?.length ? (
+          <NoData />
+        ) : (
+          <>
+            <PaginationSuspense pagination={getPaginationData(data)} />
+            <EventsTable events={events} />
+          </>
+        )}
       </div>
     </Container>
   );

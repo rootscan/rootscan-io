@@ -3,7 +3,7 @@ import Container from '@/components/container';
 import PaginationSuspense from '@/components/pagination-suspense';
 import SectionTitle from '@/components/section-title';
 import TransactionsTable from '@/components/transactions-table';
-import { getTransactions } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
 import { Metadata } from 'next';
 
@@ -11,15 +11,8 @@ export const metadata: Metadata = {
   title: 'EVM Transactions',
 };
 
-const getData = async ({ searchParams }: { searchParams: any }) => {
-  const data = await getTransactions({
-    page: searchParams?.page ? searchParams?.page : 1,
-  });
-  return data;
-};
-
-export default async function Page({ searchParams }: { searchParams: any }) {
-  const data = await getData({ searchParams });
+export default async function Page({ searchParams }: { searchParams: { page?: number } }) {
+  const data = await request(ApiCommand.getTransactions, { page: searchParams?.page || 1 });
   const transactions = data?.docs;
   return (
     <Container>

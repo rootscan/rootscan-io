@@ -9,7 +9,7 @@ import Logo from './logo';
 import Tooltip from './tooltip';
 
 interface AddressDisplayProps {
-  address: Address;
+  address?: Address | null | undefined;
   nameTag?: string;
   rnsName?: string | null;
   isContract?: boolean;
@@ -46,7 +46,7 @@ export default function AddressDisplay({
     <div className={cn(['flex items-center gap-2', className ? className : ''])}>
       {isContract ? (
         <Tooltip text="EVM Contract" asChild>
-          <FileText className="text-muted-foreground size-4" />
+          <FileText className="size-4 text-muted-foreground" />
         </Tooltip>
       ) : null}
       {isFuturepass ? (
@@ -54,7 +54,7 @@ export default function AddressDisplay({
           <Logo className="size-4" />
         </Tooltip>
       ) : null}
-      <div className={isTruncate ? 'max-w-[250px] md:max-w-full truncate' : ''}>
+      <div className={isTruncate ? 'max-w-[250px] truncate md:max-w-full' : ''}>
         <Tooltip text={address} disabled={!useShortenedAddress} asChild>
           <Link href={`/${isTokenTracker ? 'token' : 'addresses'}/${address}`} className="truncate">
             {name}

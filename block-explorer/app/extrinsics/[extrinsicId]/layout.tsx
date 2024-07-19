@@ -11,7 +11,13 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function Layout({ children, params }: { children: React.ReactNode; params: any }) {
+export default async function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { extrinsicId: string };
+}) {
   const { extrinsicId } = params;
 
   return (

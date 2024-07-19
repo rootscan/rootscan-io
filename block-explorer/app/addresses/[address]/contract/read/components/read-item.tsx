@@ -61,7 +61,7 @@ export default function ReadItem({ abi, item, devDoc, index, address, chainId })
             </div>
           ) : null}
           {item?.outputs?.length && !mutation?.error ? (
-            <div className="text-muted-foreground flex items-center gap-2 text-xs italic">
+            <div className="flex items-center gap-2 text-xs italic text-muted-foreground">
               <CornerLeftUp className="size-4" />
               <div className="flex items-center gap-2">
                 {item?.outputs?.map((x) => `${x.name} ${x.type}`).join(',')}
