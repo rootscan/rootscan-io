@@ -238,8 +238,7 @@ export function decodeBridgeMessage(pegAddress: string, message: string, directi
     }
 
     case pegPalletAddress.bridge.toLowerCase(): {
-      const [setValue, setId] = decodeAbiParameters(['address[]', 'uint32'], message as Hash) as [string[], number];
-
+      const [setValue, setId] = decodeAbiParameters([{ type: 'address[]' }, { type: 'uint32' }], message as Hash);
       return { authSetValue: { setId, setValue } };
     }
   }

@@ -56,7 +56,7 @@
     "tslib": "^2.6.2",
     "tsx": "^3.12.7",
     "typescript": "^5.0.0",
-    "viem": "2.0.6",
+    "viem": "2.17.5",
     "winston": "^3.11.0",
     "winston-format-pretty-console": "^1.2.2"
   }

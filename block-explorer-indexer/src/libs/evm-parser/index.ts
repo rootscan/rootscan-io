@@ -10,10 +10,14 @@ export const getEVMTransaction = async (client: PublicClient, hash: Hash) => {
     client.getTransaction({ hash }),
     client.getTransactionReceipt({ hash }),
   ]);
-  const tx: Transaction & TransactionReceipt & { creates?: Address } & IEVMTransaction = {
-    ...txRaw,
-    ...txReceipt,
-  };
+
+  const tx: Transaction & TransactionReceipt & { creates?: Address } & IEVMTransaction = Object.assign(
+    {},
+    txRaw,
+    txReceipt,
+    <{ creates?: Address } & IEVMTransaction>{}, // hack to avoid typescript error
+  );
+
   const txBlock = await client.getBlock({ blockNumber: txRaw.blockNumber as bigint });
   return { tx, txBlock };
 };
