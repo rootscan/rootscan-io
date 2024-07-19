@@ -56,10 +56,18 @@ export default async function Page({ searchParams }: { searchParams: { page?: nu
                   <AddressDisplay address={swap.args?.trader as Address} useShortenedAddress />
                 </TableCell>
                 <TableCell>
-                  <TokenDisplay token={swap.swapFromToken} amount={swap.args?.supply_Asset_amount} hideCopyButton />
+                  <TokenDisplay
+                    token={swap.swapFromToken}
+                    amount={swap.args?.supply_Asset_amount as number}
+                    hideCopyButton
+                  />
                 </TableCell>
                 <TableCell>
-                  <TokenDisplay token={swap.swapToToken} amount={swap.args?.target_Asset_amount} hideCopyButton />
+                  <TokenDisplay
+                    token={swap.swapToToken}
+                    amount={swap.args?.target_Asset_amount as number}
+                    hideCopyButton
+                  />
                 </TableCell>
               </TableRow>
             ))}

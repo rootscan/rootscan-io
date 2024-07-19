@@ -8,7 +8,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Button } from './ui/button';
 
-export default function Pagination({ pagination }: { pagination?: PaginationResponse<unknown> }) {
+export default function Pagination({ pagination }: { pagination?: Omit<PaginationResponse<unknown>, 'docs'> }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();

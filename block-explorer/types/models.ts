@@ -126,7 +126,7 @@ export interface IExtrinsic<T extends ExtrinsicSectionType = string> {
   proxiedMethods?: string[];
 
   events: IEvent[];
-  proxyFeeToken?: IEvent[];
+  proxyFeeToken?: IToken;
   allEvents?: IEvent[];
   xrplProcessingOk?: IEvent;
   bridgeErc721Token?: IToken;

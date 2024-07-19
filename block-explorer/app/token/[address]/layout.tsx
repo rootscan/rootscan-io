@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CardDetail from '@/components/ui/card-detail';
 import { ApiCommand, request } from '@/lib/api';
 import { formatNumber, formatNumberDollars } from '@/lib/utils';
+import { IToken } from '@/types/models';
 import { getAddress } from 'viem';
 
 import Menu from './components/menu';
@@ -29,7 +30,7 @@ export default async function Layout({ params, children }) {
               <CardDetail.Wrapper>
                 <CardDetail.Title>Token</CardDetail.Title>
                 <CardDetail.Content>
-                  <TokenDisplay token={data} hideCopyButton overrideImageSizeClass="size-10 mr-2" />
+                  <TokenDisplay token={data as IToken} hideCopyButton overrideImageSizeClass="size-10 mr-2" />
                 </CardDetail.Content>
               </CardDetail.Wrapper>
             </CardContent>

@@ -16,7 +16,7 @@ export default async function TokenDisplay({
   isTokenTracker,
   hideLogo,
 }: {
-  token: IToken;
+  token?: IToken;
   amount?: bigint | number;
   hideCopyButton?: boolean;
   overrideImageSizeClass?: string;
@@ -24,6 +24,9 @@ export default async function TokenDisplay({
   isTokenTracker?: boolean;
   hideLogo?: boolean;
 }) {
+  if (!token) {
+    return;
+  }
   const hasLogo = getTokenLogo(token?.contractAddress) || null;
   return (
     <div className={cn(['flex items-center gap-2 truncate', className ? className : ''])}>

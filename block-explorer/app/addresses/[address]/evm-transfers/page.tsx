@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
+import { TTokenType } from '@/types/models';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Address, getAddress } from 'viem';
@@ -69,7 +70,7 @@ export default async function Page({
                   token={{
                     name: tx?.name,
                     symbol: tx?.symbol,
-                    type: tx?.type,
+                    type: tx?.type as TTokenType,
                     contractAddress: tx?.address,
                   }}
                   hideCopyButton
