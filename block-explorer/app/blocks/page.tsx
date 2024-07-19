@@ -66,7 +66,7 @@ export default async function Page({ searchParams }: { searchParams: { page: num
                   <Link href={`/blocks/${block.number}`}>{block.number}</Link>
                 </TableCell>
                 <TableCell>
-                  <TimeAgoDate date={block?.timestamp} />
+                  <TimeAgoDate date={block.timestamp} />
                 </TableCell>
                 <TableCell>
                   <AddressDisplay address={block.evmBlock.miner} useShortenedAddress />
