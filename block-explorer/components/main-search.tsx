@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useState } from 'react';
 
 import { performSearchMainSearch } from '@/lib/helpers';
 import { CornerDownLeft, Search } from 'lucide-react';
@@ -10,7 +10,7 @@ import { Input } from './ui/input';
 export default function MainSearch() {
   const [value, setValue] = useState('');
 
-  const handlePress = async (e: any) => {
+  const handlePress = async (e: KeyboardEvent) => {
     if (e?.key === 'Enter') {
       await performSearchMainSearch(value);
       setValue('');
@@ -23,7 +23,7 @@ export default function MainSearch() {
 
   return (
     <div className="relative">
-      <Search className="text-muted-foreground absolute left-2.5 top-2.5 -z-10 size-5" />
+      <Search className="absolute left-2.5 top-2.5 -z-10 size-5 text-muted-foreground" />
       <Input
         onChange={handleChangeValue}
         value={value}
@@ -31,7 +31,7 @@ export default function MainSearch() {
         onKeyDown={handlePress}
         className="px-10"
       />
-      <CornerDownLeft className="text-muted-foreground absolute right-2.5 top-2.5 -z-10 m-auto size-5" />
+      <CornerDownLeft className="absolute right-2.5 top-2.5 -z-10 m-auto size-5 text-muted-foreground" />
     </div>
   );
 }

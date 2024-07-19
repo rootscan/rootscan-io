@@ -4,6 +4,7 @@ import SectionTitle from '@/components/section-title';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
+import { IBlock } from '@/types/models';
 import { AlertTriangle, Box } from 'lucide-react';
 import Link from 'next/link';
 
@@ -11,7 +12,7 @@ import AddressDisplay from '../address-display';
 import TimeAgoDate from '../time-ago-date';
 import Tooltip from '../tooltip';
 
-export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
+export default function LatestBlocks({ latestBlocks }: { latestBlocks: IBlock[] }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -22,7 +23,7 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
       <div className="group flex flex-col gap-6 overflow-x-hidden lg:flex-row">
         <Carousel>
           <CarouselContent>
-            {latestBlocks?.map((block: any, _: number) => (
+            {latestBlocks?.map((block) => (
               <CarouselItem
                 key={block.number}
                 className={cn(['basis-1/1 md:basis-1/2 lg:basis-1/4', _ === 0 && 'animate-block w-full'])}
@@ -38,7 +39,7 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: any }) {
                           </Link>
                         </div>
                         {block?.isFinalized ? (
-                          <span className="text-muted-foreground line-clamp-1 truncate text-right text-xs">
+                          <span className="line-clamp-1 truncate text-right text-xs text-muted-foreground">
                             <TimeAgoDate date={block.timestamp} />
                           </span>
                         ) : (

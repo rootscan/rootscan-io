@@ -12,11 +12,10 @@ export default function AddToMetamask() {
 
   if (typeof window !== 'undefined') {
     isPorcini = window?.location?.href?.includes('porcini');
-    if (window.hasOwnProperty('ethereum')) {
+    if (Object.prototype.hasOwnProperty.call(window, 'ethereum')) {
       walletClient = createWalletClient({
         chain: !isPorcini ? root : porcini,
-        // @ts-ignore
-        transport: custom(window?.ethereum),
+        transport: custom(window['ethereum']),
       });
     }
   }
@@ -26,7 +25,9 @@ export default function AddToMetamask() {
       await walletClient?.addChain({
         chain: !isPorcini ? root : porcini,
       });
-    } catch {}
+    } catch {
+      // noop
+    }
   };
   return (
     <Button size="sm" variant="default" onClick={() => add()}>

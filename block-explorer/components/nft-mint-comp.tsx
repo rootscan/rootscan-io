@@ -13,7 +13,7 @@ import { Button } from './ui/button';
 import { TableCell, TableRow } from './ui/table';
 
 export default function NFTMint({ tx, address }) {
-  const tokenIdsMinted: any = [];
+  const tokenIdsMinted: string[] = [];
   if (!isNaN(tx?.args?.start) && !isNaN(tx?.args?.end)) {
     for (let i = tx?.args?.start; i <= tx?.args?.end; i++) {
       tokenIdsMinted.push(i);
@@ -63,7 +63,7 @@ export default function NFTMint({ tx, address }) {
         </div>
       </TableCell>
       <TableCell className="max-w-[150px] truncate">-</TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">

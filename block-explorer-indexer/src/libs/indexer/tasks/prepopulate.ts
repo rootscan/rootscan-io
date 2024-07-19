@@ -108,6 +108,7 @@ export const findPrecompiledTokens = async (from: number, to: number): Promise<v
 
 export const updateStakingValidators = async () => {
   const api = await substrateClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const activeEra: any = await api.query.staking.activeEra();
   const activeEraIndex = activeEra.toPrimitive()?.index;
   const exposures = await api.query.staking.erasStakers.entries(activeEra.unwrap().index);
@@ -118,6 +119,7 @@ export const updateStakingValidators = async () => {
     const keyArgs = key?.args?.map((k) => k.toHuman());
     const era = Number(keyArgs?.[0]);
     const validator = keyArgs?.[1] as Address;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = exposure.toPrimitive();
     const nominators = data?.others?.length;
     const totalRootNominated = data?.total;

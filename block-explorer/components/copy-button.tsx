@@ -9,7 +9,7 @@ const copyToClipboardWithMeta = async (value: string) => {
   navigator.clipboard.writeText(value);
 };
 
-export const CopyButton = ({ value, className, ...props }: { value?: any; className?: string }) => {
+export const CopyButton = ({ value, className, ...props }: { value: string; className?: string }) => {
   const [hasCopied, setHasCopied] = React.useState(false);
 
   React.useEffect(() => {

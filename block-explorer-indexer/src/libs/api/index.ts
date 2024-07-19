@@ -17,7 +17,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 import moment from 'moment';
 import Mongoose, { FilterQuery, PaginateOptions } from 'mongoose';
-import { Address, Hash, formatUnits, getAddress } from 'viem';
+import { Hash, formatUnits, getAddress } from 'viem';
 
 import { processError } from './utils';
 
@@ -1236,6 +1236,6 @@ const server = app.listen(3001, () => {
   logger.info(`🚀`);
 });
 
-Mongoose.connection.on('error', (err) => {
+Mongoose.connection.on('error', () => {
   server.close();
 });

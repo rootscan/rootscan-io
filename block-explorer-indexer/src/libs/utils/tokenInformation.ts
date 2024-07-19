@@ -26,7 +26,7 @@ export const getTokenDetails = async (
     const erc20Contract = { address: contractAddress, abi: ABIs.ERC20_ORIGINAL as Abi };
     const erc721Contract = { address: contractAddress, abi: ABIs.ERC721_ORIGINAL as Abi };
     const erc1155Contract = { address: contractAddress, abi: ABIs.ERC1155_ORIGINAL as Abi };
-    const multicall: any[] = await evmClient.multicall({
+    const multicall = await evmClient.multicall({
       contracts: [
         {
           ...erc20Contract,
@@ -58,24 +58,24 @@ export const getTokenDetails = async (
       allowFailure: true,
     });
 
-    const parseMulticallResult = (index: number) => {
+    function parseMulticallResult<T>(index: number): T | undefined {
       if (multicall[index]?.status === 'success') {
-        return multicall[index].result;
+        return multicall[index].result as T;
       } else {
         return undefined;
       }
-    };
+    }
 
     let tokenType: TTokenType | undefined = undefined;
-    const name: string = parseMulticallResult(0);
-    const symbol: string = parseMulticallResult(1);
-    const decimals: number | undefined = parseMulticallResult(2);
-    let tokenURI: string | undefined = parseMulticallResult(3);
-    if (!tokenURI && multicall[3].error?.shortMessage?.includes('ERC721')) {
+    const name = parseMulticallResult<string>(0);
+    const symbol = parseMulticallResult<string>(1);
+    const decimals = parseMulticallResult<number>(2);
+    let tokenURI = parseMulticallResult<string>(3);
+    if (!tokenURI && multicall[3].error?.['shortMessage']?.includes('ERC721')) {
       tokenURI = 'ERC721';
     }
     let balanceOfBatch: number | undefined = parseMulticallResult(4);
-    if (balanceOfBatch === undefined && multicall[4].error?.shortMessage?.includes('ERC1155')) {
+    if (balanceOfBatch === undefined && multicall[4].error?.['shortMessage']?.includes('ERC1155')) {
       balanceOfBatch = 0;
     }
     let totalSupply: bigint | undefined = parseMulticallResult(5);
@@ -101,6 +101,7 @@ export const getTokenDetails = async (
     const api = await substrateClient();
 
     const lowerCaseContractAddress = contractAddress?.toLowerCase();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let palletData: any = undefined;
 
     // Assets Pallet
@@ -108,7 +109,7 @@ export const getTokenDetails = async (
       try {
         palletData = (await api.query.assets.metadata(nativeId)).toHuman();
       } catch {
-        /*eslint no-empty: "error"*/
+        // noop
       }
     }
     // NFT Pallet
@@ -116,7 +117,7 @@ export const getTokenDetails = async (
       try {
         palletData = (await api.query.nft.collectionInfo(nativeId)).toHuman();
       } catch {
-        /*eslint no-empty: "error"*/
+        // noop
       }
     }
     // SFT Pallet
@@ -124,7 +125,7 @@ export const getTokenDetails = async (
       try {
         palletData = (await api.query.sft.sftCollectionInfo(nativeId)).toHuman();
       } catch {
-        /*eslint no-empty: "error"*/
+        // noop
       }
     }
 

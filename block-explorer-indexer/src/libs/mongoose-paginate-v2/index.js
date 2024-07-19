@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 /**
  * @param {Object}              [query={}]
  * @param {Object}              [options={}]
@@ -22,7 +20,9 @@
  *
  * @returns {Promise}
  */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const PaginationParametersHelper = require('./pagination-parameters');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const paginateSubDocsHelper = require('./pagination-subdocs');
 
 const defaultOptions = {

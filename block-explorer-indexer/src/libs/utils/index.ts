@@ -90,6 +90,7 @@ export const extractUnknownFields = (section, method) => {
   return [];
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const extraArgsFromEvent = (event, api): { [key: string]: any } => {
   const { method, section, meta, data } = event;
   const args = {};

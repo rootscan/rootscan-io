@@ -33,7 +33,7 @@ export default function ShowMoreTransaction({ transaction }) {
               </div>
               <span className="truncate">
                 {formatNumber(transaction.gasUsed)} / {formatNumber(transaction.gas)}
-                <span className="text-muted-foreground ml-2">
+                <span className="ml-2 text-muted-foreground">
                   {'('}
                   {Math.round((Number(transaction.gasUsed) / Number(transaction.gas)) * 100)}
                   {'%)'}
