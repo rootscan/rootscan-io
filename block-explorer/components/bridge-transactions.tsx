@@ -8,10 +8,11 @@ import Tooltip from '@/components/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ETH_TOKEN, XRP_TOKEN } from '@/lib/constants/tokens';
+import { IExtrinsic } from '@/types/models';
 import { ExternalLink, SortDesc } from 'lucide-react';
 import Link from 'next/link';
 
-export default function BridgeTransactions({ transactions }) {
+export default function BridgeTransactions({ transactions }: { transactions: IExtrinsic[] }) {
   return (
     <Fragment>
       <Table>
@@ -32,14 +33,14 @@ export default function BridgeTransactions({ transactions }) {
         </TableHeader>
         <TableBody>
           {transactions.map((tx, _) => {
-            if (tx?.section === 'xrplBridge' && tx?.method === 'submitTransaction') {
-              return <XRPDeposit tx={tx} key={_} />;
+            if (tx.section === 'xrplBridge' && tx.method === 'submitTransaction') {
+              return <XRPDeposit tx={tx as IExtrinsic<'xrplBridge'>} key={_} />;
             }
-            if (tx?.section === 'xrplBridge' && tx?.method === 'withdrawXrp') {
-              return <XRPWithdraw tx={tx} key={_} />;
+            if (tx.section === 'xrplBridge' && tx.method === 'withdrawXrp') {
+              return <XRPWithdraw tx={tx as IExtrinsic<'xrplBridge'>} key={_} />;
             }
-            if (tx?.section === 'ethBridge' && tx?.method === 'submitEvent') {
-              return <ETHBridgeSubmitEvent tx={tx} key={_} />;
+            if (tx.section === 'ethBridge' && tx.method === 'submitEvent') {
+              return <ETHBridgeSubmitEvent tx={tx as IExtrinsic<'ethBridge'>} key={_} />;
             }
 
             return <Fragment key={_} />;
@@ -50,7 +51,7 @@ export default function BridgeTransactions({ transactions }) {
   );
 }
 
-const ETHBridgeSubmitEvent = ({ tx }) => {
+const ETHBridgeSubmitEvent = ({ tx }: { tx: IExtrinsic<'ethBridge'> }) => {
   return (
     <TableRow>
       <TableCell className="max-w-[100px]">
@@ -92,7 +93,7 @@ const ETHBridgeSubmitEvent = ({ tx }) => {
       <TableCell>
         <Tooltip text="View on Etherscan">
           <Link href={`https://etherscan.io/tx/${tx?.args?.tx_hash}`} target="_blank">
-            <ExternalLink className="text-muted-foreground size-5" />
+            <ExternalLink className="size-5 text-muted-foreground" />
           </Link>
         </Tooltip>
       </TableCell>
@@ -100,7 +101,7 @@ const ETHBridgeSubmitEvent = ({ tx }) => {
   );
 };
 
-const XRPDeposit = ({ tx }) => {
+const XRPDeposit = ({ tx }: { tx: IExtrinsic<'xrplBridge'> }) => {
   return (
     <TableRow>
       <TableCell className="max-w-[100px]">
@@ -119,14 +120,14 @@ const XRPDeposit = ({ tx }) => {
       </TableCell>
       <TableCell>
         <Link href={`https://xrpscan.com/tx/${tx?.args?.transaction_hash}`} target="_blank">
-          <ExternalLink className="text-muted-foreground size-5" />
+          <ExternalLink className="size-5 text-muted-foreground" />
         </Link>
       </TableCell>
     </TableRow>
   );
 };
 
-const XRPWithdraw = ({ tx }) => {
+const XRPWithdraw = ({ tx }: { tx: IExtrinsic<'xrplBridge'> }) => {
   return (
     <TableRow>
       <TableCell className="max-w-[100px]">
@@ -145,7 +146,7 @@ const XRPWithdraw = ({ tx }) => {
       </TableCell>
       <TableCell>
         <Link href={`https://xrpscan.com/tx/${tx?.args?.transaction_hash}`} target="_blank">
-          <ExternalLink className="text-muted-foreground size-5" />
+          <ExternalLink className="size-5 text-muted-foreground" />
         </Link>
       </TableCell>
     </TableRow>

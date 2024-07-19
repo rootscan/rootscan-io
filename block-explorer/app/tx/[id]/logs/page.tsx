@@ -3,14 +3,11 @@ import NoData from '@/components/no-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CardDetail from '@/components/ui/card-detail';
-import { getTransaction } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
+import { Hash } from 'viem';
 
-const getData = async ({ params }: any) => {
-  const data = await getTransaction({ hash: params.id });
-  return data;
-};
-export default async function Page({ params }) {
-  const data = await getData({ params });
+export default async function Page({ params }: { params: { id: Hash } }) {
+  const data = await request(ApiCommand.getTransaction, { hash: params.id });
   const logs = data?.logs;
   return (
     <Card>

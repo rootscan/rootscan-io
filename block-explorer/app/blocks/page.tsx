@@ -8,7 +8,7 @@ import SectionTitle from '@/components/section-title';
 import TimeAgoDate from '@/components/time-ago-date';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getBlocks } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { getAddressName } from '@/lib/constants/knownAddresses';
 import { getPaginationData } from '@/lib/utils';
 import { SortDesc } from 'lucide-react';
@@ -19,18 +19,13 @@ export const metadata: Metadata = {
   title: 'Blocks',
 };
 
-const getData = async ({ searchParams }: { searchParams: any }) => {
-  let data = await getBlocks({
+export default async function Page({ searchParams }: { searchParams: { page: number } }) {
+  const data = await request(ApiCommand.getBlocks, {
     page: searchParams?.page ? searchParams?.page : 1,
     limit: 25,
   });
-
-  return data;
-};
-
-export default async function Page({ searchParams }: { searchParams: any }) {
-  const data: any = await getData({ searchParams });
   const blocks = data.docs;
+
   return (
     <Container>
       <div className="flex flex-col gap-4">
@@ -54,7 +49,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {blocks.map((block: any) => (
+            {blocks.map((block) => (
               <TableRow key={block.number}>
                 <TableCell className="max-w-fit md:max-w-[120px] lg:max-w-[60px]">
                   {block?.isFinalized ? (

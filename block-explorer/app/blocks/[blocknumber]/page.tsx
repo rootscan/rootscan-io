@@ -4,16 +4,16 @@ import Timestamp from '@/components/timestamp';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CardDetail from '@/components/ui/card-detail';
-import { getBlock } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import Link from 'next/link';
 
-export default async function Page({ params }: { params: any }) {
+export default async function Page({ params }: { params: { blocknumber: number } }) {
   const { blocknumber } = params;
   if (Number(blocknumber) < 0) {
     throw new Error('There is no block lower than 0.');
   }
-  const block = await getBlock({ number: blocknumber });
 
+  const block = await request(ApiCommand.getBlock, { number: blocknumber });
   if (!block) return <NoData />;
 
   return (
@@ -21,7 +21,7 @@ export default async function Page({ params }: { params: any }) {
       <CardHeader className="relative">
         <CardTitle>Overview</CardTitle>
         <div className="absolute right-6 top-6 text-xs">
-          {block?.isFinalized ? (
+          {block.isFinalized ? (
             <div className="flex items-center gap-2">
               <div className="size-2 rounded-full bg-green-300" />
               Finalized
@@ -43,13 +43,13 @@ export default async function Page({ params }: { params: any }) {
           <CardDetail.Wrapper>
             <CardDetail.Title>Timestamp</CardDetail.Title>
             <CardDetail.Content>
-              <Timestamp date={block?.timestamp} />
+              <Timestamp date={block.timestamp} />
             </CardDetail.Content>
           </CardDetail.Wrapper>
           <CardDetail.Wrapper>
             <CardDetail.Title>Status</CardDetail.Title>
             <CardDetail.Content>
-              {block?.isFinalized ? (
+              {block.isFinalized ? (
                 <div>
                   <Badge variant="success">Finalized</Badge>
                 </div>
@@ -76,7 +76,7 @@ export default async function Page({ params }: { params: any }) {
                 <Link href={`/blocks/${block.number - 1}`} className="truncate">
                   <span>{block.parentHash}</span>
                 </Link>
-                <CopyButton value={block?.parentHash} />
+                <CopyButton value={block.parentHash} />
               </div>
             </CardDetail.Content>
           </CardDetail.Wrapper>
@@ -100,19 +100,19 @@ export default async function Page({ params }: { params: any }) {
           </CardDetail.Wrapper>
           <CardDetail.Wrapper>
             <CardDetail.Title>Extrinsics</CardDetail.Title>
-            <CardDetail.Content>{block?.extrinsicsCount}</CardDetail.Content>
+            <CardDetail.Content>{block.extrinsicsCount}</CardDetail.Content>
           </CardDetail.Wrapper>
           <CardDetail.Wrapper>
             <CardDetail.Title>Events</CardDetail.Title>
-            <CardDetail.Content>{block?.eventsCount}</CardDetail.Content>
+            <CardDetail.Content>{block.eventsCount}</CardDetail.Content>
           </CardDetail.Wrapper>
           <CardDetail.Wrapper>
             <CardDetail.Title>EVM Transactions</CardDetail.Title>
-            <CardDetail.Content>{block?.transactionsCount}</CardDetail.Content>
+            <CardDetail.Content>{block.transactionsCount}</CardDetail.Content>
           </CardDetail.Wrapper>
           <CardDetail.Wrapper>
             <CardDetail.Title>Spec Version</CardDetail.Title>
-            <CardDetail.Content>{block?.spec}</CardDetail.Content>
+            <CardDetail.Content>{block.spec}</CardDetail.Content>
           </CardDetail.Wrapper>
         </div>
       </CardContent>

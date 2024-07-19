@@ -6,12 +6,12 @@ import TokenDisplay from '@/components/token-display';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CardDetail from '@/components/ui/card-detail';
-import { getAddress, getRnsName } from '@/lib/api';
+import { ApiCommand, getRnsName, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { formatNumberDollars } from '@/lib/utils';
 import { generateAvatarURL } from '@cfx-kit/wallet-avatar';
 import Image from 'next/image';
-import { getAddress as getAddressViem } from 'viem';
+import { Address, getAddress } from 'viem';
 
 import Menu from './components/menu';
 import QrCode from './components/qr-code';
@@ -23,25 +23,31 @@ export async function generateMetadata({ params }) {
 }
 
 const getData = async ({ params }) => {
-  const data = await getAddress({ address: getAddressViem(params.address) });
+  const data = await request(ApiCommand.getAddress, { address: getAddress(params.address) });
   return data;
 };
 
-export default async function Layout({ children, params }: { children: React.ReactNode; params: any }) {
+export default async function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { address: Address };
+}) {
   const { address } = params;
   const data = await getData({ params });
   const rnsName = await getRnsName(address);
   const tags: string[] = [];
-  if (getAddressViem(address)?.toLowerCase()?.startsWith('0xffffffff')) {
+  if (getAddress(address)?.toLowerCase()?.startsWith('0xffffffff')) {
     tags.push('Futurepass');
   }
-  if (getAddressViem(address)?.toLowerCase()?.startsWith('0xaaaaaaaa')) {
+  if (getAddress(address)?.toLowerCase()?.startsWith('0xaaaaaaaa')) {
     tags.push('ERC721 Precompile');
   }
-  if (getAddressViem(address)?.toLowerCase()?.startsWith('0xcccccccc')) {
+  if (getAddress(address)?.toLowerCase()?.startsWith('0xcccccccc')) {
     tags.push('ERC20 Precompile');
   }
-  if (getAddressViem(address)?.toLowerCase()?.startsWith('0xbbbbbbbb')) {
+  if (getAddress(address)?.toLowerCase()?.startsWith('0xbbbbbbbb')) {
     tags.push('ERC1155 Precompile');
   }
   return (
@@ -75,7 +81,7 @@ export default async function Layout({ children, params }: { children: React.Rea
                   <CardDetail.Content>{data?.nameTag}</CardDetail.Content>
                 </CardDetail.Wrapper>
               ) : null}
-              <div className="flex md:items-center gap-4 md:gap-12 flex-col md:flex-row items-start">
+              <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:gap-12">
                 <CardDetail.Wrapper>
                   <CardDetail.Title>Address</CardDetail.Title>
                   <CardDetail.Content>
@@ -97,12 +103,12 @@ export default async function Layout({ children, params }: { children: React.Rea
               <CardDetail.Wrapper>
                 <CardDetail.Title>Root Balance</CardDetail.Title>
                 <CardDetail.Content>
-                  {!data?.balance?.reserved && data?.balance?.reserved !== '0' ? (
+                  {!data?.balance?.reserved && data?.balance?.reserved?.toString() !== '0' ? (
                     <div className="flex flex-col gap-2">
                       <TokenDisplay token={ROOT_TOKEN} amount={data?.balance?.free || 0} hideCopyButton />
                       <OnlyMainnet>
                         {data?.balance?.freeFormatted && data?.rootPriceData?.price ? (
-                          <span className="text-muted-foreground text-xs">
+                          <span className="text-xs text-muted-foreground">
                             {formatNumberDollars(Number(data?.balance?.freeFormatted) * data.rootPriceData.price, 2)} @
                             ({formatNumberDollars(data.rootPriceData.price)}/ Root)
                           </span>
@@ -190,7 +196,7 @@ export default async function Layout({ children, params }: { children: React.Rea
           </CardContent>
         </Card>
         <div className="flex items-center justify-between gap-4">
-          <Menu isContract={data?.isContract} isVerified={data?.isVerifiedContract || false} />
+          <Menu isContract={data?.isContract} isVerified={!!data?.isVerifiedContract} />
         </div>
         {children}
       </div>

@@ -4,6 +4,7 @@ import { Fragment } from 'react';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { camelCaseToWords } from '@/lib/utils';
+import { IExtrinsic } from '@/types/models';
 import { ChevronRight, SortDesc } from 'lucide-react';
 import Link from 'next/link';
 
@@ -14,7 +15,7 @@ import TimeAgoDate from './time-ago-date';
 import Tooltip from './tooltip';
 import { Badge } from './ui/badge';
 
-export default function ExtrinsicsTable({ extrinsics }) {
+export default function ExtrinsicsTable({ extrinsics }: { extrinsics: IExtrinsic[] }) {
   if (!extrinsics?.length) return <NoData />;
   return (
     <Table>
@@ -34,7 +35,7 @@ export default function ExtrinsicsTable({ extrinsics }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {extrinsics.map((extrinsic: any) => (
+        {extrinsics.map((extrinsic) => (
           <TableRow key={extrinsic.extrinsicId}>
             <TableCell className="max-w-fit md:max-w-[120px] lg:max-w-[60px]">
               <ExtrinsicStatus extrinsic={extrinsic} />
@@ -46,17 +47,17 @@ export default function ExtrinsicsTable({ extrinsics }) {
               <Link href={`/blocks/${extrinsic.block}`}>{extrinsic.block}</Link>
             </TableCell>
             <TableCell>
-              <TimeAgoDate date={extrinsic?.timestamp * 1000} />
+              <TimeAgoDate date={extrinsic.timestamp * 1000} />
             </TableCell>
             <TableCell className="capitalize">
               <div className="flex flex-wrap items-center gap-1">
-                <Badge>{extrinsic?.section ? camelCaseToWords(extrinsic?.section) : null}</Badge>
-                {extrinsic?.isProxy ? (
+                <Badge>{extrinsic.section ? camelCaseToWords(extrinsic.section) : null}</Badge>
+                {extrinsic.isProxy ? (
                   <Fragment>
-                    {extrinsic?.proxiedSections.map((item, _) => (
+                    {extrinsic.proxiedSections?.map((item, _) => (
                       <Tooltip text="Proxied" key={_}>
                         <div className="flex items-center gap-1">
-                          <ChevronRight className="text-muted-foreground size-4" />
+                          <ChevronRight className="size-4 text-muted-foreground" />
                           <Badge>{item ? camelCaseToWords(item) : null}</Badge>
                         </div>
                       </Tooltip>
@@ -67,13 +68,13 @@ export default function ExtrinsicsTable({ extrinsics }) {
             </TableCell>
             <TableCell className="capitalize">
               <div className="flex flex-wrap items-center gap-1">
-                <Badge>{extrinsic?.method ? camelCaseToWords(extrinsic?.method) : null}</Badge>
-                {extrinsic?.isProxy ? (
+                <Badge>{extrinsic.method ? camelCaseToWords(extrinsic.method) : null}</Badge>
+                {extrinsic.isProxy ? (
                   <Fragment>
-                    {extrinsic?.proxiedMethods.map((item, _) => (
+                    {extrinsic.proxiedMethods?.map((item, _) => (
                       <Tooltip text="Proxied" key={_}>
                         <div className="flex items-center gap-1">
-                          <ChevronRight className="text-muted-foreground size-4" />
+                          <ChevronRight className="size-4 text-muted-foreground" />
                           <Badge>{item ? camelCaseToWords(item) : null}</Badge>
                         </div>
                       </Tooltip>
@@ -83,7 +84,7 @@ export default function ExtrinsicsTable({ extrinsics }) {
               </div>
             </TableCell>
             <TableCell>
-              {extrinsic?.signer ? <AddressDisplay address={extrinsic?.signer} useShortenedAddress /> : '-'}
+              {extrinsic.signer ? <AddressDisplay address={extrinsic.signer} useShortenedAddress /> : '-'}
             </TableCell>
           </TableRow>
         ))}

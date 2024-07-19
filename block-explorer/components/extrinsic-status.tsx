@@ -1,13 +1,12 @@
+import { IExtrinsic } from '@/types/models';
+
 import { Badge } from './ui/badge';
 
 export default function ExtrinsicStatus({
   extrinsic,
   showErrorInfo,
 }: {
-  extrinsic: {
-    isSuccess?: boolean;
-    errorInfo?: string;
-  };
+  extrinsic: IExtrinsic;
   showErrorInfo?: boolean;
 }) {
   return (

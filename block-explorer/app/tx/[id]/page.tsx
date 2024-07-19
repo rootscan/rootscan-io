@@ -11,7 +11,7 @@ import Tooltip from '@/components/tooltip';
 import TransactionStatusBadge from '@/components/transaction-status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getTransaction } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { XRP_TOKEN } from '@/lib/constants/tokens';
 import { camelCaseToWords, formatNumber, formatNumberDollars } from '@/lib/utils';
 import { CornerLeftUp } from 'lucide-react';
@@ -20,15 +20,11 @@ import { Hash, getAddress } from 'viem';
 
 import ShowMoreTransaction from './components/show-more-tx';
 
-const getData = async ({ params }: { params: { id: Hash } }) => {
-  const data = await getTransaction({ hash: params.id });
-  return data;
-};
-
 export default async function Page({ params }: { params: { id: Hash } }) {
-  const transaction = await getData({ params });
+  const transaction = await request(ApiCommand.getTransaction, { hash: params.id });
 
   if (!transaction) return <NoData />;
+
   return (
     <div className="flex flex-col gap-4">
       <TestnetWarning>
@@ -70,7 +66,7 @@ export default async function Page({ params }: { params: { id: Hash } }) {
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-muted-foreground">Timestamp</span>
-              <Timestamp date={transaction?.timestamp} />
+              <Timestamp date={transaction?.timestamp || 0} />
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-muted-foreground">Block Height</span>
@@ -312,7 +308,7 @@ export default async function Page({ params }: { params: { id: Hash } }) {
                 <OnlyMainnet>
                   {transaction?.xrpPriceData?.price ? (
                     <Badge variant="outline">
-                      {formatNumberDollars(transaction.transactionFee * transaction?.xrpPriceData?.price, 2)}
+                      {formatNumberDollars(Number(transaction.transactionFee) * transaction?.xrpPriceData?.price, 2)}
                     </Badge>
                   ) : null}
                 </OnlyMainnet>
@@ -322,7 +318,7 @@ export default async function Page({ params }: { params: { id: Hash } }) {
               <span className="text-muted-foreground">Nonce</span>
               <span className="truncate">{transaction.nonce}</span>
             </div>
-            {transaction?.tags?.length > 0 ? (
+            {transaction?.tags?.length ? (
               <div className="flex flex-col gap-1">
                 <span className="text-muted-foreground">Tags</span>
                 <div className="mt-1 flex flex-wrap items-center gap-2">

@@ -4,7 +4,7 @@ import Container from '@/components/container';
 import PaginationSuspense from '@/components/pagination-suspense';
 import SectionTitle from '@/components/section-title';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getVerifiedContracts } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
 import { Metadata } from 'next';
 
@@ -12,12 +12,10 @@ export const metadata: Metadata = {
   title: 'Verified Contracts',
 };
 
-const getData = async ({ searchParams, params }) => {
-  return await getVerifiedContracts({ page: searchParams?.page || 1 });
-};
-export default async function Page({ searchParams, params }) {
-  const data = await getData({ searchParams, params });
+export default async function Page({ searchParams }) {
+  const data = await request(ApiCommand.getVerifiedContracts, { page: searchParams?.page || 1 });
   const contracts = data?.docs;
+
   return (
     <Container>
       <div className="flex flex-col gap-4">

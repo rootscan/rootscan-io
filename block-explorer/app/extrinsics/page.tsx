@@ -4,7 +4,7 @@ import ExtrinsicsTable from '@/components/extrinsics-table';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
 import SectionTitle from '@/components/section-title';
-import { getExtrinsics } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
 import { Metadata } from 'next';
 
@@ -12,13 +12,8 @@ export const metadata: Metadata = {
   title: 'Extrinsics',
 };
 
-const getData = async ({ searchParams }: { searchParams: { page: number | string } }) => {
-  const data = await getExtrinsics({ page: searchParams?.page });
-  return data;
-};
-
-export default async function Page({ searchParams }: { searchParams: { page: number | string } }) {
-  const data = await getData({ searchParams });
+export default async function Page({ searchParams }: { searchParams: { page?: number } }) {
+  const data = await request(ApiCommand.getExtrinsics, { page: searchParams?.page || 1 });
   const extrinsics = data?.docs;
 
   return (

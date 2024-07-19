@@ -11,7 +11,7 @@ export default function CodeEditor({ fileName, value }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex gap-2">
-        <span className="text-muted-foreground text-sm">{fileName}</span>
+        <span className="text-sm text-muted-foreground">{fileName}</span>
         <CopyButton value={JSON.stringify(value)} />
       </div>
       <AceEditor
