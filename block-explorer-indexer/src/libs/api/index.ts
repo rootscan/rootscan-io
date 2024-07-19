@@ -72,7 +72,7 @@ app.post('/getBlocks', async (req: Request, res: Response) => {
 
 app.post('/getEvents', async (req: Request, res: Response) => {
   try {
-    const query: { extrinsicId?: string; blockNumber?: string } = req.body.query;
+    const query: { extrinsicId?: string; blockNumber?: number } = req.body.query;
     const filter: FilterQuery<IEvent> = {};
 
     if (query?.extrinsicId) {
@@ -663,7 +663,6 @@ app.post('/getFuturepasses', async (req: Request, res: Response) => {
     const options = {
       ...getPageAndLimit(req.body),
       allowDiskUse: true,
-      skipFullCount: true,
       lean: true,
     };
 
@@ -1072,11 +1071,16 @@ app.post('/getBridgeTransactions', async (req: Request, res: Response) => {
 
 app.post('/getVerifiedContracts', async (req: Request, res: Response) => {
   try {
-    const options = {
+    const options: PaginateOptions = {
       ...getPageAndLimit(req.body),
       sort: '-deployedBlock',
       allowDiskUse: true,
       lean: true,
+      projection: {
+        _id: 0,
+        __v: 0,
+        bytecode: 0,
+      },
     };
 
     const data = await DB.VerifiedContract.paginate({}, options);

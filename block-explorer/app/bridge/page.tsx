@@ -4,20 +4,16 @@ import Container from '@/components/container';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
 import SectionTitle from '@/components/section-title';
-import { getBridgeTransactions } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Bridge',
 };
-const getData = async ({ searchParams }) => {
-  let data = await getBridgeTransactions({ page: searchParams?.page || 1 });
 
-  return data;
-};
 export default async function Page({ searchParams }) {
-  const data = await getData({ searchParams });
+  const data = await request(ApiCommand.getBridgeTransactions, { page: searchParams?.page || 1 });
   const transactions = data?.docs;
   return (
     <Container>

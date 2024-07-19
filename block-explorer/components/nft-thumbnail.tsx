@@ -1,11 +1,12 @@
-import { getNft } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import { Address } from 'viem';
 
 import SkeletonImage from './skeleton-image';
 
-const getData = async ({ contractAddress, tokenId }) => {
+const getData = async ({ contractAddress, tokenId }: { contractAddress: Address; tokenId: number | string }) => {
   if (!contractAddress) return null;
-  const data = await getNft({ contractAddress, tokenId });
+  const data = await request(ApiCommand.getNft, { contractAddress, tokenId });
   return data;
 };
 

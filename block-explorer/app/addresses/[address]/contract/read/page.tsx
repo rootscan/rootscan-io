@@ -1,12 +1,13 @@
 import { getContractVerification } from '@/lib/api';
+import { Address } from 'viem';
 
 import ReadContract from './components/read-contract';
 
-const getData = async ({ params }) => {
+const getData = async ({ params }: { params: { address: Address } }) => {
   const chainId = Number(process?.env?.CHAIN_ID);
   const fetchData = await getContractVerification({
     contractAddress: params.address,
-  }).catch((e) => {
+  }).catch(() => {
     return null;
   });
 
@@ -14,26 +15,26 @@ const getData = async ({ params }) => {
     return { chainId };
   }
 
-  let parsedData: { metadata?: any; files: any[] } = {
+  const parsedData: { metadata?: unknown; files: unknown[] } = {
     metadata: undefined,
     files: [],
   };
   if (fetchData && !fetchData?.error) {
     for (const file of fetchData) {
-      if (file?.name === 'metadata.json') {
-        if (file?.content) {
+      if (file.name === 'metadata.json') {
+        if (file.content) {
           file.content = JSON.parse(file.content);
         }
-        parsedData['metadata'] = file;
+        parsedData.metadata = file;
       } else {
-        parsedData['files'].push(file);
+        parsedData.files.push(file);
       }
     }
   }
   return { data: parsedData, chainId };
 };
 
-export default async function Page({ params }: { params: any }) {
+export default async function Page({ params }: { params: { address: Address } }) {
   const { data, chainId } = await getData({ params });
   return (
     <div className="flex flex-col gap-4">

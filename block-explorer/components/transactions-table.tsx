@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getShortenedHash } from '@/lib/constants/knownAddresses';
 import { camelCaseToWords, cn, formatNumber } from '@/lib/utils';
+import { IEVMTransaction } from '@/types/models';
 import { AlertCircle, ChevronRight, SortDesc } from 'lucide-react';
 import Link from 'next/link';
 import { Address } from 'viem';
@@ -18,7 +19,7 @@ export default function TransactionsTable({
   isAddressPage,
   address,
 }: {
-  transactions: any[];
+  transactions: IEVMTransaction[];
   isAddressPage?: boolean;
   address?: Address;
 }) {
@@ -42,11 +43,11 @@ export default function TransactionsTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {transactions.map((tx, _) => (
-          <TableRow key={tx._id} className={cn([tx?.status === 'pending' ? 'italic' : ''])}>
+        {transactions.map((tx) => (
+          <TableRow key={tx.hash} className={cn([tx.status === 'pending' ? 'italic' : ''])}>
             {!isAddressPage ? (
               <TableCell>
-                <TransactionStatusBadge status={tx?.status} />
+                <TransactionStatusBadge status={tx.status} />
               </TableCell>
             ) : null}
             <TableCell className="truncate">
@@ -64,10 +65,10 @@ export default function TransactionsTable({
             </TableCell>
             <TableCell>
               <Badge>
-                {tx?.functionName
-                  ? camelCaseToWords(tx?.functionName)
-                  : tx?.functionSignature
-                  ? tx?.functionSignature
+                {tx.functionName
+                  ? camelCaseToWords(tx.functionName)
+                  : tx.functionSignature
+                  ? tx.functionSignature
                   : '-'}
               </Badge>
             </TableCell>
@@ -75,14 +76,14 @@ export default function TransactionsTable({
               <Link href={`/blocks/${tx.blockNumber}`}>{tx.blockNumber}</Link>
             </TableCell>
             <TableCell className="text-center">
-              <TimeAgoDate date={tx?.timestamp} />
+              <TimeAgoDate date={tx.timestamp} />
             </TableCell>
             <TableCell className="truncate">
               <AddressDisplay
                 address={tx.from}
-                nameTag={tx?.fromLookup?.nameTag}
-                isContract={tx?.fromLookup?.isContract}
-                rnsName={tx?.fromLookup?.rns}
+                nameTag={tx.fromLookup?.nameTag}
+                isContract={tx.fromLookup?.isContract}
+                rnsName={tx.fromLookup?.rns}
                 useShortenedAddress
               />
             </TableCell>
@@ -92,26 +93,26 @@ export default function TransactionsTable({
               </TableCell>
             ) : (
               <TableCell className="max-w-[25px]">
-                <ChevronRight className="text-muted-foreground size-4" />
+                <ChevronRight className="size-4 text-muted-foreground" />
               </TableCell>
             )}
 
             <TableCell>
-              {tx?.creates ? (
+              {/* {tx.creates ? (
                 'Contract Deployment'
-              ) : (
-                <AddressDisplay
-                  address={tx.to}
-                  nameTag={tx?.toLookup?.nameTag}
-                  rnsName={tx?.toLookup?.rns}
-                  isContract={tx?.toLookup?.isContract}
-                  useShortenedAddress
-                />
-              )}
+              ) : ( */}
+              <AddressDisplay
+                address={tx.to}
+                nameTag={tx.toLookup?.nameTag}
+                rnsName={tx.toLookup?.rns}
+                isContract={tx.toLookup?.isContract}
+                useShortenedAddress
+              />
+              {/* )} */}
             </TableCell>
             <TableCell className="text-center">
-              <span className="text-muted-foreground text-xs">
-                {tx?.valueFormatted ? formatNumber(tx?.valueFormatted) : '0'} XRP
+              <span className="text-xs text-muted-foreground">
+                {tx.valueFormatted ? formatNumber(parseFloat(tx.valueFormatted)) : '0'} XRP
               </span>
             </TableCell>
           </TableRow>

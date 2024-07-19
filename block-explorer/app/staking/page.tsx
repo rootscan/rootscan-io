@@ -8,7 +8,7 @@ import SectionTitle from '@/components/section-title';
 import TokenDisplay from '@/components/token-display';
 import Tooltip from '@/components/tooltip';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getStakingValidators } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData } from '@/lib/utils';
 import { AlertTriangle } from 'lucide-react';
@@ -19,14 +19,10 @@ export const metadata: Metadata = {
   title: 'Staking',
 };
 
-const getData = async ({ searchParams, params }) => {
-  let data = await getStakingValidators({ page: searchParams?.page || 1 });
-
-  return data;
-};
-export default async function Page({ searchParams, params }) {
-  const data = await getData({ searchParams, params });
+export default async function Page({ searchParams }) {
+  const data = await request(ApiCommand.getStakingValidators, { page: searchParams?.page || 1 });
   const contracts = data?.docs;
+
   return (
     <Container>
       <div className="flex flex-col gap-4">

@@ -100,7 +100,7 @@ export const components = {
       )}
       from
       <AddressDisplay address={args?.from} useShortenedAddress />{' '}
-      <ChevronRight className="text-muted-foreground size-4" />
+      <ChevronRight className="size-4 text-muted-foreground" />
       to <AddressDisplay address={args?.to} useShortenedAddress />
     </div>
   ),
@@ -208,7 +208,7 @@ export const components = {
       <TokenDisplay token={token} amount={args?.amount} />
       from
       <AddressDisplay address={args?.from} useShortenedAddress />{' '}
-      <ChevronRight className="text-muted-foreground size-4" />{' '}
+      <ChevronRight className="size-4 text-muted-foreground" />{' '}
       <AddressDisplay address={args?.to} useShortenedAddress />
     </div>
   ),
@@ -349,7 +349,7 @@ export const components = {
       {args?.royaltiesSchedule?.entitlements.map((item, _) => (
         <div key={_} className="flex flex-wrap items-center gap-2">
           <AddressDisplay address={item?.[0]} useShortenedAddress />{' '}
-          <ChevronRight className="text-muted-foreground size-4" />
+          <ChevronRight className="size-4 text-muted-foreground" />
           {item?.[1]}
         </div>
       ))}
@@ -410,7 +410,7 @@ export const components = {
 
       {args?.mappings?.map((item, _) => (
         <div className="flex flex-wrap items-center gap-2" key={_}>
-          <span>TokenId {item?.[0]}</span> <ChevronRight className="text-muted-foreground size-4" />{' '}
+          <span>TokenId {item?.[0]}</span> <ChevronRight className="size-4 text-muted-foreground" />{' '}
           <span className="truncate">XLS20: {item?.[1]}</span>
         </div>
       ))}

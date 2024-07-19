@@ -12,7 +12,7 @@ import TokenDisplay from '@/components/token-display';
 import Tooltip from '@/components/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getNativeTransfersForAddress } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData } from '@/lib/utils';
 import { ChevronRight, Flame } from 'lucide-react';
@@ -20,7 +20,7 @@ import Link from 'next/link';
 import { getAddress } from 'viem';
 
 const getData = async ({ params, searchParams }) => {
-  const data = await getNativeTransfersForAddress({
+  const data = await request(ApiCommand.getNativeTransfersForAddress, {
     address: getAddress(params.address),
     page: searchParams.page,
   });
@@ -123,7 +123,7 @@ const AssetsTransferred = ({ tx, address }) => {
       <TableCell>
         <AddressDisplay address={tx?.args?.from} useShortenedAddress />
       </TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell>
@@ -154,7 +154,7 @@ const AssetsApprovedTransfer = ({ tx, address }) => {
       <TableCell className="max-w-[150px] truncate">
         <AddressDisplay address={tx?.from} useShortenedAddress />
       </TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
@@ -180,7 +180,7 @@ const AssetsIssued = ({ tx, address }) => {
         <TokenDisplay token={tx?.tokenNative} amount={tx?.args?.totalSupply} hideCopyButton />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">-</TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
@@ -209,7 +209,7 @@ const AssetsBurned = ({ tx, address }) => {
       <TableCell className="max-w-[150px] truncate">
         <AddressDisplay address={tx?.args?.owner} useShortenedAddress />
       </TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
@@ -244,7 +244,7 @@ const BalancesReserved = ({ tx, address }) => {
       <TableCell className="max-w-[150px] truncate">
         <AddressDisplay address={tx?.args?.who} useShortenedAddress />
       </TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
@@ -276,7 +276,7 @@ const BalancesTransfer = ({ tx, address }) => {
       <TableCell className="max-w-[150px] truncate">
         <AddressDisplay address={tx?.args?.from} useShortenedAddress />
       </TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
@@ -319,7 +319,7 @@ const BalancesUnreserved = ({ tx, address }) => {
         )}
       </TableCell>
       <TableCell className="max-w-[150px] truncate">-</TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
@@ -359,7 +359,7 @@ const NFTTransfer = ({ tx, address }) => {
       <TableCell className="max-w-[150px] truncate">
         <AddressDisplay address={tx?.args?.previousOwner} useShortenedAddress />
       </TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
@@ -404,7 +404,7 @@ const SFTTransfer = ({ tx, address }) => {
       <TableCell className="max-w-[150px] truncate">
         <AddressDisplay address={tx?.args?.previousOwner} useShortenedAddress />
       </TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
@@ -447,7 +447,7 @@ const SFTMint = ({ tx, address }) => {
         </div>
       </TableCell>
       <TableCell className="max-w-[150px] truncate">-</TableCell>
-      <TableCell className="text-muted-foreground max-w-[25px]">
+      <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">

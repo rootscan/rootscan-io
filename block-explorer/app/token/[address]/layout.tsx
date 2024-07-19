@@ -4,21 +4,17 @@ import OnlyMainnet from '@/components/layouts/only-mainnet';
 import TokenDisplay from '@/components/token-display';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CardDetail from '@/components/ui/card-detail';
-import { getToken } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { formatNumber, formatNumberDollars } from '@/lib/utils';
 import { getAddress } from 'viem';
 
 import Menu from './components/menu';
 
-const getData = async ({ params }) => {
-  const data = await getToken({
+export default async function Layout({ params, children }) {
+  const data = await request(ApiCommand.getToken, {
     contractAddress: getAddress(params.address),
   });
-  return data;
-};
 
-export default async function Layout({ params, children }) {
-  const data = await getData({ params });
   return (
     <Container>
       <div className="flex flex-col gap-4">

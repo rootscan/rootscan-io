@@ -4,22 +4,16 @@ import LatestExtrinsics from '@/components/homepage/latest-extrinsics';
 import LatestTransactions from '@/components/homepage/latest-transactions';
 import TargetTimeCountdown from '@/components/target-time-countdown';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getBlocks, getChainSummary, getExtrinsics, getTransactions } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { formatNumber } from '@/lib/utils';
 import { ArrowLeftRight, Clock, Pencil, Wallet } from 'lucide-react';
 
 const getData = async () => {
   const [latestBlocksBase, latestTransactionsBase, latestExtrinsicsBase, chainSummary] = await Promise.all([
-    getBlocks({ page: 1, limit: 5 }),
-    getTransactions({
-      page: 1,
-      limit: 5,
-    }),
-    getExtrinsics({
-      page: 1,
-      limit: 5,
-    }),
-    getChainSummary({}),
+    request(ApiCommand.getBlocks, { page: 1, limit: 5 }),
+    request(ApiCommand.getTransactions, { page: 1, limit: 5 }),
+    request(ApiCommand.getExtrinsics, { page: 1, limit: 5 }),
+    request(ApiCommand.getChainSummary),
   ]);
 
   return {
@@ -60,12 +54,12 @@ export default async function IndexPage() {
               <div key={_}>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                    <Icon className="text-muted-foreground size-5" />
-                    <CardTitle className="text-muted-foreground text-xs uppercase">{stat.title}</CardTitle>
+                    <Icon className="size-5 text-muted-foreground" />
+                    <CardTitle className="text-xs uppercase text-muted-foreground">{stat.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">
-                      {stat?.title === 'Target Block Time' ? <TargetTimeCountdown /> : formatNumber(stat.value)}
+                      {stat?.title === 'Target Block Time' ? <TargetTimeCountdown /> : formatNumber(Number(stat.value))}
                     </div>
                   </CardContent>
                 </Card>

@@ -8,7 +8,7 @@ import TokenDisplay from '@/components/token-display';
 import TokenLogo from '@/components/token-logo';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getTokens } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { cn, formatNumberDollars, getPaginationData } from '@/lib/utils';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import millify from 'millify';
@@ -20,15 +20,12 @@ export const metadata: Metadata = {
   title: 'Tokens',
 };
 
-const getData = async ({ searchParams }: { searchParams: any }) => {
-  const data = await getTokens({
-    page: searchParams?.page ? searchParams?.page : 1,
+export default async function Page({ searchParams }: { searchParams: { page?: number; type: string } }) {
+  const data = await request(ApiCommand.getTokens, {
+    page: searchParams?.page || 1,
     type: searchParams?.type,
   });
-  return data;
-};
-export default async function Page({ searchParams }: { searchParams: any }) {
-  const data = await getData({ searchParams });
+
   const tokens = data?.docs;
   return (
     <Container>
@@ -53,7 +50,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tokens.map((token: any) => (
+            {tokens.map((token) => (
               <TableRow key={token.contractAddress}>
                 <TableCell className="lg:max-w-8">
                   <div className="size-10">

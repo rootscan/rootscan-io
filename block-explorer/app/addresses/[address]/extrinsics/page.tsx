@@ -1,24 +1,30 @@
 import ExtrinsicsTable from '@/components/extrinsics-table';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
-import { getExtrinsicsForAddress } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
+import { Address } from 'viem';
 
-const getData = async ({ params, searchParams }) => {
-  const data = await getExtrinsicsForAddress({
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { address: Address };
+  searchParams: { page?: number };
+}) {
+  const data = await request(ApiCommand.getExtrinsicsForAddress, {
     address: params.address,
-    page: searchParams.page,
+    page: searchParams.page || 1,
   });
-  return data;
-};
-export default async function Page({ params, searchParams }) {
-  const data = await getData({ params, searchParams });
+
   const transactions = data?.docs;
+
+  if (!transactions?.length) return <NoData />;
 
   return (
     <div className="flex flex-col gap-4">
       <PaginationSuspense pagination={getPaginationData(data)} />
-      {!transactions || transactions?.length === 0 ? <NoData /> : <ExtrinsicsTable extrinsics={transactions} />}
+      <ExtrinsicsTable extrinsics={transactions} />
     </div>
   );
 }
