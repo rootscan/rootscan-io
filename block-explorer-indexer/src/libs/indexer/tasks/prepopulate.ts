@@ -45,10 +45,10 @@ export const findAllEthereumBridgeContractAddresses = async (): Promise<void> =>
             assetId: Number(nativeId),
           }
         : type === 'ERC721'
-        ? {
-            collectionId: Number(nativeId),
-          }
-        : null;
+          ? {
+              collectionId: Number(nativeId),
+            }
+          : null;
 
     if (!query) continue;
 
