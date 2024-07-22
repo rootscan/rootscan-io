@@ -1,4 +1,3 @@
-// @ts-ignore
 import * as eventComponents from './components/events-components/index.tsx';
 
 const run = async () => {

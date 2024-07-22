@@ -25,9 +25,7 @@ export const getTokenMetadata = async (
 
   if (!cache.has(key)) {
     const fileDir = path.resolve(__dirname, `blockchains`, network, `${getAddress(contractAddress)}.json`);
-    const readData = await fs.readFile(fileDir, 'utf-8').catch((e) => {
-      return null;
-    });
+    const readData = await fs.readFile(fileDir, 'utf-8').catch(() => null);
 
     if (!readData) {
       // to avoid multiple disk access, when file not found

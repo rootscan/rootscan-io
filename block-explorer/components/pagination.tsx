@@ -2,16 +2,17 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
+import { PaginationResponse } from '@/types/api-types';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Button } from './ui/button';
 
-export default function Pagination({ pagination }: { pagination?: any }) {
+export default function Pagination({ pagination }: { pagination?: Omit<PaginationResponse<unknown>, 'docs'> }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams: any = useSearchParams();
+  const searchParams = useSearchParams();
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -34,10 +35,10 @@ export default function Pagination({ pagination }: { pagination?: any }) {
 
   return (
     <div className="flex items-center justify-end gap-4">
-      {isLoading ? <Loader2 className="text-muted-foreground size-5 animate-spin" /> : null}
+      {isLoading ? <Loader2 className="size-5 animate-spin text-muted-foreground" /> : null}
       <div className="flex items-center justify-end gap-6">
         {!pagination?.skipFullCount ? (
-          <span className="text-muted-foreground text-sm">
+          <span className="text-sm text-muted-foreground">
             Page {pagination?.page} of {pagination?.totalPages}
           </span>
         ) : null}

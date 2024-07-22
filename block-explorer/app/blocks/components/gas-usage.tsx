@@ -15,7 +15,7 @@ export default function GasUsage({
       {!onlyBar ? (
         <div className="flex items-center gap-2">
           <div>{gasUsed}</div>
-          <div className="text-muted-foreground text-xs">{randomWidth}%</div>
+          <div className="text-xs text-muted-foreground">{randomWidth}%</div>
         </div>
       ) : null}
       <div className="relative h-1 bg-white/20">

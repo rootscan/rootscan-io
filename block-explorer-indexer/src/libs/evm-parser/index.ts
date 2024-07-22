@@ -51,6 +51,7 @@ export const calculateTransactionFee = (tx: Transaction & TransactionReceipt) =>
 
 export const parseEventsFromEvmTx = async (tx: TransactionReceipt & Transaction) => {
   const tags: string[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const events: any[] = [];
   for (const log of tx.logs) {
     for (const abiKey of Object.keys(ABIs)) {

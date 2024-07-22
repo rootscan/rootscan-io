@@ -1,12 +1,12 @@
 import logger from '@/logger';
 import { getTokenMetadata } from '@/token-data';
-import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, IEVMTransaction, IEvent, INftOwner } from '@/types';
+import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, INftOwner } from '@/types';
 import { isRootChain } from '@/utils';
 import { Job } from 'bullmq';
 import { chunk } from 'lodash';
 import moment from 'moment';
 import { Models } from 'mongoose';
-import { Hash, PublicClient } from 'viem';
+import { Address, Hash, PublicClient } from 'viem';
 
 import { C_EVENT_PARSERS, C_EVM_TRANSACTIONS_EVENT_PARSERS } from './parsers';
 
@@ -206,7 +206,7 @@ export class NftOwnersIndexer {
 
     for (const item of nftOwners) {
       const metadata = await getTokenMetadata(
-        item.contractAddress as any,
+        item.contractAddress as Address,
         item.tokenId,
         isRootChain(this.#currentChainId) ? 'root' : 'porcini',
       );
@@ -250,9 +250,7 @@ export class NftOwnersIndexer {
 
     // Write tokens
     await this.#db.NftOwner.bulkWrite(ops);
-    const message = `Inserted ${nftOwners.length} owners, last block: ${
-      nftOwners[nftOwners.length - 1]?.blockNumber || ''
-    }`;
+
     // Remove owners with 0 and less amount for ERC1155 protocol
     await this.#db.NftOwner.deleteMany({
       amount: { $lte: 0, $ne: null },

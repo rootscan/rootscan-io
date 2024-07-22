@@ -5,9 +5,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
+import { IEVMTransaction } from '@/types/models';
 import { ArrowLeftToLine, Blocks } from 'lucide-react';
 
-export default function InputData({ input, transaction }: { input: string; transaction: any }) {
+export default function InputData({ input, transaction }: { input: string; transaction: IEVMTransaction }) {
   const [decode, setDecode] = useState<boolean>(false);
   return (
     <div className="flex flex-col gap-4">
@@ -27,7 +28,7 @@ export default function InputData({ input, transaction }: { input: string; trans
                   <TableCell>{item?.name}</TableCell>
                   <TableCell>{item?.type}</TableCell>
                   <TableCell>
-                    {typeof transaction?.functionData?.args?.[item?.name] !== undefined
+                    {typeof transaction?.functionData?.args?.[item?.name] !== 'undefined'
                       ? String(transaction?.functionData?.args?.[item?.name])
                       : ''}
                   </TableCell>
@@ -43,7 +44,7 @@ export default function InputData({ input, transaction }: { input: string; trans
               ? `Function: ${transaction?.functionData?.signature} \n ${input}`
               : input
           }`}
-          className="bg-primary/5 w-full rounded-2xl border-0"
+          className="w-full rounded-2xl border-0 bg-primary/5"
           readOnly
         />
       )}

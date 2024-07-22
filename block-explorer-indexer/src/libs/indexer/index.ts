@@ -129,6 +129,7 @@ export default class Indexer {
         if (method === 'proxyExtrinsic' || method === 'callWithFeePreferences') {
           data.isProxy = true;
           let currentArg = data?.args?.call;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const calls: any[] = [];
           while (currentArg?.callIndex) {
             const findCall = this.api.findCall(currentArg?.callIndex);
@@ -521,7 +522,7 @@ export default class Indexer {
               tx.functionName = decoded.functionName;
             }
           } catch {
-            /*eslint no-empty: "error"*/
+            //
           }
 
           // TODO - Figure out a way to make this work
@@ -533,7 +534,7 @@ export default class Indexer {
               // });
               // console.log(errorResult);
             } catch {
-              /*eslint no-empty: "error"*/
+              //
             }
           }
 
@@ -548,7 +549,7 @@ export default class Indexer {
               signature: parsedTx?.signature,
             };
           } catch {
-            /*eslint no-empty: "error"*/
+            //
           }
 
           if (tx?.creates && verifiedAbi) {
@@ -569,7 +570,7 @@ export default class Indexer {
                 });
               }
             } catch {
-              /* eslint no-empty: "error" */
+              //
             }
           }
         } else {
@@ -622,7 +623,7 @@ export default class Indexer {
                 tx.logs = parsedLogs;
               }
             } catch {
-              /*eslint no-empty: "error"*/
+              //
             }
           }
         }

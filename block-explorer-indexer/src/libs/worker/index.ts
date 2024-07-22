@@ -10,7 +10,6 @@ import {
   updateStakingValidators,
 } from '@/indexer/tasks/prepopulate';
 import logger from '@/logger';
-import NftIndexer from '@/nft-indexer';
 import { NftOwnersIndexer } from '@/nft-indexer/nft-owners-indexer';
 import { updateTokenPricingDetails } from '@/price-fetcher';
 import redisClient from '@/redis';
@@ -105,7 +104,7 @@ const start = async () => {
     logger.error(`[FAILED] ${job?.name} (ID: ${job?.id}) has failed with ${err.message}`);
   });
 
-  Mongoose.connection.on('error', (err) => {
+  Mongoose.connection.on('error', () => {
     server.close();
     worker.close().then(() => {
       process.exit(1);

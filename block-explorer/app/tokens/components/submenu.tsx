@@ -8,7 +8,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 export default function SubMenu() {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams: any = useSearchParams();
+  const searchParams = useSearchParams();
 
   const createQueryString = useCallback(
     (name: string, value: string) => {

@@ -15,4 +15,5 @@ export interface PaginationResponse<T> {
   hasNextPage: boolean;
   prevPage: number | null;
   nextPage: number | null;
+  skipFullCount?: boolean;
 }

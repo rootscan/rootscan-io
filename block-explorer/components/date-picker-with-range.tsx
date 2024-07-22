@@ -11,7 +11,10 @@ import { format, subDays } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import moment from 'moment';
 
-export function DatePickerWithRange({ className, onChange }: React.HTMLAttributes<HTMLDivElement> & { onChange: any }) {
+export function DatePickerWithRange({
+  className,
+  onChange,
+}: React.HTMLAttributes<HTMLDivElement> & { onChange: (date: DateRange | undefined) => void }) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: subDays(new Date(), 31),
     to: new Date(),
@@ -24,6 +27,7 @@ export function DatePickerWithRange({ className, onChange }: React.HTMLAttribute
   React.useEffect(() => {
     onChange(date);
   }, [date]);
+
   return (
     <div className={cn('grid gap-2', className)}>
       <Popover>
@@ -33,7 +37,7 @@ export function DatePickerWithRange({ className, onChange }: React.HTMLAttribute
             variant={'outline'}
             className={cn('w-[300px] justify-start text-left font-normal', !date && 'text-muted-foreground')}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className="mr-2 size-4" />
             {date?.from ? (
               date.to ? (
                 <>

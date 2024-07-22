@@ -12,18 +12,18 @@ export default function Breadcrumbs() {
   const path = usePathname();
   const paths = path.split('/').filter((a) => a != '');
 
-  const remaps: any = {
+  const remaps = {
     '/tx': '/evm-transactions',
     '/token': '/tokens',
   };
 
   return (
-    <div className="text-muted-foreground flex max-w-full select-none flex-wrap gap-2 text-xs">
-      <Link href="/" className="hover:text-primary duration-300 ease-in-out">
+    <div className="flex max-w-full select-none flex-wrap gap-2 text-xs text-muted-foreground">
+      <Link href="/" className="duration-300 ease-in-out hover:text-primary">
         <span>Home</span>
       </Link>
       {paths.map((item, _) => {
-        let href = `/${paths.slice(0, _ + 1).join('/')}`;
+        const href = `/${paths.slice(0, _ + 1).join('/')}`;
         return (
           <Fragment key={_}>
             <span>/</span>
