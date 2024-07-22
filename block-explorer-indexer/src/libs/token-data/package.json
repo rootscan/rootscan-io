@@ -14,8 +14,8 @@
     "commander": "^12.0.0",
     "tsc-alias": "^1.8.8",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.3",
-    "viem": "^2.7.3"
+    "typescript": "^5.5.3",
+    "viem": "^2.17.9"
   },
   "devDependencies": {
     "@types/node": "^20.11.16"
