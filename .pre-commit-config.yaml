@@ -1,11 +1,13 @@
 exclude: ^(.idea/.*|.run/.*|node_modules/.*|pnpm-lock.yaml|lib/.*|dist/.*)$
 #fail_fast: true
 repos:
-  - repo: https://github.com/pre-commit/mirrors-prettier.git
-    rev: v3.1.0
+  - repo: local
     hooks:
       - id: prettier
-        name: prettier https://prettier.io/docs/en/ .
+        entry: prettier
+        language: system
+        name: prettier https://prettier.io/docs/en/precommit.html .
+        args: [ --ignore-unknown, --write ]
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
     rev: 3.0.0
     hooks:
