@@ -3,6 +3,7 @@
 import SectionTitle from '@/components/section-title';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { IEVMTransaction } from '@/types/models';
 import { generateAvatarURL } from '@cfx-kit/wallet-avatar';
 import { ArrowLeftRight, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
@@ -12,7 +13,7 @@ import { getAddress } from 'viem';
 import AddressDisplay from '../address-display';
 import TimeAgoDate from '../time-ago-date';
 
-export default function LatestTransactions({ latestTransactions }: { latestTransactions: any }) {
+export default function LatestTransactions({ latestTransactions }: { latestTransactions: IEVMTransaction[] }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -35,13 +36,13 @@ export default function LatestTransactions({ latestTransactions }: { latestTrans
                       </Badge>
                     ))}
                   </div>
-                  <span className="text-muted-foreground text-xs">
+                  <span className="text-xs text-muted-foreground">
                     <TimeAgoDate date={transaction?.timestamp} />
                   </span>
                 </div>
               </div>
               <div className="flex min-w-0 items-center gap-4 truncate">
-                <ArrowLeftRight className="text-muted-foreground shrink-0" />
+                <ArrowLeftRight className="shrink-0 text-muted-foreground" />
                 <Link href={`/tx/${transaction.hash}`} className="truncate">
                   <span className="truncate">{transaction.hash}</span>
                 </Link>
@@ -64,10 +65,10 @@ export default function LatestTransactions({ latestTransactions }: { latestTrans
                   useShortenedAddress
                 />
 
-                <ChevronRight className="text-muted-foreground mx-1 size-4 shrink-0" />
+                <ChevronRight className="mx-1 size-4 shrink-0 text-muted-foreground" />
 
                 <Image
-                  src={generateAvatarURL(transaction.to)}
+                  src={generateAvatarURL(String(transaction.to))}
                   width={50}
                   height={50}
                   priority
@@ -77,7 +78,7 @@ export default function LatestTransactions({ latestTransactions }: { latestTrans
                 />
 
                 <AddressDisplay
-                  address={getAddress(transaction.to)}
+                  address={getAddress(String(transaction.to))}
                   nameTag={transaction?.toLookup?.nameTag}
                   rnsName={transaction?.toLookup?.rns}
                   isContract={transaction?.toLookup?.isContract}

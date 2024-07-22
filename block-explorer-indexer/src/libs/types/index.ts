@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Address, Hash } from 'viem';
 
 export type TIndexStatus = 'INDEXED' | 'NOT_INDEXED';

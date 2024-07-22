@@ -18,7 +18,7 @@ export default async function Page({
   });
 
   const transactions = data?.docs;
-  if (!transactions) return <NoData />;
+  if (!transactions?.length) return <NoData />;
 
   return (
     <div className="flex flex-col gap-4">

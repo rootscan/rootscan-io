@@ -37,5 +37,5 @@ module.exports = [
     files: ['**/*.js', '**/*.jsx'],
     rules: {},
   })),
-  { ignores: ['/.env', '/.env.*', 'build', 'eslint.config.js', 'dist', 'node_modules'] },
+  { ignores: ['/.env', '/.env.*', 'build', 'eslint.config.js', 'dist', 'node_modules', '.next'] },
 ];

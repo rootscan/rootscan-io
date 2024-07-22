@@ -90,6 +90,7 @@ export const extractUnknownFields = (section, method) => {
   return [];
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const extraArgsFromEvent = (event, api): { [key: string]: any } => {
   const { method, section, meta, data } = event;
   const args = {};
@@ -105,8 +106,8 @@ export const extraArgsFromEvent = (event, api): { [key: string]: any } => {
       const name = names[index]
         ? names[index]
         : fieldsHuman[index]?.typeName
-        ? fieldsHuman[index]?.typeName
-        : fieldsHuman[index];
+          ? fieldsHuman[index]?.typeName
+          : fieldsHuman[index];
       args[name] = value;
     });
   }
@@ -238,8 +239,7 @@ export function decodeBridgeMessage(pegAddress: string, message: string, directi
     }
 
     case pegPalletAddress.bridge.toLowerCase(): {
-      const [setValue, setId] = decodeAbiParameters(['address[]', 'uint32'], message as Hash) as [string[], number];
-
+      const [setValue, setId] = decodeAbiParameters([{ type: 'address[]' }, { type: 'uint32' }], message as Hash);
       return { authSetValue: { setId, setValue } };
     }
   }

@@ -11,8 +11,6 @@ import moment from 'moment';
 import { Models } from 'mongoose';
 import { Abi, Address, MulticallResults, PublicClient, getAddress, isAddress } from 'viem';
 
-const C_MAX_BATCH = 1000;
-
 export default class NftIndexer {
   client: PublicClient;
   api: ApiPromise;
@@ -89,7 +87,7 @@ export default class NftIndexer {
       .select('owner tokenId amount')
       .lean();
 
-    let currentBalances: Record<Address, number> = {};
+    const currentBalances: Record<Address, number> = {};
     for (const bal of currentBalancesRaw) {
       currentBalances[`${getAddress(bal.owner)}_${bal.tokenId}`] = Number(bal.amount);
     }

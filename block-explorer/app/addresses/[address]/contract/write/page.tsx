@@ -1,5 +1,6 @@
 import CustomConnectWallet from '@/components/custom-connectwallet';
 import { getContractVerification } from '@/lib/api';
+import { Address } from 'viem';
 
 import WalletProvider from './components/wallet-provider';
 import WriteContract from './components/write-contract';
@@ -8,7 +9,7 @@ const getData = async ({ params }) => {
   const chainId = Number(process?.env?.CHAIN_ID);
   const fetchData = await getContractVerification({
     contractAddress: params.address,
-  }).catch((e) => {
+  }).catch(() => {
     return null;
   });
 
@@ -16,7 +17,7 @@ const getData = async ({ params }) => {
     return { chainId };
   }
 
-  let parsedData: { metadata?: any; files: any[] } = {
+  const parsedData: { metadata?: unknown; files: unknown[] } = {
     metadata: undefined,
     files: [],
   };
@@ -35,7 +36,7 @@ const getData = async ({ params }) => {
   return { data: parsedData, chainId };
 };
 
-export default async function Page({ params }: { params: any }) {
+export default async function Page({ params }: { params: { address: Address } }) {
   const { data, chainId } = await getData({ params });
 
   return (

@@ -2,13 +2,14 @@
 
 import SectionTitle from '@/components/section-title';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { IExtrinsic } from '@/types/models';
 import { FunctionSquare } from 'lucide-react';
 import Link from 'next/link';
 
 import AddressDisplay from '../address-display';
 import TimeAgoDate from '../time-ago-date';
 
-export default function LatestExtrinsics({ latestExtrinsics }: { latestExtrinsics: any }) {
+export default function LatestExtrinsics({ latestExtrinsics }: { latestExtrinsics: IExtrinsic[] }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -17,7 +18,7 @@ export default function LatestExtrinsics({ latestExtrinsics }: { latestExtrinsic
         </Link>
       </div>
       <div className="group flex flex-col gap-6">
-        {latestExtrinsics?.map((extrinsic: any, _: number) => (
+        {latestExtrinsics?.map((extrinsic) => (
           <Card
             key={extrinsic?.extrinsicId}
             // className={cn([_ === 0 && "duration-300 animate-in fade-in"])}
@@ -25,12 +26,12 @@ export default function LatestExtrinsics({ latestExtrinsics }: { latestExtrinsic
             <CardHeader>
               <CardTitle>
                 <div className="flex items-center gap-4">
-                  <FunctionSquare className="text-muted-foreground size-6" />
+                  <FunctionSquare className="size-6 text-muted-foreground" />
                   <Link href={`/extrinsics/${extrinsic?.extrinsicId}`} className="shrink-0">
                     <span>{extrinsic?.extrinsicId}</span>
                   </Link>
                   <div className="ml-auto flex items-center">
-                    <span className="text-muted-foreground text-xs">
+                    <span className="text-xs text-muted-foreground">
                       <TimeAgoDate date={extrinsic?.timestamp * 1000} />
                     </span>
                   </div>

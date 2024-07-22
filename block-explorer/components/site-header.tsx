@@ -18,11 +18,11 @@ export function SiteHeader() {
         <div className="hidden border-b pb-4 lg:block">
           <div className="container">
             <div className="flex items-center justify-between gap-4">
-              <div className="text-primary/80 flex select-none items-center gap-2 text-xs">
+              <div className="flex select-none items-center gap-2 text-xs text-primary/80">
                 <OnlyMainnet>
                   <RootPrice />
                 </OnlyMainnet>
-                <Fuel className="text-muted-foreground size-4" />{' '}
+                <Fuel className="size-4 text-muted-foreground" />{' '}
                 <span className="text-muted-foreground">EVM Gas:</span> 7500 Gwei
               </div>
               <div className="hidden max-w-2xl grow lg:block">
@@ -41,7 +41,7 @@ export function SiteHeader() {
               className="size-8 rounded-lg invert dark:invert-0"
               alt="rootscan_logo"
             />
-            <span className="text-md font-bold">rootscan</span>
+            <span className="text-base font-bold">rootscan</span>
             <TestnetWarning>
               <Badge>Porcini Testnet</Badge>
             </TestnetWarning>

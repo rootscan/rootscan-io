@@ -1,6 +1,6 @@
 import { Badge } from './ui/badge';
 
-export default function InOutBadge({ address, from, to }: any) {
+export default function InOutBadge({ address, from, to }) {
   if (from === address && to === address) {
     return <Badge variant="info">Self</Badge>;
   }

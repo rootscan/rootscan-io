@@ -144,7 +144,7 @@ export default function Page() {
             <section className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
               {resources[section].map((item, _) => (
                 <Link href={item?.url} key={`${section}_${_}`} target="_blank">
-                  <div className="bg-muted flex h-full flex-col justify-between space-y-3 rounded-lg border p-3">
+                  <div className="flex h-full flex-col justify-between space-y-3 rounded-lg border bg-muted p-3">
                     <Image
                       src={item?.logo}
                       width={500}
@@ -155,7 +155,7 @@ export default function Page() {
                       className="aspect-square w-full rounded-lg"
                     />
                     <h3 className="shrink">{item?.title}</h3>
-                    <p className="text-muted-foreground grow text-xs">{item?.description}</p>
+                    <p className="grow text-xs text-muted-foreground">{item?.description}</p>
                     <div>
                       <Badge variant="outline">{item?.category}</Badge>
                     </div>

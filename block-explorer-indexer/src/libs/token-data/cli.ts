@@ -242,14 +242,14 @@ const run = async () => {
       try {
         res = await fetch(url, { signal: AbortSignal.timeout(5000) });
       } catch {
-        /* eslint no-empty: "error" */
+        // noop
       }
       if (res?.ok) {
         let jsonData: Record<string, unknown> | undefined = undefined;
         try {
           jsonData = await res.json();
         } catch {
-          /* eslint no-empty: "error" */
+          // noop
         }
         if (!jsonData) return true;
         if (jsonData?.tokenId === undefined) {

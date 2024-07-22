@@ -115,6 +115,12 @@ pipeline {
         }
         stage('Build and Lint') {
             parallel {
+                stage('Lint') {
+                    steps {
+                        sh 'pnpm nx reset'
+                        sh 'pnpm run lint'
+                    }
+                }
                 stage('block-explorer-indexer') {
                     steps {
                         script {

@@ -3,7 +3,6 @@
 import { useState } from 'react';
 
 import { PlayCircle, StopCircle } from 'lucide-react';
-import Image from 'next/image';
 
 import SkeletonImage from './skeleton-image';
 
@@ -27,7 +26,7 @@ export default function NftPlayer({ animation_url, image }) {
           <source src={animation_url} />
         </video>
       ) : (
-        <div className="bg-muted text-muted-foreground grid size-full select-none place-items-center">
+        <div className="grid size-full select-none place-items-center bg-muted text-muted-foreground">
           <div>NFT</div>
         </div>
       )}

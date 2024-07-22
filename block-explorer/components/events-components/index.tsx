@@ -443,17 +443,8 @@ export const components = {
   'dex.Swap': (event) => (
     <div className="flex flex-wrap gap-2">
       Swapped
-      <TokenDisplay
-        token={event?.swapFromToken}
-        amount={event?.args?.supply_Asset_amount}
-        priceData={event?.swapFromToken?.priceData}
-      />{' '}
-      to
-      <TokenDisplay
-        token={event?.swapToToken}
-        amount={event?.args?.target_Asset_amount}
-        priceData={event?.swapFromToken?.priceData}
-      />
+      <TokenDisplay token={event?.swapFromToken} amount={event?.args?.supply_Asset_amount} /> to
+      <TokenDisplay token={event?.swapToToken} amount={event?.args?.target_Asset_amount} />
     </div>
   ),
 };

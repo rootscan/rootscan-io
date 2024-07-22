@@ -53,8 +53,8 @@ export default async function Page({ params }: { params: { id: Hash } }) {
                   {transaction?.functionName
                     ? camelCaseToWords(transaction?.functionName)
                     : transaction?.functionSignature
-                    ? transaction?.functionSignature
-                    : '-'}
+                      ? transaction?.functionSignature
+                      : '-'}
                 </Badge>
               </div>
             </div>

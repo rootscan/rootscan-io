@@ -15,7 +15,7 @@ export default function ExtrinsicMethod({ tx, hideExtrinsic = false }) {
               {camelCaseToWords(tx?.extrinsicData?.section)} {camelCaseToWords(tx?.extrinsicData?.method)}
             </Badge>
           </div>
-          <ChevronDown className="text-muted-foreground size-4" />
+          <ChevronDown className="size-4 text-muted-foreground" />
         </Fragment>
       ) : null}
       <div>

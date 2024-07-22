@@ -55,7 +55,7 @@ export const MobileMenu = () => {
   return (
     <Fragment>
       <div className="block lg:hidden">
-        <div className="animate-in animate-out fade-in fade-out duration-300" onClick={() => setOpen(!open)}>
+        <div className="duration-300 animate-in animate-out fade-in fade-out" onClick={() => setOpen(!open)}>
           {open ? <XIcon /> : <MenuIcon />}
         </div>
       </div>
@@ -66,7 +66,7 @@ export const MobileMenu = () => {
             <div className="flex flex-col gap-4">
               {items.map((item, _) => (
                 <Link href={item.href} onClick={() => setOpen(false)} key={_} target={item.newTab ? '_blank' : '_self'}>
-                  <div className="text-muted-foreground hover:text-primary flex items-center text-sm font-bold duration-150 ease-in">
+                  <div className="flex items-center text-sm font-bold text-muted-foreground duration-150 ease-in hover:text-primary">
                     {item.title}
                   </div>
                 </Link>

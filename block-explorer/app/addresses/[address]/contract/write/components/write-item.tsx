@@ -15,9 +15,9 @@ export default function WriteItem({ abi, item, devDoc, index, address }) {
   const devDocKey = `${item?.name}(${item?.inputs?.map((a) => `${a.type}`)})`;
   const currentDevDoc = devDoc[devDocKey];
 
-  const updateArgsIndex = (index: number, value: any) => {
+  const updateArgsIndex = (index: number, value: string) => {
     const newArgs = structuredClone(args);
-    let updValue: any = String(value);
+    let updValue: string | boolean = String(value);
     if (updValue === 'false' || updValue === 'true') {
       updValue = Boolean(updValue);
     }

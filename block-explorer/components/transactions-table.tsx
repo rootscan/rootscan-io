@@ -68,8 +68,8 @@ export default function TransactionsTable({
                 {tx.functionName
                   ? camelCaseToWords(tx.functionName)
                   : tx.functionSignature
-                  ? tx.functionSignature
-                  : '-'}
+                    ? tx.functionSignature
+                    : '-'}
               </Badge>
             </TableCell>
             <TableCell>

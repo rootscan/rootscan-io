@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic';
-export async function GET(request: Request & { nextUrl: { searchParams: any } }) {
+export async function GET(request: Request & { nextUrl: { searchParams } }) {
   const from = request?.nextUrl?.searchParams.get('from') as string;
   const to = request?.nextUrl?.searchParams.get('to') as string;
   const address = request?.nextUrl?.searchParams.get('address') as string;

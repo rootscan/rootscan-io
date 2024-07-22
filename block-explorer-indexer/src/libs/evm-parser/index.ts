@@ -10,10 +10,14 @@ export const getEVMTransaction = async (client: PublicClient, hash: Hash) => {
     client.getTransaction({ hash }),
     client.getTransactionReceipt({ hash }),
   ]);
-  const tx: Transaction & TransactionReceipt & { creates?: Address } & IEVMTransaction = {
-    ...txRaw,
-    ...txReceipt,
-  };
+
+  const tx: Transaction & TransactionReceipt & { creates?: Address } & IEVMTransaction = Object.assign(
+    {},
+    txRaw,
+    txReceipt,
+    <{ creates?: Address } & IEVMTransaction>{}, // hack to avoid typescript error
+  );
+
   const txBlock = await client.getBlock({ blockNumber: txRaw.blockNumber as bigint });
   return { tx, txBlock };
 };
@@ -47,6 +51,7 @@ export const calculateTransactionFee = (tx: Transaction & TransactionReceipt) =>
 
 export const parseEventsFromEvmTx = async (tx: TransactionReceipt & Transaction) => {
   const tags: string[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const events: any[] = [];
   for (const log of tx.logs) {
     for (const abiKey of Object.keys(ABIs)) {

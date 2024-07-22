@@ -11,7 +11,7 @@
     "worker": "nx run block-explorer-indexer:worker",
     "bull-board": "nx run bull-board:start",
     "block-explorer": "nx run block-explorer:dev",
-    "lint": "nx run-many --target=lint --exclude=portal --all --parallel --max-warnings=0",
+    "lint": "nx run-many --target=lint --exclude=portal --all --parallel --max-warnings=0 && pre-commit run --all-files",
     "precommit": "pre-commit run --all-files",
     "docker-down": "docker compose down",
     "prepare": "husky"
