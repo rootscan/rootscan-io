@@ -53,7 +53,9 @@ export default async function Page({
                 <div className="flex flex-col gap-1">
                   <span className="text-muted-foreground">TokenID</span>
                   <div className="flex items-center gap-2">
-                    <span className="truncate">{getShortenedHash(item.tokenId.toString())}</span>
+                    <span className="truncate">
+                      {item.tokenId.toString().length > 12 ? getShortenedHash(item.tokenId.toString()) : item.tokenId}
+                    </span>
                     <CopyButton value={item.tokenId.toString()} />
                     {item?.amount ? <Badge>x{item?.amount}</Badge> : null}
                   </div>
