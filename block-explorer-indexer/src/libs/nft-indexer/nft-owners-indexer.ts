@@ -4,7 +4,7 @@ import { Job } from 'bullmq';
 import { chunk } from 'lodash';
 import moment from 'moment';
 import { Models } from 'mongoose';
-import { Hash, PublicClient, getAddress } from 'viem';
+import { Hash, PublicClient } from 'viem';
 
 import { NftTokenData } from './nft-token-data';
 import { C_EVENT_PARSERS, C_EVM_TRANSACTIONS_EVENT_PARSERS } from './parsers';
@@ -204,13 +204,9 @@ export class NftOwnersIndexer {
     const ops: (IBulkWriteUpdateOp | IBulkWriteDeleteOp)[] = [];
 
     const nftTokenData = new NftTokenData(this.#client);
+    await nftTokenData.fillNftsMetadata(nftOwners);
+
     for (const item of nftOwners) {
-      const metadata = await nftTokenData.getTokenMetadata(item.type, getAddress(item.contractAddress), item.tokenId);
-      this.#log(`Token image: ${item.contractAddress}:${item.tokenId} - ${metadata?.image}`);
-
-      item.attributes = metadata?.attributes;
-      (item.image = metadata?.image), (item.animation_url = metadata?.animation_url);
-
       if (item.type === 'ERC721') {
         ops.push({
           updateOne: {
@@ -274,7 +270,7 @@ export class NftOwnersIndexer {
     return data.map((i) => i.eventId);
   }
 
-  async #getNotProcessedEvmTransactionHashes(limit: number) {
+  async #getNotProcessedEvmTransactionHashes(limit: number): Promise<Hash[]> {
     const data = await this.#db.EvmTransaction.aggregate([
       {
         $match: {
@@ -291,5 +287,55 @@ export class NftOwnersIndexer {
       },
     ]);
     return data.map((i) => i.hash);
+  }
+
+  async processNftOwnersMetadata(requestLimit: number = 5000) {
+    let finished = false;
+    while (!finished) {
+      const nfts = await this.#getNotProcessedNftOwnersMetadata(requestLimit);
+      this.#log(`process ${nfts.length} nfts owners metadata. last block: ${nfts[nfts.length - 1].blockNumber}`);
+      await this.processNftOwnersMetadataItems(nfts);
+      this.#log(`processed ${nfts.length} nfts owners`);
+      finished = nfts.length < requestLimit;
+    }
+    this.#log('FINISHED parse events');
+  }
+
+  async processNftOwnersMetadataItems(items: INftOwner[]) {
+    const nftTokenData = new NftTokenData(this.#client);
+    await nftTokenData.fillNftsMetadata(items);
+    const ops: (IBulkWriteUpdateOp | IBulkWriteDeleteOp)[] = [];
+    for (const item of items) {
+      ops.push({
+        updateOne: {
+          filter: {
+            tokenId: item.tokenId,
+            contractAddress: item.contractAddress,
+          },
+          update: {
+            $set: {
+              image: item.image,
+              animation_url: item.animation_url,
+              attributes: item.attributes,
+              _metadataProcessed: true,
+            },
+          },
+        },
+      });
+    }
+    await this.#db.NftOwner.bulkWrite(ops);
+  }
+
+  async #getNotProcessedNftOwnersMetadata(limit: number): Promise<INftOwner[]> {
+    const data = await this.#db.NftOwner.aggregate([
+      {
+        $match: {
+          _metadataProcessed: { $ne: true },
+        },
+      },
+      { $sort: { blockNumber: 1 } },
+      { $limit: limit },
+    ]);
+    return data;
   }
 }

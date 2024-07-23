@@ -17,6 +17,7 @@ const schema = new Schema<INftOwner, Mongoose.Model<INftOwner>>({
   animation_url: { type: String },
   attributes: { type: Object },
   transactionHash: { type: String },
+  _metadataProcessed: { type: Boolean },
 });
 
 schema.index({ contractAddress: 1, tokenId: 1 });
