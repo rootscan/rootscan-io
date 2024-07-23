@@ -48,7 +48,8 @@ export interface IExtrinsic {
   proxiedMethods?: string[];
 }
 
-export type TTokenType = 'ERC20' | 'ERC721' | 'ERC1155';
+export type TNftTokenType = 'ERC721' | 'ERC1155';
+export type TTokenType = 'ERC20' | TNftTokenType;
 export interface IToken {
   type: TTokenType;
   name: string;
@@ -63,21 +64,10 @@ export interface IToken {
   totalSupplyFormatted?: number;
   priceData?: object;
 }
-
-export interface INFT {
-  contractAddress: string;
-  type: 'ERC721' | 'ERC1155';
-  tokenId: number;
-  amount?: number;
-  owner: Address;
-  image?: string;
-  animation_url?: string;
-  attributes?: object;
-}
 export interface INftOwner {
   contractAddress: string;
   collectionId?: number;
-  type: 'ERC721' | 'ERC1155';
+  type: TNftTokenType;
   tokenId: number;
   amount?: number;
   owner: Address;
@@ -89,6 +79,7 @@ export interface INftOwner {
   animation_url?: string;
   attributes?: object;
   transactionHash?: string;
+  _metadataProcessed?: boolean;
 }
 
 export interface INativeBalance {
