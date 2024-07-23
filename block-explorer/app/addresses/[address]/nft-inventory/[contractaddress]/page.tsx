@@ -54,7 +54,7 @@ export default async function Page({
                   <span className="text-muted-foreground">TokenID</span>
                   <div className="flex items-center gap-2">
                     <span className="truncate">{getShortenedHash(item.tokenId.toString())}</span>
-                    <CopyButton value={JSON.stringify(item.tokenId)} />
+                    <CopyButton value={item.tokenId.toString()} />
                     {item?.amount ? <Badge>x{item?.amount}</Badge> : null}
                   </div>
                 </div>
