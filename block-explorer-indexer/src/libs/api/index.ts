@@ -314,7 +314,6 @@ app.post('/getNftsForAddress', async (req: Request, res: Response) => {
 
     const options = {
       ...getPageAndLimit(req.body),
-      skipFullCount: true,
       allowDiskUse: true,
       sort: '-contractAddress tokenId',
       lean: true,

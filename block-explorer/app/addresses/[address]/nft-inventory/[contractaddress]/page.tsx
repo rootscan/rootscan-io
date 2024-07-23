@@ -1,3 +1,4 @@
+import { CopyButton } from '@/components/copy-button.tsx';
 import NftPlayer from '@/components/nft-player';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
@@ -50,9 +51,11 @@ export default async function Page({
 
                 <div className="flex flex-col gap-1">
                   <span className="text-muted-foreground">TokenID</span>
-                  <span className="flex items-center gap-2">
-                    {item.tokenId} {item?.amount ? <Badge>x{item?.amount}</Badge> : null}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="truncate">{item.tokenId}</span>
+                    <CopyButton value={JSON.stringify(item.tokenId)} />
+                    {item?.amount ? <Badge>x{item?.amount}</Badge> : null}
+                  </div>
                 </div>
               </CardContent>
             </Card>

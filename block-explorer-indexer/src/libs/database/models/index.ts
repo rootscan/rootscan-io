@@ -4,7 +4,6 @@ import Block from './Block';
 import Event from './Event';
 import EvmTransaction from './EvmTransaction';
 import Extrinsic from './Extrinsic';
-import Nft from './Nft';
 import NftOwner from './NftOwner';
 import StakingValidator from './StakingValidator';
 import Token from './Token';
@@ -17,7 +16,6 @@ export {
   Event,
   EvmTransaction,
   Extrinsic,
-  Nft,
   NftOwner,
   StakingValidator,
   Token,
