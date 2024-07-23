@@ -1,13 +1,12 @@
 import logger from '@/logger';
-import { getTokenMetadata } from '@/token-data';
 import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, INftOwner } from '@/types';
-import { isRootChain } from '@/utils';
 import { Job } from 'bullmq';
 import { chunk } from 'lodash';
 import moment from 'moment';
 import { Models } from 'mongoose';
-import { Address, Hash, PublicClient } from 'viem';
+import { Hash, PublicClient, getAddress } from 'viem';
 
+import { NftTokenData } from './nft-token-data';
 import { C_EVENT_PARSERS, C_EVM_TRANSACTIONS_EVENT_PARSERS } from './parsers';
 
 const C_CHUNK_SIZE = 5000;
@@ -204,12 +203,10 @@ export class NftOwnersIndexer {
     }
     const ops: (IBulkWriteUpdateOp | IBulkWriteDeleteOp)[] = [];
 
+    const nftTokenData = new NftTokenData(this.#client);
     for (const item of nftOwners) {
-      const metadata = await getTokenMetadata(
-        item.contractAddress as Address,
-        item.tokenId,
-        isRootChain(this.#currentChainId) ? 'root' : 'porcini',
-      );
+      const metadata = await nftTokenData.getTokenMetadata(item.type, getAddress(item.contractAddress), item.tokenId);
+      this.#log(`Token image: ${item.contractAddress}:${item.tokenId} - ${metadata?.image}`);
 
       item.attributes = metadata?.attributes;
       (item.image = metadata?.image), (item.animation_url = metadata?.animation_url);
