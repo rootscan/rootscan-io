@@ -1,4 +1,4 @@
-import { Address } from "viem"
+import { Address } from "viem";
 
 export const knownAddressNames: { [key: Address]: string } = {
   "0xAaaAAAaa00000464000000000000000000000000": "TNL Bridged Collection",
