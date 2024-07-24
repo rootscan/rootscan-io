@@ -290,6 +290,7 @@ export class NftOwnersIndexer {
   }
 
   async processNftOwnersMetadata(requestLimit: number = 5000) {
+    await this.setMetadataForPrecompileTokens();
     let finished = false;
     while (!finished) {
       const nfts = await this.#getNotProcessedNftOwnersMetadata(requestLimit);
@@ -337,5 +338,40 @@ export class NftOwnersIndexer {
       { $limit: limit },
     ]);
     return data;
+  }
+
+  async setMetadataForPrecompileTokens() {
+    const ops: (IBulkWriteUpdateOp | IBulkWriteDeleteOp | AnyBulkWriteOperation)[] = [];
+    const addresses = {
+      '0xAaAaAAAA00001C64000000000000000000000000': {
+        image: 'https://nft.fifaworldcupaileague.com/assets/FIFA.png',
+      },
+      '0xAaAAaaAa00002C64000000000000000000000000': {
+        image: 'https://nft.fifaworldcupaileague.com/assets/FIFA.png',
+      },
+      '0xaAAaAAAa00003864000000000000000000000000': {
+        image: 'https://nft.fifaworldcupaileague.com/assets/FIFA.png',
+      },
+      '0xAaaaaAAA00003464000000000000000000000000': {
+        image: 'https://nft.fifaworldcupaileague.com/assets/FIFA.png',
+      },
+    };
+    Object.keys(addresses).forEach((address) => {
+      ops.push({
+        updateMany: {
+          filter: {
+            contractAddress: address,
+          },
+          update: {
+            $set: {
+              ...addresses[address],
+              _metadataProcessed: true,
+            },
+          },
+        },
+      });
+    });
+    const res = await this.#db.NftOwner.bulkWrite(ops);
+    this.#log(`setMetadataForPrecompileTokens: ${JSON.stringify(res)}`);
   }
 }
