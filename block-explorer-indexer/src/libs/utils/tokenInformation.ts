@@ -22,6 +22,14 @@ export const getTokenDetails = async (
     }
   }
 
+  function parseMulticallResult<T>(multicall, index: number): T | undefined {
+    if (multicall[index]?.status === 'success') {
+      return multicall[index].result as T;
+    } else {
+      return undefined;
+    }
+  }
+
   if (forceRefresh || !tokenLookUp || !tokenLookUp?.type || !tokenLookUp?.name) {
     const erc20Contract = { address: contractAddress, abi: ABIs.ERC20_ORIGINAL as Abi };
     const erc721Contract = { address: contractAddress, abi: ABIs.ERC721_ORIGINAL as Abi };
@@ -58,27 +66,19 @@ export const getTokenDetails = async (
       allowFailure: true,
     });
 
-    function parseMulticallResult<T>(index: number): T | undefined {
-      if (multicall[index]?.status === 'success') {
-        return multicall[index].result as T;
-      } else {
-        return undefined;
-      }
-    }
-
     let tokenType: TTokenType | undefined = undefined;
-    const name = parseMulticallResult<string>(0);
-    const symbol = parseMulticallResult<string>(1);
-    const decimals = parseMulticallResult<number>(2);
-    let tokenURI = parseMulticallResult<string>(3);
+    const name = parseMulticallResult<string>(multicall, 0);
+    const symbol = parseMulticallResult<string>(multicall, 1);
+    const decimals = parseMulticallResult<number>(multicall, 2);
+    let tokenURI = parseMulticallResult<string>(multicall, 3);
     if (!tokenURI && multicall[3].error?.['shortMessage']?.includes('ERC721')) {
       tokenURI = 'ERC721';
     }
-    let balanceOfBatch: number | undefined = parseMulticallResult(4);
+    let balanceOfBatch: number | undefined = parseMulticallResult(multicall, 4);
     if (balanceOfBatch === undefined && multicall[4].error?.['shortMessage']?.includes('ERC1155')) {
       balanceOfBatch = 0;
     }
-    let totalSupply: bigint | undefined = parseMulticallResult(5);
+    let totalSupply: bigint | undefined = parseMulticallResult(multicall, 5);
     const nativeId = contractAddressToNativeId(contractAddress);
 
     // Get real total supply from Ethereum if is bridged-collection

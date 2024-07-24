@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default async function Page({ searchParams }: { searchParams: { page: number } }) {
   const data = await request(ApiCommand.getBlocks, {
     page: searchParams?.page ? searchParams?.page : 1,
-    limit: 25,
+    limit: 24,
   });
   const blocks = data.docs;
 

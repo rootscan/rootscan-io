@@ -24,6 +24,7 @@ export default async function Page({
     address: params.address,
     contractAddress: params?.contractaddress,
     page: searchParams?.page || 1,
+    limit: 24,
   });
 
   const tokens = data?.docs;
