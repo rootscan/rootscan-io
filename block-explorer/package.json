@@ -39,7 +39,7 @@
     "lucide-react": "latest",
     "millify": "^6.1.0",
     "moment": "^2.30.1",
-    "next": "14.2.3",
+    "next": "14.2.4",
     "next-nprogress-bar": "^2.3.13",
     "next-qrcode": "^2.5.1",
     "next-themes": "^0.2.1",
