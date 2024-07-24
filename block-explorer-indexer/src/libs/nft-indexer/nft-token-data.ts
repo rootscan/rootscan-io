@@ -121,8 +121,16 @@ function prepareUrl(link: string | undefined): string | undefined {
   if (!link.includes('://')) {
     return `https://${link}`;
   }
-  if (skipDomainsRegex.test(link)) {
+  if (containsIpAddressWithPath(link) || skipDomainsRegex.test(link)) {
     return;
   }
   return link;
+}
+
+function containsIpAddressWithPath(input: string): boolean {
+  // Regular expression to match an IP address followed by a path
+  const ipWithPortRegex = /(https?:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?\/?[\w\\/.-]*\b/;
+
+  // Check if the input string contains the IP address with a path
+  return ipWithPortRegex.test(input);
 }

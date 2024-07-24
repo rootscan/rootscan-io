@@ -289,7 +289,7 @@ export class NftOwnersIndexer {
     let finished = false;
     while (!finished) {
       const nfts = await this.#getNotProcessedNftOwnersMetadata(requestLimit);
-      this.#log(`process ${nfts.length} nfts owners metadata. last block: ${nfts[nfts.length - 1].blockNumber}`);
+      this.#log(`process ${nfts.length} nfts owners metadata. last block: ${nfts[nfts.length - 1]?.blockNumber}`);
       await this.processNftOwnersMetadataItems(nfts);
       this.#log(`processed ${nfts.length} nfts owners`);
       finished = nfts.length < requestLimit;
