@@ -1,3 +1,4 @@
+import { CopyButton } from '@/components/copy-button.tsx';
 import NftPlayer from '@/components/nft-player';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
@@ -6,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ApiCommand, request } from '@/lib/api';
+import { getShortenedHash } from '@/lib/constants/knownAddresses.ts';
 import { getPaginationData } from '@/lib/utils';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -50,9 +52,13 @@ export default async function Page({
 
                 <div className="flex flex-col gap-1">
                   <span className="text-muted-foreground">TokenID</span>
-                  <span className="flex items-center gap-2">
-                    {item.tokenId} {item?.amount ? <Badge>x{item?.amount}</Badge> : null}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="truncate">
+                      {item.tokenId.toString().length > 12 ? getShortenedHash(item.tokenId.toString()) : item.tokenId}
+                    </span>
+                    <CopyButton value={item.tokenId.toString()} />
+                    {item?.amount ? <Badge>x{item?.amount}</Badge> : null}
+                  </div>
                 </div>
               </CardContent>
             </Card>
