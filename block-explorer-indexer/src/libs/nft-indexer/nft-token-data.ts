@@ -63,12 +63,14 @@ export class NftTokenData {
   ): Promise<string | undefined> {
     let data;
     if (type === 'ERC721') {
-      data = await this.client.readContract({
-        address: contractAddress as Address,
-        abi: ABIs.ERC721_ABI,
-        functionName: 'tokenURI',
-        args: [tokenId],
-      });
+      data = await this.client
+        .readContract({
+          address: contractAddress as Address,
+          abi: ABIs.ERC721_ABI,
+          functionName: 'tokenURI',
+          args: [tokenId],
+        })
+        .catch(noop);
       if (data?.startsWith('ethereum://')) {
         // get ethereum address from url string
         const parts = data.split(/[:/]/).filter((part) => part !== '');
@@ -83,12 +85,14 @@ export class NftTokenData {
           .catch(noop);
       }
     } else if (type === 'ERC1155') {
-      data = await this.client.readContract({
-        address: contractAddress as Address,
-        abi: ABIs.ERC1155_ABI,
-        functionName: 'uri',
-        args: [tokenId],
-      });
+      data = await this.client
+        .readContract({
+          address: contractAddress as Address,
+          abi: ABIs.ERC1155_ABI,
+          functionName: 'uri',
+          args: [tokenId],
+        })
+        .catch(noop);
     }
     return prepareUrl(data);
   }
