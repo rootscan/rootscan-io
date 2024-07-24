@@ -76,11 +76,19 @@ const scheduler = async () => {
     {},
     {
       jobId: 'PROCESS_NFT_OWNERS',
-      priority: 6,
-      attempts: 1,
       repeat: {
         every: 60_000 * 60, // Every 60 mins
-        immediately: true,
+      },
+    },
+  );
+
+  await queue.add(
+    'PROCESS_NFT_OWNERS_METADATA',
+    {},
+    {
+      jobId: 'PROCESS_NFT_OWNERS_METADATA',
+      repeat: {
+        every: 60_000 * 60 * 24, // Every 1 day
       },
     },
   );
