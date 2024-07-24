@@ -3,7 +3,7 @@ import { IBulkWriteDeleteOp, IBulkWriteUpdateOp, INftOwner } from '@/types';
 import { Job } from 'bullmq';
 import { chunk } from 'lodash';
 import moment from 'moment';
-import { Models } from 'mongoose';
+import { AnyBulkWriteOperation, Models } from 'mongoose';
 import { Hash, PublicClient } from 'viem';
 
 import { NftTokenData } from './nft-token-data';
@@ -304,10 +304,10 @@ export class NftOwnersIndexer {
   async processNftOwnersMetadataItems(items: INftOwner[]) {
     const nftTokenData = new NftTokenData(this.#client);
     await nftTokenData.fillNftsMetadata(items);
-    const ops: (IBulkWriteUpdateOp | IBulkWriteDeleteOp)[] = [];
+    const ops: (IBulkWriteUpdateOp | IBulkWriteDeleteOp | AnyBulkWriteOperation)[] = [];
     for (const item of items) {
       ops.push({
-        updateOne: {
+        updateMany: {
           filter: {
             tokenId: item.tokenId,
             contractAddress: item.contractAddress,
