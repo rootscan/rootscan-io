@@ -28,6 +28,7 @@ out
 # Build files
 dist
 build
+tmp
 
 # Groovy lib
 lib

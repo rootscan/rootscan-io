@@ -12,7 +12,6 @@ import { C_EVENT_PARSERS, C_EVM_TRANSACTIONS_EVENT_PARSERS } from './parsers';
 const C_CHUNK_SIZE = 5000;
 export class NftOwnersIndexer {
   #client: PublicClient;
-  #currentChainId: number = 7668;
   #db: Models;
   #job?: Job;
 
@@ -35,8 +34,6 @@ export class NftOwnersIndexer {
   }
 
   public async processMissedEvents(requestLimit: number = 100000) {
-    this.#currentChainId = Number(await this.#client.getChainId());
-
     let finished = false;
     while (!finished) {
       this.#log('load events...');
@@ -54,8 +51,6 @@ export class NftOwnersIndexer {
   }
 
   public async processMissedEvmTransactions(requestLimit: number = 100000) {
-    this.#currentChainId = Number(await this.#client.getChainId());
-
     let finished = false;
     while (!finished) {
       this.#log('load evm transactions...');

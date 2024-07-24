@@ -37,23 +37,13 @@ export class NftTokenData {
     if (!uri) {
       return;
     }
-    let res;
-    try {
-      res = await fetch(uri, { signal: AbortSignal.timeout(5000) });
-    } catch (e) {
-      // noop
-    }
+    const res = await fetch(uri, { signal: AbortSignal.timeout(5000) }).catch(noop);
     if (uri && !res) {
       console.log('BROKEN URL:', uri);
+      return;
     }
     if (res?.ok) {
-      let jsonData: TokenMetadata | undefined = undefined;
-      try {
-        jsonData = await res.json();
-      } catch {
-        // noop
-      }
-      return jsonData;
+      return await res.json().catch(noop);
     }
   }
 
