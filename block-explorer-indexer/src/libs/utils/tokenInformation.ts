@@ -58,6 +58,7 @@ export const getTokenDetails = async (
       allowFailure: true,
     });
 
+    // eslint-disable-next-line no-inner-declarations
     function parseMulticallResult<T>(index: number): T | undefined {
       if (multicall[index]?.status === 'success') {
         return multicall[index].result as T;

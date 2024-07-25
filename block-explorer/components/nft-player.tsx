@@ -20,7 +20,7 @@ export default function NftPlayer({ animation_url, image }) {
         </div>
       ) : null}
       {image && !showVideo ? (
-        <SkeletonImage src={image} width={300} height={300} priority unoptimized className="rounded-sm" alt="image" />
+        <SkeletonImage src={image} width={300} height={300} priority className="rounded-sm" alt="image" />
       ) : showVideo && animation_url ? (
         <video loop width="100%" height="100%" className="aspect-square size-full" autoPlay muted playsInline>
           <source src={animation_url} />
