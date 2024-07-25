@@ -24,7 +24,7 @@ import { processError } from './utils';
 function getPageAndLimit(body: Record<string, unknown>): { page: number; limit: number } {
   return {
     page: Number(body?.page) || 1,
-    limit: Number(body?.limit) || 25,
+    limit: Number(body?.limit) || 24,
   };
 }
 

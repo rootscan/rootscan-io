@@ -1,6 +1,53 @@
 /** @type {import('next').NextConfig} */
 
 module.exports = {
+  images: {
+    dangerouslyAllowSVG: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'rns-metadata.fly.dev',
+        pathname: '**',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.amazonaws.com',
+        pathname: '**',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'nft.seekers.xyz',
+        pathname: '**',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.cloudfront.net',
+        pathname: '**',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'porkjet.b-cdn.net',
+        pathname: '**',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'theshillverse.com',
+        pathname: '**',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'salmon-cheerful-porcupine-365.mypinata.cloud',
+        pathname: '**',
+        port: '',
+      },
+    ],
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
