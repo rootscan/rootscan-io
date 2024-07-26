@@ -121,6 +121,11 @@ pipeline {
                         sh 'pnpm run lint'
                     }
                 }
+                stage('Test') {
+                    steps {
+                        sh 'pnpm run test'
+                    }
+                }
                 stage('block-explorer-indexer') {
                     steps {
                         script {
