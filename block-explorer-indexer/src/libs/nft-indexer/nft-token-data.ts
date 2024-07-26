@@ -1,16 +1,12 @@
 import ABIs from '@/constants/abi';
 import { ethereumClient } from '@/rpc';
 import { INftOwner, TNftTokenType } from '@/types';
+import { prepareTokenMetadataUrl } from '@/utils/url-utils';
 import { noop } from 'lodash';
 import pLimit from 'p-limit';
 import { Address, PublicClient, getAddress } from 'viem';
 
 const limiter = pLimit(100);
-const skipDomains = ['example.com', 'localhost'];
-const skipDomainsRegex = new RegExp(skipDomains.map((domain) => `(${domain})`).join('|'), 'i');
-const containsIpWithPortRegex = /(https?:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?\/?[\w\\/.-]*\b/;
-const isUrlCorrectRegex =
-  /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
 
 interface TokenMetadata {
   image: string;
@@ -97,35 +93,17 @@ export class NftTokenData {
         })
         .catch(noop);
     }
-    return prepareUrl(data);
+    console.log(data);
+    return prepareTokenMetadataUrl(data);
   }
 
   async fillNftsMetadata(nfts: INftOwner[]) {
     const metadatas = await this.getBulkTokenMetadata(nfts);
     nfts.forEach((nft, index) => {
       nft.attributes = metadatas[index]?.attributes;
-      nft.image = prepareUrl(metadatas[index]?.image);
-      nft.animation_url = prepareUrl(metadatas[index]?.animation_url);
+      nft.image = prepareTokenMetadataUrl(metadatas[index]?.image);
+      nft.animation_url = prepareTokenMetadataUrl(metadatas[index]?.animation_url);
       nft._metadataProcessed = nft.image ? true : undefined;
     });
   }
-}
-
-function prepareUrl(link: string | undefined): string | undefined {
-  if (!link) {
-    return;
-  }
-  link = link.trim();
-
-  if (link.toLowerCase().startsWith('ipfs://')) {
-    // See https://docs.ipfs.tech/quickstart/retrieve/#fetching-the-cid-with-an-ipfs-gateway
-    return link.replace(/^ipfs:\/\//i, 'https://ipfs.io/ipfs/');
-  }
-  if (!link.includes('://')) {
-    return `https://${link}`;
-  }
-  if (!isUrlCorrectRegex.test(link) || containsIpWithPortRegex.test(link) || skipDomainsRegex.test(link)) {
-    return;
-  }
-  return link;
 }
