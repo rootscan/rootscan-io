@@ -6,7 +6,7 @@ import pLimit from 'p-limit';
 import { Address, PublicClient, getAddress } from 'viem';
 
 const limiter = pLimit(100);
-const skipDomains = ['example.com', 'localhost', '{}'];
+const skipDomains = ['example.com', 'localhost'];
 const skipDomainsRegex = new RegExp(skipDomains.map((domain) => `(${domain})`).join('|'), 'i');
 const containsIpWithPortRegex = /(https?:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?\/?[\w\\/.-]*\b/;
 const isUrlCorrectRegex =
