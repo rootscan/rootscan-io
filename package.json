@@ -14,7 +14,8 @@
     "lint": "nx run-many --target=lint --exclude=portal --all --parallel --max-warnings=0 && pre-commit run --all-files",
     "precommit": "pre-commit run --all-files",
     "docker-down": "docker compose down",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "nx run-many --target=test"
   },
   "private": true,
   "devDependencies": {
