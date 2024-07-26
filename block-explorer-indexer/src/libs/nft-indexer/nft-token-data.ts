@@ -8,6 +8,9 @@ import { Address, PublicClient, getAddress } from 'viem';
 const limiter = pLimit(100);
 const skipDomains = ['example.com', 'localhost', '{}'];
 const skipDomainsRegex = new RegExp(skipDomains.map((domain) => `(${domain})`).join('|'), 'i');
+const containsIpWithPortRegex = /(https?:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?\/?[\w\\/.-]*\b/;
+const isUrlCorrectRegex =
+  /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
 
 interface TokenMetadata {
   image: string;
@@ -33,11 +36,11 @@ export class NftTokenData {
     contractAddress: string,
     tokenId: number | string,
   ): Promise<TokenMetadata | undefined> {
-    const uri = await this.#getTokenMetadataUrl(type, contractAddress, tokenId);
+    const uri = await this.getTokenMetadataUrl(type, contractAddress, tokenId);
     if (!uri) {
       return;
     }
-    const res = await fetch(uri, { signal: AbortSignal.timeout(5000) }).catch(noop);
+    const res = await fetch(uri, { signal: AbortSignal.timeout(10000) }).catch(noop);
     if (uri && !res) {
       console.log('BROKEN URL:', uri);
       return;
@@ -56,7 +59,7 @@ export class NftTokenData {
     return promises;
   }
 
-  async #getTokenMetadataUrl(
+  async getTokenMetadataUrl(
     type: TNftTokenType,
     contractAddress: string,
     tokenId: number | string,
@@ -121,16 +124,8 @@ function prepareUrl(link: string | undefined): string | undefined {
   if (!link.includes('://')) {
     return `https://${link}`;
   }
-  if (containsIpAddressWithPath(link) || skipDomainsRegex.test(link)) {
+  if (!isUrlCorrectRegex.test(link) || containsIpWithPortRegex.test(link) || skipDomainsRegex.test(link)) {
     return;
   }
   return link;
-}
-
-function containsIpAddressWithPath(input: string): boolean {
-  // Regular expression to match an IP address followed by a path
-  const ipWithPortRegex = /(https?:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?\/?[\w\\/.-]*\b/;
-
-  // Check if the input string contains the IP address with a path
-  return ipWithPortRegex.test(input);
 }
