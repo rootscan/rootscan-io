@@ -2,6 +2,7 @@ import DB from '@/database';
 import { getMissingBlocks } from '@/indexer/tasks/prepopulate';
 import logger from '@/logger';
 import { evmClient } from '@/rpc';
+import { isRootChain } from '@/utils';
 import queue from '@/workerpool';
 import { TaskQueueLimiter } from '@/workerpool/task-queue-limiter';
 import '@therootnetwork/api-types';
@@ -82,16 +83,18 @@ const scheduler = async () => {
     },
   );
 
-  await queue.add(
-    'PROCESS_NFT_OWNERS_METADATA',
-    {},
-    {
-      jobId: 'PROCESS_NFT_OWNERS_METADATA',
-      repeat: {
-        every: 60_000 * 60 * 24, // Every 1 day
+  if (isRootChain(Number(process?.env?.CHAIN_ID))) {
+    await queue.add(
+      'PROCESS_NFT_OWNERS_METADATA',
+      {},
+      {
+        jobId: 'PROCESS_NFT_OWNERS_METADATA',
+        repeat: {
+          every: 60_000 * 60 * 24, // Every 1 day
+        },
       },
-    },
-  );
+    );
+  }
 
   await queue.add(
     'INGEST_KNOWN_ADDRESSES',
