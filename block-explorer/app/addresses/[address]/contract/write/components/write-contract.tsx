@@ -12,7 +12,9 @@ export default function WriteContract({ data, address }) {
     <Accordion type="multiple" className="w-full">
       {abi
         ?.filter((a) => a.stateMutability !== 'view' && a.type === 'function')
-        .map((item, _) => <WriteItem index={_} abi={abi} devDoc={devDoc} item={item} key={_} address={address} />)}
+        .map((item, _) => (
+          <WriteItem index={_} abi={abi} devDoc={devDoc} item={item} key={_} address={address} />
+        ))}
     </Accordion>
   );
 }

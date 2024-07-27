@@ -1,15 +1,7 @@
-const { FlatCompat } = require('@eslint/eslintrc');
 const baseConfig = require('../eslint.config.js');
-const js = require('@eslint/js');
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-});
 
 module.exports = [
   ...baseConfig,
-  ...compat.extends('plugin:tailwindcss/recommended'),
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {},
@@ -22,5 +14,4 @@ module.exports = [
     files: ['**/*.js', '**/*.jsx'],
     rules: {},
   },
-  { ignores: ['build', 'node_modules'] },
 ];

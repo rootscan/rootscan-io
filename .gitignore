@@ -31,5 +31,4 @@ build
 tmp
 
 # Groovy lib
-lib
 .DS_Store
