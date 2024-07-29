@@ -25,11 +25,11 @@ describe('SubstrateService', () => {
 
   it('get error when user is not exists', async () => {
     const api = await service.init();
-    expect(api).toBeDefined()
+    expect(api).toBeDefined();
   });
   it('get error when user is not exists', async () => {
     const api = await service.init();
     const hash: BlockHash = await api.rpc.chain.getBlockHash(1);
-    expect(hash.toString()).toBe('0x942687bf7abee71e025a2314f65cc7070ea845e828e26f4981eff2ee91e4acb6')
+    expect(hash.toString()).toBe('0x942687bf7abee71e025a2314f65cc7070ea845e828e26f4981eff2ee91e4acb6');
   });
 });
