@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { BlocksIndexerService } from './blocks-indexer.service';
+import { ProcessorService } from './processor.service';
 import { SubstrateModule } from '@rootscan/substrate';
 
 @Module({
   imports: [SubstrateModule],
-  providers: [BlocksIndexerService],
+  providers: [ProcessorService],
 })
-export class BlocksIndexerModule {}
+export class ProcessorModule {}

@@ -1,22 +1,20 @@
 import { Module } from '@nestjs/common';
 import { SubstrateService } from './substrate.service';
 import { ConfigModule } from '@nestjs/config';
+import Joi from 'joi';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     ConfigModule.forRoot({ envFilePath: '../../.env' }),
     ConfigModule.forRoot({
-      // validationSchema: Joi.object({
-      // CLICKHOUSE_HOST: Joi.string().required(),
-      // CLICKHOUSE_PROTOCOL: Joi.string().required(),
-      // CLICKHOUSE_PORT_HTTP: Joi.number().required(),
-      // CLICKHOUSE_RAPP_USER: Joi.string().optional(),
-      // CLICKHOUSE_RAPP_PASSWORD: Joi.string().optional().allow(null, ''),
-      // }),
+      validationSchema: Joi.object({
+        RPC_WS_URL: Joi.string().optional(),
+        RPC_HTTP_URL: Joi.string().optional(),
+        RPC_PROVIDER: Joi.string().optional(),
+      }).or('RPC_WS_URL', 'RPC_HTTP_URL'),
     }),
   ],
-  controllers: [],
   providers: [SubstrateService],
   exports: [SubstrateService],
 })

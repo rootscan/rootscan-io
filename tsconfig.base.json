@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "substrate": ["libs/substrate/src/index.ts"]
+      "@rootscan/substrate": ["libs/substrate/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

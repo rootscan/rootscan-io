@@ -1,7 +1,7 @@
 {
   "name": "indexer",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "indexer/src",
+  "sourceRoot": "apps/indexer/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -13,10 +13,10 @@
         "target": "node",
         "compiler": "tsc",
         "outputPath": "dist/indexer",
-        "main": "indexer/src/main.ts",
-        "tsConfig": "indexer/tsconfig.app.json",
-        "assets": ["indexer/src/assets"],
-        "webpackConfig": "indexer/webpack.config.js"
+        "main": "apps/indexer/src/main.ts",
+        "tsConfig": "apps/indexer/tsconfig.app.json",
+        "assets": ["apps/indexer/src/assets"],
+        "webpackConfig": "apps/indexer/webpack.config.js"
       },
       "configurations": {
         "development": {},
@@ -42,7 +42,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "indexer/jest.config.ts"
+        "jestConfig": "apps/indexer/jest.config.ts"
       }
     }
   }

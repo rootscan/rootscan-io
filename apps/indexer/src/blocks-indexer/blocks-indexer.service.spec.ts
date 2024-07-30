@@ -1,21 +1,26 @@
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 
 import { BlocksIndexerService } from './blocks-indexer.service';
+import { BlocksIndexerModule } from './blocks-indexer.module';
 
+jest.setTimeout(30000);
 describe('BlocksIndexerService', () => {
   let service: BlocksIndexerService;
-
+  let module: TestingModule;
   beforeAll(async () => {
-    const app = await Test.createTestingModule({
-      providers: [BlocksIndexerService],
+    module = await Test.createTestingModule({
+      imports: [BlocksIndexerModule],
     }).compile();
 
-    service = app.get<BlocksIndexerService>(BlocksIndexerService);
+    module.enableShutdownHooks();
+    service = module.get<BlocksIndexerService>(BlocksIndexerService);
   });
 
+  afterAll(async () => module.close());
+
   describe('getData', () => {
-    it('should return "Hello API"', () => {
-      // expect(service.processBlock()
+    it('processBlock', async () => {
+      expect(service).toBeDefined();
     });
   });
 });
