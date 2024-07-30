@@ -24,7 +24,7 @@ import {
 import { getTokenDetails } from '@/utils/tokenInformation';
 import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
-import { BlockHash, Extrinsic } from '@polkadot/types/interfaces';
+import { Extrinsic } from '@polkadot/types/interfaces';
 import { assetIdToERC20Address, collectionIdToERC721Address, collectionIdToERC1155Address } from '@therootnetwork/evm';
 import { Interface, InterfaceAbi, formatUnits } from 'ethers';
 import { Models } from 'mongoose';
@@ -61,7 +61,7 @@ export default class Indexer {
 
   /** Indexes the block based on nujmber */
   async processBlock(blockNumber: bigint): Promise<boolean> {
-    const blockHash: BlockHash = await this.api.rpc.chain.getBlockHash(blockNumber);
+    const blockHash = await this.api.rpc.chain.getBlockHash(blockNumber).then(String);
     // Get the EVM Block
 
     const [block, substrateBlock, at] = await Promise.all([
