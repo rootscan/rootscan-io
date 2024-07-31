@@ -4,7 +4,8 @@ import { BlockBaseParams, EventExecutedEthereum, EventTransactionFeePaid, IEvent
 
 import {} from '@polkadot/api/base';
 import { ApiPromise } from '@polkadot/api';
-import { decodeBridgeMessage, decodeEventText } from './utils';
+import { decodeBridgeMessage, decodeEventText, extraArgsFromEvent } from './utils';
+import { assetIdToERC20Address } from '@therootnetwork/evm';
 
 function findByMethod<T = IEvent>(
   events: { section: string; method: string }[],
@@ -14,11 +15,16 @@ function findByMethod<T = IEvent>(
   return events?.find(({ section, method }) => section === _section && method === _method) as T;
 }
 
-const C_EXTRINSIC_PARSERS = [
+interface ExtrinsicParser {
+  expression?: (extrinsic: IExtrinsicWithEvents) => boolean;
+  handler?: (extrinsic: IExtrinsicWithEvents, api: ApiPromise) => void;
+}
+
+const C_EXTRINSIC_PARSERS: ExtrinsicParser[] = [
   /** @dev - Parse proxied extrinsics properly */
   {
-    expression: ({ method }: IExtrinsicWithEvents) => ['proxyExtrinsic', 'callWithFeePreferences'].includes(method),
-    handler(extrinsic: IExtrinsicWithEvents, api: ApiPromise) {
+    expression: ({ method }) => ['proxyExtrinsic', 'callWithFeePreferences'].includes(method),
+    handler(extrinsic, api) {
       extrinsic.isProxy = true;
       let currentArg = extrinsic.args?.call;
       const calls: any[] = [];
@@ -49,9 +55,8 @@ const C_EXTRINSIC_PARSERS = [
 
   /** @dev In utility for batch and batchAll we should extract the section and method for each callIndex */
   {
-    expression: ({ method, section }: IExtrinsicWithEvents) =>
-      ['batch', 'batchAll'].includes(method.toString()) && section === 'utility',
-    handler(extrinsic: IExtrinsicWithEvents, api: ApiPromise) {
+    expression: ({ method, section }) => ['batch', 'batchAll'].includes(method.toString()) && section === 'utility',
+    handler(extrinsic, api) {
       if (extrinsic?.args?.calls) {
         for (const call of extrinsic.args.calls) {
           const findCall = api.findCall(call.callIndex);
@@ -64,7 +69,7 @@ const C_EXTRINSIC_PARSERS = [
 
   /** @dev - Determine whether the extrinsic was a success or failure */
   {
-    handler(extrinsic: IExtrinsicWithEvents) {
+    handler(extrinsic) {
       if (findByMethod<IEvent>(extrinsic.events, 'system', 'ExtrinsicSuccess')) {
         extrinsic.isSuccess = true;
       } else {
@@ -79,7 +84,7 @@ const C_EXTRINSIC_PARSERS = [
 
   /** @dev Figure out the gas fee that was paid for this Extrinsic */
   {
-    handler(extrinsic: IExtrinsicWithEvents, api: ApiPromise) {
+    handler(extrinsic) {
       const txFeeEvent = findByMethod<EventTransactionFeePaid>(
         extrinsic.events,
         'transactionPayment',
@@ -100,8 +105,8 @@ const C_EXTRINSIC_PARSERS = [
 
   /** @dev - Save the Ethereum Transaction from the event to the extrinsic to make our lives easier */
   {
-    expression: ({ method, section }: IExtrinsicWithEvents) => method === 'transact' && section === 'ethereum',
-    handler(extrinsic: IExtrinsicWithEvents, api: ApiPromise) {
+    expression: ({ method, section }) => method === 'transact' && section === 'ethereum',
+    handler(extrinsic) {
       const executedEvent = findByMethod<EventExecutedEthereum>(extrinsic.events, 'ethereum', 'Executed');
       if (executedEvent) {
         extrinsic.args.transactionHash = executedEvent.args.transactionHash;
@@ -111,38 +116,35 @@ const C_EXTRINSIC_PARSERS = [
 
   // /** @dev - Figure out if there was a CallWithFeePreferences event */
   {
-    expression: ({ events }: IExtrinsicWithEvents) =>
-      findByMethod<IEvent>(events, 'feeProxy', 'CallWithFeePreferences'),
-    async handler(extrinsic: IExtrinsicWithEvents, api: ApiPromise) {
-      //   const swapFeeEvent = events?.find((a) => {
-      //     const isSwap = a?.event?.method === 'Swap' && a?.event?.section === 'dex';
-      //     if (isSwap) {
-      //       const args = extraArgsFromEvent(a.event, this.api);
-      //       return Number(args?.target_Asset_amount) === Number(data?.fee?.actualFee);
-      //     } else {
-      //       return false;
-      //     }
-      //   });
-      //   if (swapFeeEvent) {
-      //     const swapFeeEventArgs = extraArgsFromEvent(swapFeeEvent.event, this.api);
-      //     const swappedAssetId = swapFeeEventArgs.trading_path[0];
-      //     const amount = swapFeeEventArgs.supply_Asset_amount;
-      //     const tokenDetails = await getTokenDetails(getAddress(assetIdToERC20Address(swappedAssetId)));
-      //     extrinsic.proxyFee = {
-      //       who: swapFeeEventArgs.trader,
-      //       paymentAsset: swapFeeEventArgs.trading_path[0],
-      //       swappedAmount: Number(amount),
-      //       swappedAmountFormatted: Number(formatUnits(amount, tokenDetails?.decimals)),
-      //     };
-      //   }
-      // }
+    expression: ({ method, section }) => method === 'callWithFeePreferences' && section === 'feeProxy',
+    async handler(extrinsic) {
+      const swapFeeEvent = extrinsic.events?.find(
+        (event) =>
+          event.method === 'Swap' &&
+          event.section === 'dex' &&
+          Number(event.args?.target_Asset_amount) === Number(extrinsic.fee?.actualFee),
+      );
+
+      if (swapFeeEvent) {
+        const swapFeeEventArgs = swapFeeEvent.args as any;
+        const swappedAssetId = swapFeeEventArgs.trading_path[0];
+        const amount = swapFeeEventArgs.supply_Asset_amount;
+        // const tokenDetails = await getTokenDetails(getAddress(assetIdToERC20Address(swappedAssetId)));
+
+        extrinsic.proxyFee = {
+          who: swapFeeEventArgs.trader,
+          paymentAsset: swapFeeEventArgs.trading_path[0],
+          swappedAmount: Number(amount),
+          swappedAmountFormatted: Number(formatUnits(amount, 6)), // tokenDetails?.decimals)), TODO
+        };
+      }
     },
   },
 
   /** @dev - Parse all information from the ethBridge */
   {
-    expression: ({ method, section }: IExtrinsicWithEvents) => method === 'submitEvent' && section === 'ethBridge',
-    async handler(extrinsic: IExtrinsicWithEvents, api: ApiPromise) {
+    expression: ({ method, section }) => method === 'submitEvent' && section === 'ethBridge',
+    async handler(extrinsic) {
       const typeEvent =
         findByMethod(extrinsic.events, 'ethBridge', 'EventSend') ||
         findByMethod(extrinsic.events, 'ethBridge', 'EventSubmit');
@@ -163,13 +165,13 @@ const C_EXTRINSIC_PARSERS = [
   },
 ];
 
-export function parseExtrinsic(
+export async function parseExtrinsic(
   extrinsic: Extrinsic,
   index: number,
   block: BlockBaseParams,
   events?: IEvent[],
   api?: ApiPromise,
-): IExtrinsicWithEvents {
+): Promise<IExtrinsicWithEvents> {
   if (!extrinsic) {
     throw new Error('Extrinsic is null');
   }
@@ -200,11 +202,11 @@ export function parseExtrinsic(
     timestamp: block.timestamp,
   };
 
-  C_EXTRINSIC_PARSERS.forEach((parser) => {
+  for (const parser of C_EXTRINSIC_PARSERS) {
     if (!parser.expression || parser.expression(res)) {
-      parser.handler(res, api);
+      await parser.handler(res, api);
     }
-  });
+  }
 
   return res;
 }

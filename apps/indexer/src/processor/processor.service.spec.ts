@@ -72,6 +72,12 @@ describe('ProcessorService', () => {
         isProxy: true,
         proxiedSections: ['futurepass', 'nft'],
         proxiedMethods: ['proxyExtrinsic', 'transfer'],
+        proxyFee: {
+          who: '0xfFFFFFff0000000000000000000000000000129c',
+          paymentAsset: 1,
+          swappedAmount: 936375,
+          swappedAmountFormatted: 0.936375,
+        },
       });
     });
 
@@ -94,6 +100,18 @@ describe('ProcessorService', () => {
               //...
             },
           },
+        },
+      });
+    });
+
+    it('processBlock with CallWithFeePreference2s method', async () => {
+      const res = await service.getBlockData(13784984);
+      expect(res.extrinsics?.[1]).toMatchObject({
+        proxyFee: {
+          who: '0xFfFFffff00000000000000000000000000001181',
+          paymentAsset: 1,
+          swappedAmount: 811925,
+          swappedAmountFormatted: 0.811925,
         },
       });
     });

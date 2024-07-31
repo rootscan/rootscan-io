@@ -5,6 +5,7 @@ import { Hash } from 'viem';
 import { BlockResponse, IEvent, RuntimeVersion } from './types';
 import { extraArgsFromEvent } from './utils';
 import { parseExtrinsic } from './parsers';
+import { assetIdToERC20Address, collectionIdToERC1155Address, collectionIdToERC721Address } from '@therootnetwork/evm';
 
 @Injectable()
 export class ProcessorService {
@@ -43,10 +44,12 @@ export class ProcessorService {
     return {
       block,
       header: substrateBlock.block.header.toJSON(),
-      extrinsics: substrateBlock.block.extrinsics?.map((extrinsic, index) => {
-        const extrinsicEvents = events.filter((e) => e.extrinsicId === `${blockNumber}-${index}`);
-        return parseExtrinsic(extrinsic, index, block, extrinsicEvents, this.substrateService.api);
-      }),
+      extrinsics: await Promise.all(
+        substrateBlock.block.extrinsics?.map((extrinsic, index) => {
+          const extrinsicEvents = events.filter((e) => e.extrinsicId === `${blockNumber}-${index}`);
+          return parseExtrinsic(extrinsic, index, block, extrinsicEvents, this.substrateService.api);
+        }),
+      ),
     } as undefined as BlockResponse;
   }
 
@@ -74,7 +77,7 @@ export class ProcessorService {
 
       const { method, section, meta } = event;
 
-      const args = extraArgsFromEvent(event, this.substrateService.api);
+      const args = extraArgsFromEvent(event, this.substrateService.api) || {};
 
       if (this.substrateService.api.events.system.ExtrinsicFailed.is(event)) {
         // extract the data for this event
@@ -85,6 +88,22 @@ export class ProcessorService {
         } else {
           args.errorInfo = dispatchError?.toString();
         }
+      }
+
+      if (section === 'nft' && method === 'CollectionCreate') {
+        args.collectionAddress = collectionIdToERC721Address(args?.collectionUuid);
+      } else if (section === 'sft' && method === 'CollectionCreate') {
+        args.collectionAddress = collectionIdToERC721Address(args?.collectionId);
+      } else if (section === 'assets' && method === 'ForceCreated') {
+        args.assetAddress = assetIdToERC20Address(args?.assetId);
+      } else if (section === 'assets' && method === 'MetadataSet') {
+        args.assetAddress = assetIdToERC20Address(args?.assetId);
+      } else if (section === 'sft' && method === 'BaseUriSet') {
+        args.collectionAddress = collectionIdToERC1155Address(args?.collectionId);
+      } else if (section === 'sft' && method === 'TokenCreate' && args?.tokenId?.[0]) {
+        args.collectionAddress = collectionIdToERC1155Address(args?.tokenId?.[0]);
+      } else if (section === 'nft' && method === 'BaseUriSet') {
+        args.collectionAddress = await collectionIdToERC721Address(args?.collectionId);
       }
 
       const parsedEvent: IEvent = {
