@@ -74,6 +74,27 @@ export interface EventFuturepassCreated extends BaseEvent {
     delegate: Address;
   };
 }
+export interface EventExecutedEthereum extends BaseEvent {
+  method: 'Executed';
+  section: 'ethereum';
+  args: {
+    from: Address;
+    to: Address;
+    transactionHash: Hash;
+    exitReason: {
+      succeed: string;
+    };
+  };
+}
+export interface EventTransactionFeePaid extends BaseEvent {
+  method: 'TransactionFeePaid';
+  section: 'transactionPayment';
+  args: {
+    who: Address;
+    actualFee: bigint;
+    tip: bigint;
+  };
+}
 
 export type IEvent =
   | EventExtrinsicSuccess
@@ -83,26 +104,31 @@ export type IEvent =
   | EventBalancesTransfer
   | EventBalancesReserved
   | EventFuturepassCreated
+  | EventExecutedEthereum
+  | EventTransactionFeePaid
   | BaseEvent;
 
-export interface BlockRpcResponse {
+export interface BlockBaseParams {
+  hash: Hash;
+  number: number;
+  timestamp: number;
+}
+
+export interface BlockRpcResponse extends BlockBaseParams {
   author: Address;
   baseFeePerGas: number;
   difficulty: number;
   extraData: string;
   gasLimit: number;
   gasUsed: number;
-  hash: Hash;
   logsBloom: string;
   miner: Address;
   nonce: string;
-  number: 14392427n;
   parentHash: Hash;
   receiptsRoot: string;
   sha3Uncles: string;
   size: number;
   stateRoot: string;
-  timestamp: number;
   totalDifficulty: number;
   transactions: Hash[];
   transactionsRoot: Hash;
@@ -111,16 +137,50 @@ export interface BlockRpcResponse {
   excessBlobGas: number;
 }
 
-export interface BlockHeaderRpcResponse {
-  block: {
-    header: {
-      parentHash: Hash;
-      number: number;
-      stateRoot: Hash;
-      extrinsicsRoot: Hash;
-      digest: unknown[];
-    };
-    extrinsics: string[];
+export interface BlockResponse {
+  block: BlockRpcResponse;
+  header: {
+    parentHash: Hash;
+    number: number;
+    stateRoot: Hash;
+    extrinsicsRoot: Hash;
+    digest: unknown[];
   };
-  // justifications: null;
+  extrinsics: IExtrinsic[];
+}
+
+export interface IExtrinsic {
+  block: number;
+  hash?: string;
+  timestamp: number;
+  extrinsicId: string;
+  retroExtrinsicId: string;
+  args: Record<string, any>;
+  method: string;
+  section: string;
+  isSigned: boolean;
+  signature?: string;
+  signer?: Address;
+  fee?: {
+    who: string;
+    actualFee: bigint;
+    actualFeeFormatted: number;
+    tip: bigint;
+    tipFormatted: number;
+  };
+  proxyFee?: {
+    who: string;
+    paymentAsset: number;
+    swappedAmount: number;
+    swappedAmountFormatted: number;
+  };
+  isSuccess?: boolean;
+  errorInfo?: string;
+  isProxy?: boolean;
+  proxiedSections?: string[];
+  proxiedMethods?: string[];
+}
+
+export interface IExtrinsicWithEvents extends IExtrinsic {
+  events: IEvent[];
 }

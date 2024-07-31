@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { SubstrateService } from '@rootscan/substrate';
-import { BlockHash, Extrinsic, EventRecord } from '@polkadot/types/interfaces';
+import { BlockHash, EventRecord } from '@polkadot/types/interfaces';
 import { Hash } from 'viem';
-import { CodecClass } from '@polkadot/types/types';
-import { IEvent, RuntimeVersion } from './types';
+import { BlockResponse, IEvent, RuntimeVersion } from './types';
 import { extraArgsFromEvent } from './utils';
-import { ApiPromise } from '@polkadot/api';
+import { parseExtrinsic } from './parsers';
 
 @Injectable()
 export class ProcessorService {
@@ -21,21 +20,40 @@ export class ProcessorService {
     return blockHash.toString() as Hash;
   }
 
-  async processBlock(blockNumber: number): Promise<void> {
+  async getBlockData(blockNumber: number): Promise<BlockResponse> {
     await this.init();
     const blockHash = await this.getBlockHash(blockNumber);
 
-    const [block, substrateBlock] = await Promise.all([
+    const [evmBlock, substrateBlock, { events, spec, timestamp }] = await Promise.all([
       this.substrateService.evmClient.getBlock({
         blockNumber: BigInt(blockNumber),
       }),
       this.substrateService.api.rpc.chain.getBlock(blockHash),
+      this.getBlockHistoryAtInfo(blockHash, blockNumber),
     ]);
-    console.log(block, substrateBlock.toJSON());
-    const blockExtrinsics = substrateBlock?.block?.extrinsics;
+
+    const block = {
+      ...evmBlock,
+      number: Number(evmBlock.number),
+      // timestamp: Number(evmBlock.timestamp),
+      spec,
+      timestamp,
+    };
+
+    return {
+      block,
+      header: substrateBlock.block.header.toJSON(),
+      extrinsics: substrateBlock.block.extrinsics?.map((extrinsic, index) => {
+        const extrinsicEvents = events.filter((e) => e.extrinsicId === `${blockNumber}-${index}`);
+        return parseExtrinsic(extrinsic, index, block, extrinsicEvents, this.substrateService.api);
+      }),
+    } as undefined as BlockResponse;
   }
 
-  async getBlockHistoryAtInfo(blockHash: Hash): Promise<{ events: IEvent[]; timestamp: number; spec: string }> {
+  async getBlockHistoryAtInfo(
+    blockHash: Hash,
+    blockNumber_?: number,
+  ): Promise<{ events: IEvent[]; timestamp: number; spec: string }> {
     await this.init();
 
     const at = await this.substrateService.api.at(blockHash);
@@ -43,38 +61,44 @@ export class ProcessorService {
       at.query.system.events() as Promise<unknown> as Promise<EventRecord[]>,
       at.query.system.lastRuntimeUpgrade(),
       at.query.timestamp.now().then(Number),
-      at.query.system.number().then(Number),
+      blockNumber_ || at.query.system.number().then(Number),
     ]);
     const version = runtimeVersion.toHuman() as RuntimeVersion;
 
     const events: IEvent[] = [];
     let eventIndex = 0;
     for (const record of chainEvents) {
-      // extract the phase, event and the event types
       const { event, phase } = record;
-      /** Determine the extrinsicId */
-      let extrinsicId: string = undefined;
-      let extrinsicIndex: number = 999;
-      if (phase?.isApplyExtrinsic && phase?.asApplyExtrinsic) {
-        extrinsicIndex = Number(phase?.asApplyExtrinsic);
-        extrinsicId = `${blockNumber}-${phase?.asApplyExtrinsic}`;
-      }
+
+      const extrinsicId = phase?.isApplyExtrinsic ? `${blockNumber}-${phase?.asApplyExtrinsic}` : undefined;
 
       const { method, section, meta } = event;
 
       const args = extraArgsFromEvent(event, this.substrateService.api);
 
+      if (this.substrateService.api.events.system.ExtrinsicFailed.is(event)) {
+        // extract the data for this event
+        const [dispatchError, _dispatchInfo] = event.data as any;
+        if (dispatchError?.isModule) {
+          const decoded = this.substrateService.api.registry.findMetaError(dispatchError.asModule);
+          args.errorInfo = `${decoded.section}.${decoded.name}`;
+        } else {
+          args.errorInfo = dispatchError?.toString();
+        }
+      }
+
       const parsedEvent: IEvent = {
         hash: event.hash.toString() as Hash,
         eventId: `${blockNumber}-${eventIndex}`,
         extrinsicId,
-        blockNumber: Number(blockNumber),
-        // timestamp: Number(block?.timestamp), TODO
+        blockNumber: blockNumber,
+        // timestamp: block?.timestamp,
         method,
         section,
         doc: meta?.docs?.[0]?.toString() || undefined,
         args,
       };
+
       events.push(parsedEvent);
       eventIndex++;
     }
