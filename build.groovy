@@ -187,6 +187,8 @@ pipeline {
                         script {
                             redeployProjects(APPS, 'rootscan-oprod-porcini', '/project/local:p-cq7nh/workload/deployment')
                             redeployProjects(APPS, 'rootscan-oprod-root', '/project/local:p-cq7nh/workload/deployment')
+                            redeploySCMAINProjects(APPS, 'rootscan-porcini', '/project/c-m-h8j7fnkg:p-8djdg/workload/deployment')
+                            redeploySCMAINProjects(APPS, 'rootscan-root', '/project/c-m-h8j7fnkg:p-8djdg/workload/deployment')
                         }
                     }
                 }
