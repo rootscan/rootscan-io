@@ -74,7 +74,7 @@ pipeline {
     environment {
         CI = true
         GIT_SHA = "${sh(returnStdout: true, script: 'echo ${GIT_COMMIT} | cut -c1-12').trim()}"
-        IMAGE_PATH = 'docker.rootscan.io/rootscan'
+        IMAGE_PATH = 'docker.b100pro.com/rootscan'
     }
     agent {
         node {
