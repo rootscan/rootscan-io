@@ -43,10 +43,12 @@ export const findAllEthereumBridgeContractAddresses = async (): Promise<void> =>
       type === 'ERC20'
         ? {
             assetId: Number(nativeId),
+            contractAddress: assetIdToERC20Address(nativeId),
           }
         : type === 'ERC721'
           ? {
               collectionId: Number(nativeId),
+              contractAddress: collectionIdToERC721Address(nativeId),
             }
           : null;
 

@@ -24,7 +24,7 @@ import {
 import { getTokenDetails } from '@/utils/tokenInformation';
 import queue from '@/workerpool';
 import { ApiPromise } from '@polkadot/api';
-import { BlockHash, Extrinsic } from '@polkadot/types/interfaces';
+import { Extrinsic } from '@polkadot/types/interfaces';
 import { assetIdToERC20Address, collectionIdToERC721Address, collectionIdToERC1155Address } from '@therootnetwork/evm';
 import { Interface, InterfaceAbi, formatUnits } from 'ethers';
 import { Models } from 'mongoose';
@@ -61,7 +61,7 @@ export default class Indexer {
 
   /** Indexes the block based on nujmber */
   async processBlock(blockNumber: bigint): Promise<boolean> {
-    const blockHash: BlockHash = await this.api.rpc.chain.getBlockHash(blockNumber);
+    const blockHash = await this.api.rpc.chain.getBlockHash(blockNumber).then(String);
     // Get the EVM Block
 
     const [block, substrateBlock, at] = await Promise.all([
@@ -88,7 +88,7 @@ export default class Indexer {
     const parseExtrinsic = async (
       extrinsicId: TExtrinsicId,
       extrinsic: Extrinsic,
-      events,
+      extrinsicEvents,
       index: number,
       retroExtrinsicId: TRetroExtrinsicId,
     ) => {
@@ -169,7 +169,7 @@ export default class Indexer {
         }
 
         /** @dev - Determine whether the extrinsic was a success or failure */
-        const parseExtrinsicSuccess = isExtrinsicSuccess(events, index, this.api);
+        const parseExtrinsicSuccess = isExtrinsicSuccess(extrinsicEvents, index, this.api);
         if (parseExtrinsicSuccess) {
           data.isSuccess = parseExtrinsicSuccess?.isSuccess;
           if (parseExtrinsicSuccess?.errorInfo && !parseExtrinsicSuccess?.isSuccess) {
@@ -177,80 +177,71 @@ export default class Indexer {
           }
         }
 
-        if (events?.length) {
+        if (extrinsicEvents?.length) {
           /** @dev Figure out the gas fee that was paid for this Extrinsic */
-          const txFeeEvent = events?.find(
-            (a) => a?.event?.method === 'TransactionFeePaid' && a?.event?.section === 'transactionPayment',
+          const txFeeEvent = extrinsicEvents?.find(
+            (a) => a.event?.method === 'TransactionFeePaid' && a.event?.section === 'transactionPayment',
           );
-          if (txFeeEvent) {
-            const { event, phase } = txFeeEvent;
-            const { data: eventData } = event;
-            if (phase?.isApplyExtrinsic && phase?.asApplyExtrinsic.eq(index)) {
-              if (eventData?.who && eventData?.actualFee && eventData?.tip) {
-                const { who, actualFee, tip } = eventData;
-                data.fee = {
-                  who: getAddress(who.toPrimitive()),
-                  actualFee: actualFee.toPrimitive(),
-                  actualFeeFormatted: Number(formatUnits(actualFee.toPrimitive(), 6)),
-                  tip: tip.toPrimitive(),
-                  tipFormatted: Number(formatUnits(actualFee.toPrimitive(), 6)),
-                };
-              }
+          if (txFeeEvent?.event) {
+            const { data: eventData } = txFeeEvent.event;
+            if (eventData?.who && eventData?.actualFee && eventData?.tip) {
+              const { who, actualFee, tip } = eventData;
+              data.fee = {
+                who: getAddress(who.toPrimitive()),
+                actualFee: actualFee.toPrimitive(),
+                actualFeeFormatted: Number(formatUnits(actualFee.toPrimitive(), 6)),
+                tip: tip.toPrimitive(),
+                tipFormatted: Number(formatUnits(actualFee.toPrimitive(), 6)),
+              };
             }
           }
 
           /** @dev - Figure out if there was a CallWithFreePreferences event */
-          const additionalTxFeeEvent = events?.find(
-            (a) => a?.event?.method === 'CallWithFeePreferences' && a?.event?.section === 'feeProxy',
+          const additionalTxFeeEvent = extrinsicEvents?.find(
+            (a) => a.event?.method === 'CallWithFeePreferences' && a.event?.section === 'feeProxy',
           );
 
           if (additionalTxFeeEvent) {
-            const { phase } = additionalTxFeeEvent;
-            if (phase?.isApplyExtrinsic && phase?.asApplyExtrinsic.eq(index)) {
-              const swapFeeEvent = events?.find((a) => {
-                const isSwap = a?.event?.method === 'Swap' && a?.event?.section === 'dex';
-                if (isSwap) {
-                  const args = extraArgsFromEvent(a.event, this.api);
-                  return Number(args?.target_Asset_amount) === Number(data?.fee?.actualFee);
-                } else {
-                  return false;
-                }
-              });
-
-              if (swapFeeEvent) {
-                const swapFeeEventArgs = extraArgsFromEvent(swapFeeEvent.event, this.api);
-                const swappedAssetId = swapFeeEventArgs.trading_path[0];
-                const amount = swapFeeEventArgs.supply_Asset_amount;
-                const tokenDetails = await getTokenDetails(getAddress(assetIdToERC20Address(swappedAssetId)));
-
-                data.proxyFee = {
-                  who: swapFeeEventArgs.trader,
-                  paymentAsset: swapFeeEventArgs.trading_path[0],
-                  swappedAmount: Number(amount),
-                  swappedAmountFormatted: Number(formatUnits(amount, tokenDetails?.decimals)),
-                };
+            const swapFeeEvent = extrinsicEvents?.find((a) => {
+              const isSwap = a?.event?.method === 'Swap' && a?.event?.section === 'dex';
+              if (isSwap) {
+                const args = extraArgsFromEvent(a.event, this.api);
+                return Number(args?.target_Asset_amount) === Number(data?.fee?.actualFee);
+              } else {
+                return false;
               }
+            });
+
+            if (swapFeeEvent) {
+              const swapFeeEventArgs = extraArgsFromEvent(swapFeeEvent.event, this.api);
+              const swappedAssetId = swapFeeEventArgs.trading_path[0];
+              const amount = swapFeeEventArgs.supply_Asset_amount;
+              const tokenDetails = await getTokenDetails(getAddress(assetIdToERC20Address(swappedAssetId)));
+
+              data.proxyFee = {
+                who: swapFeeEventArgs.trader,
+                paymentAsset: swapFeeEventArgs.trading_path[0],
+                swappedAmount: Number(amount),
+                swappedAmountFormatted: Number(formatUnits(amount, tokenDetails?.decimals)),
+              };
             }
           }
 
           /** @dev - Save the Ethereum Transaction from the event to the extrinsic to make our lives easier */
           if (method === 'transact' && section === 'ethereum') {
-            const executedEvent = events?.find(
-              (a) => a?.event?.method === 'Executed' && a?.event?.section === 'ethereum',
+            const executedEvent = extrinsicEvents?.find(
+              (a) => a.event?.method === 'Executed' && a.event?.section === 'ethereum',
             );
-            if (executedEvent) {
-              const { event, phase } = executedEvent;
-              const { data: eventData } = event;
-              if (phase?.isApplyExtrinsic && phase?.asApplyExtrinsic.eq(index)) {
-                data.args.transactionHash = eventData?.transactionHash?.toPrimitive();
-              }
+            if (executedEvent?.event) {
+              const { data: eventData } = executedEvent.event;
+              data.args.transactionHash = eventData?.transactionHash?.toPrimitive();
             }
           }
 
           /** @dev - Parse all information from the ethBridge */
           if (method === 'submitEvent' && section === 'ethBridge') {
-            const typeEvent = events?.find(
-              (a) => a?.event?.method === 'EventSend' || a?.event?.method === 'EventSubmit',
+            const typeEvent = extrinsicEvents?.find(
+              (a) => a.event?.method === 'EventSend' || a.event?.method === 'EventSubmit',
             );
             const eventText = data?.args?.event;
 
@@ -266,16 +257,12 @@ export default class Indexer {
             );
 
             if (typeEvent) {
-              const { phase } = typeEvent;
-              if (phase?.isApplyExtrinsic && phase?.asApplyExtrinsic.eq(index)) {
-                const type = typeEvent?.method === 'EventSend' ? 'outbox' : 'inbox';
-
-                data.args = {
-                  ...data.args,
-                  type,
-                  ...decodeBridgeMessage(source, message, type),
-                };
-              }
+              const type = typeEvent?.method === 'EventSend' ? 'outbox' : 'inbox';
+              data.args = {
+                ...data.args,
+                type,
+                ...decodeBridgeMessage(source, message, type),
+              };
             }
           }
         }
@@ -296,7 +283,10 @@ export default class Indexer {
         )}-${String(blockHash).substring(2, 7)}`;
 
         if (extrinsic?.method?.section !== 'timestamp' && extrinsic?.method?.method !== 'set') {
-          await parseExtrinsic(extrinsicId, extrinsic, chainEvents, index, retroExtrinsicId);
+          const extrinsicEvents = chainEvents.filter(
+            (e) => e && e.phase?.isApplyExtrinsic && e.phase?.asApplyExtrinsic?.eq(index),
+          );
+          await parseExtrinsic(extrinsicId, extrinsic, extrinsicEvents, index, retroExtrinsicId);
         }
         index++;
       }

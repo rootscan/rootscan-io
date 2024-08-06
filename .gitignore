@@ -17,6 +17,7 @@ node_modules/
 # dotenv environment variable files
 /.env
 .env.local
+.env.production.local
 # Next.js build output
 .next
 out

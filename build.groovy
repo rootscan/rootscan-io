@@ -13,6 +13,16 @@ def redeployProjects(String deploymentsString, String namespace, String link) {
     }
 }
 
+def redeploySCMAINProjects(String deploymentsString, String namespace, String link) {
+    Collection deployments = deploymentsString.split(' ')
+    deployments.each { project ->
+        // Modify the workload path according to your project naming convention
+        def workloadPath = "${link}:${namespace}:${project}"
+        echo "Deploying ${project} in ${workloadPath}"
+        rancherRedeploy alwaysPull: true, images: '', credential: 'RANCHER_SCMAIN', workload: workloadPath
+    }
+}
+
 static Boolean isMainBranch(String branchName) {
     return branchName == 'dev' || branchName == 'prod'
 }
@@ -64,7 +74,7 @@ pipeline {
     environment {
         CI = true
         GIT_SHA = "${sh(returnStdout: true, script: 'echo ${GIT_COMMIT} | cut -c1-12').trim()}"
-        IMAGE_PATH = 'docker.rootscan.io/rootscan'
+        IMAGE_PATH = 'docker.b100pro.com/rootscan'
     }
     agent {
         node {
@@ -158,10 +168,12 @@ pipeline {
                     }
                     steps {
                         script {
-                            redeployProjects(APPS, 'rootscan-odev-porcini', '/project/local:p-cq7nh/workload/deployment')
-                            redeployProjects(APPS, 'rootscan-odev-root', '/project/local:p-cq7nh/workload/deployment')
-                            redeployProjects(APPS, 'rootscan-odevnet-porcini', '/project/local:p-cq7nh/workload/deployment')
-                            redeployProjects(APPS, 'rootscan-odevnet-root', '/project/local:p-cq7nh/workload/deployment')
+//                            redeployProjects(APPS, 'rootscan-odev-porcini', '/project/local:p-cq7nh/workload/deployment')
+//                            redeployProjects(APPS, 'rootscan-odev-root', '/project/local:p-cq7nh/workload/deployment')
+//                            redeployProjects(APPS, 'rootscan-odevnet-porcini', '/project/local:p-cq7nh/workload/deployment')
+//                            redeployProjects(APPS, 'rootscan-odevnet-root', '/project/local:p-cq7nh/workload/deployment')
+                            redeploySCMAINProjects(APPS, 'rootscan-porcini', '/project/c-m-pmrf7rl9:p-hrxsr/workload/deployment')
+                            redeploySCMAINProjects(APPS, 'rootscan-root', '/project/c-m-pmrf7rl9:p-hrxsr/workload/deployment')
                         }
                     }
                 }
@@ -173,8 +185,10 @@ pipeline {
                     }
                     steps {
                         script {
-                            redeployProjects(APPS, 'rootscan-oprod-porcini', '/project/local:p-cq7nh/workload/deployment')
-                            redeployProjects(APPS, 'rootscan-oprod-root', '/project/local:p-cq7nh/workload/deployment')
+//                            redeployProjects(APPS, 'rootscan-oprod-porcini', '/project/local:p-cq7nh/workload/deployment')
+//                            redeployProjects(APPS, 'rootscan-oprod-root', '/project/local:p-cq7nh/workload/deployment')
+                            redeploySCMAINProjects(APPS, 'rootscan-porcini', '/project/c-m-h8j7fnkg:p-8djdg/workload/deployment')
+                            redeploySCMAINProjects(APPS, 'rootscan-root', '/project/c-m-h8j7fnkg:p-8djdg/workload/deployment')
                         }
                     }
                 }
