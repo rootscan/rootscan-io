@@ -4,6 +4,7 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/libs/$1',
   },
+  testPathIgnorePatterns: ['build'],
 };
 
 process.env = Object.assign(process.env, {
