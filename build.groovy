@@ -65,7 +65,7 @@ pipeline {
     environment {
         CI = true
         GIT_SHA = "${sh(returnStdout: true, script: 'echo ${GIT_COMMIT} | cut -c1-12').trim()}"
-        IMAGE_PATH = 'docker.b100pro.com/rootscan'
+        IMAGE_PATH = 'goharbor.goharbor.svc.cluster.local:80/rootscan'
     }
     agent {
         node {
