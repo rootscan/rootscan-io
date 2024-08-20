@@ -325,12 +325,16 @@ export default class Indexer {
         parsedEvent.extrinsicId = extrinsicId;
       }
 
-      // Nft.CollectionCreate
+      // nft.CollectionCreate
       if (section === 'nft' && method === 'CollectionCreate') {
         await getTokenDetails(collectionIdToERC721Address(args?.collectionUuid) as Address, true);
       }
-      // sft.CollectionCreate
-      if (section === 'sft' && method === 'CollectionCreate') {
+      // nft.BaseUriSet, nft.NameSet;
+      if (section === 'nft' && ['BaseUriSet', 'NameSet'].includes(method)) {
+        await getTokenDetails(collectionIdToERC721Address(args?.collectionId) as Address, true);
+      }
+      // sft.CollectionCreate, sft.BaseUriSet, sft.NameSet
+      if (section === 'sft' && ['CollectionCreate', 'BaseUriSet', 'NameSet'].includes(method)) {
         await getTokenDetails(collectionIdToERC1155Address(args?.collectionId) as Address, true);
       }
       // assets.ForceCreated
@@ -341,20 +345,12 @@ export default class Indexer {
       if (section === 'assets' && method === 'MetadataSet') {
         await getTokenDetails(assetIdToERC20Address(args?.assetId) as Address, true);
       }
-      // sft.BaseUriSet;
-      if (section === 'sft' && method === 'BaseUriSet') {
-        await getTokenDetails(collectionIdToERC1155Address(args?.collectionId) as Address, true);
-      }
       // sft.TokenCreate
       if (section === 'sft' && method === 'TokenCreate') {
         const collectionId = args?.tokenId?.[0];
         if (collectionId) {
           await getTokenDetails(collectionIdToERC1155Address(collectionId) as Address, true);
         }
-      }
-      // nft.BaseUriSet;
-      if (section === 'nft' && method === 'BaseUriSet') {
-        await getTokenDetails(collectionIdToERC721Address(args?.collectionId) as Address, true);
       }
 
       // @dev - Skip extrinsicSuccess of timestamp.set
