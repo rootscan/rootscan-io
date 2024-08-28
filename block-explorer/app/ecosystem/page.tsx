@@ -79,10 +79,10 @@ const resources = {
       category: 'DEX',
     },
     {
-      title: 'MARK',
-      description: 'A NFT marketplace built on top of The Root Network.',
-      logo: '/ecosystem-logos/mark-logo.png',
-      url: 'https://mark.halolab.io/',
+      title: 'Tradeverse',
+      description: 'An NFT marketplace to trade The Root Network collectibles.',
+      logo: '/ecosystem-logos/tradeverse-logo.png',
+      url: 'https://thetradeverse.xyz/',
       category: 'NFT Marketplace',
     },
     {
