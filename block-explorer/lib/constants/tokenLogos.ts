@@ -111,6 +111,7 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     //PorkJet
     "0xCcCcccCc0000d464000000000000000000000000": "token-porkjet.png",
     "0xAaAAaAAA0000d064000000000000000000000000": "nft-porkjet.gif",
+    "0xaaAaaaAA00011064000000000000000000000000": "nft-goblinator.avif",
 
     //MoM 2nd Edition
     "0xAAAAAaAA0000C864000000000000000000000000": "nft-mom2nd.webp",
@@ -121,9 +122,18 @@ const logos: { [key: number]: { [key: Address]: string } } = {
 
     //RCADE
     "0xccCcCCcc00019C64000000000000000000000000": "token-rcade.png",
+    "0xAAAaAAaA0000Ec64000000000000000000000000": "nft-rcadia-genesis.avif",
 
     //RootPunks
     "0xAAAAaAAa0000d464000000000000000000000000": "nft-rootpunks.png",
+
+    //Zerpmon
+    "0xAAaAaaaA00010864000000000000000000000000": "nft-zerpmon-equipment.avif",
+    "0xAAAaAaaa00010464000000000000000000000000": "nft-zerpmon-trainers.avif",
+    "0xAAAaAaAA00010064000000000000000000000000": "nft-zerpmon-evolved.avif",
+
+    // ASM AIFA
+    "0xaAAaaaAa0000f064000000000000000000000000": "nft-asm-aifa-arenas.avif",
 
   },
   7672: {
