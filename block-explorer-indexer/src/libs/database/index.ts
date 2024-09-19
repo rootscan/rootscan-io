@@ -7,13 +7,13 @@ dotenv.config();
 
 Mongoose.set('strictQuery', false);
 
-logger.info(`Attempting to connect to database..`);
-
 /** @dev Shutdown server if we are not able to connect to server */
 if (!process.env.MONGO_URI) {
   logger.error(`Missing MONGO_URI from ENV`);
   process.exit(1);
 }
+
+logger.info(`Attempting to connect to database: ${process.env.MONGO_URI} dbName: ${process.env.MONGO_DB_NAME}`);
 
 /** @dev Connect to MongoDB */
 Mongoose.connect(process.env.MONGO_URI, {

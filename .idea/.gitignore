@@ -10,3 +10,4 @@
 /libraries/groovy*# GitHub Copilot persisted chat sessions
 /copilot/chatSessions
 /nx-angular-config.xml
+git_toolbox_blame.xml
