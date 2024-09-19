@@ -457,14 +457,10 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
           { section: 'balances', method: 'Transfer', 'args.from': address },
           { section: 'balances', method: 'Transfer', 'args.to': address },
           { section: 'balances', method: 'Unreserved', 'args.who': address },
-          // NFT Transfer
-          { section: 'nft', method: 'Transfer', 'args.previousOwner': address },
-          { section: 'nft', method: 'Transfer', 'args.newOwner': address },
-          { section: 'nft', method: 'Mint', 'args.owner': address },
-          // SFT
-          { section: 'sft', method: 'Mint', 'args.owner': address },
-          { section: 'sft', method: 'Transfer', 'args.previousOwner': address },
-          { section: 'sft', method: 'Transfer', 'args.newOwner': address },
+          // NFT, SFT Pallet
+          { section: { $in: ['nft', 'sft'] }, method: 'Transfer', 'args.previousOwner': address },
+          { section: { $in: ['nft', 'sft'] }, method: 'Transfer', 'args.newOwner': address },
+          { section: { $in: ['nft', 'sft'] }, method: 'Mint', 'args.owner': address },
         ],
       },
       options,
@@ -707,87 +703,28 @@ app.post('/generateReport', async (req: Request, res: Response) => {
       }
     };
 
-    const timestampQueryExtrinsics = {
+    const timestamp = {
       $gte: Math.floor(getEpochTime(from) / 1000),
       $lte: Math.floor(getEpochTime(to, true) / 1000),
     };
     const extrinsics = await DB.Event.find({
       $or: [
         // Assets Pallet
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: 'assets',
-          method: 'Transferred',
-          'args.from': address,
-        },
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: 'assets',
-          method: 'Transferred',
-          'args.to': address,
-        },
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: 'assets',
-          method: 'Issued',
-          'args.source': address,
-        },
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: 'assets',
-          method: 'Issued',
-          'args.owner': address,
-        },
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: 'assets',
-          method: 'Burned',
-          'args.owner': address,
-        },
+        { timestamp, section: 'assets', method: 'Transferred', 'args.from': address },
+        { timestamp, section: 'assets', method: 'Transferred', 'args.to': address },
+        // { timestamp, section: 'assets', method: 'ApprovedTransfer', 'args.source': address },
+        { timestamp, section: 'assets', method: 'Issued', 'args.source': address },
+        { timestamp, section: 'assets', method: 'Issued', 'args.owner': address },
+        { timestamp, section: 'assets', method: 'Burned', 'args.owner': address },
         // NFT, SFT Pallet
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: { $in: ['nft', 'sft'] },
-          method: 'Transfer',
-          'args.previousOwner': address,
-        },
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: { $in: ['nft', 'sft'] },
-          method: 'Transfer',
-          'args.newOwner': address,
-        },
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: { $in: ['nft', 'sft'] },
-          method: 'Mint',
-          'args.owner': address,
-        },
+        { timestamp, section: { $in: ['nft', 'sft'] }, method: 'Transfer', 'args.previousOwner': address },
+        { timestamp, section: { $in: ['nft', 'sft'] }, method: 'Transfer', 'args.newOwner': address },
+        { timestamp, section: { $in: ['nft', 'sft'] }, method: 'Mint', 'args.owner': address },
         // Balances Pallet
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: 'balances',
-          method: 'Reserved',
-          'args.who': address,
-        },
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: 'balances',
-          method: 'Transfer',
-          'args.from': address,
-        },
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: 'balances',
-          method: 'Transfer',
-          'args.to': address,
-        },
-        {
-          timestamp: timestampQueryExtrinsics,
-          section: 'balances',
-          method: 'Unreserved',
-          'args.who': address,
-        },
+        { timestamp, section: 'balances', method: 'Reserved', 'args.who': address },
+        { timestamp, section: 'balances', method: 'Transfer', 'args.from': address },
+        { timestamp, section: 'balances', method: 'Transfer', 'args.to': address },
+        { timestamp, section: 'balances', method: 'Unreserved', 'args.who': address },
       ],
     })
       .sort('-timestamp')
@@ -799,9 +736,8 @@ app.post('/generateReport', async (req: Request, res: Response) => {
       if (extrinsicsTokenLookupCache[String(isCollectionId)][assetId]) {
         return extrinsicsTokenLookupCache[String(isCollectionId)][assetId];
       } else {
-        const query = { assetId };
-        const collectionIdQuery = { collectionId: assetId };
-        const token: IToken | null = await DB.Token.findOne(isCollectionId ? collectionIdQuery : query).lean();
+        const query = isCollectionId ? { collectionId: assetId } : { assetId, contractAddress: { $ne: null } };
+        const token: IToken | null = await DB.Token.findOne(query).lean();
         if (!token) return null;
         extrinsicsTokenLookupCache[String(isCollectionId)][assetId] = token;
         return token;
@@ -1231,7 +1167,7 @@ app.get('/ready', async (req: Request, res: Response) => {
 });
 
 const server = app.listen(3001, () => {
-  logger.info(`🚀`);
+  logger.info(`🚀 Server ready at http://localhost:3001`);
 });
 
 Mongoose.connection.on('error', () => {
