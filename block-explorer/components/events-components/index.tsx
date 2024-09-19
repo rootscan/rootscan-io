@@ -202,48 +202,48 @@ export const components = {
   // "nftPeg.Erc721Mint": "",
   // "nftPeg.Erc721Withdraw": "",
   // "nftPeg.Erc721Deposit": "",
-  'assets.Transferred': ({ args, token }) => (
+  'assets.Transferred': ({ args, token, tokenNative }) => (
     <div className="flex flex-wrap items-center gap-2">
       Transfer of
-      <TokenDisplay token={token} amount={args?.amount} />
+      <TokenDisplay token={tokenNative ?? token} amount={args?.amount} />
       from
       <AddressDisplay address={args?.from} useShortenedAddress />{' '}
       <ChevronRight className="size-4 text-muted-foreground" />{' '}
       <AddressDisplay address={args?.to} useShortenedAddress />
     </div>
   ),
-  'assets.Issued': ({ args, token }) => (
+  'assets.Issued': ({ args, token, tokenNative }) => (
     <div className="flex flex-wrap gap-2">
-      Issued <TokenDisplay token={token} amount={args?.totalSupply} /> to
+      Issued <TokenDisplay token={tokenNative ?? token} amount={args?.totalSupply} /> to
       <AddressDisplay address={args?.owner} useShortenedAddress />
     </div>
   ),
-  'assets.ApprovedTransfer': ({ args, token }) => (
+  'assets.ApprovedTransfer': ({ args, token, tokenNative }) => (
     <div className="flex flex-wrap gap-2">
       Delegate <AddressDisplay address={args?.delegate} useShortenedAddress /> was approved to spend{' '}
-      <TokenDisplay token={token} amount={args?.amount} />
+      <TokenDisplay token={tokenNative ?? token} amount={args?.amount} />
       from
       <AddressDisplay address={args?.source} useShortenedAddress />
     </div>
   ),
-  'assets.ForceCreated': ({ args, token }) => (
+  'assets.ForceCreated': ({ args, token, tokenNative }) => (
     <div className="flex flex-wrap gap-2">
-      <TokenDisplay token={token} /> was force created by
+      <TokenDisplay token={tokenNative ?? token} /> was force created by
       <AddressDisplay address={args?.owner} useShortenedAddress />
     </div>
   ),
-  'assets.MetadataSet': ({ args, token }) => (
+  'assets.MetadataSet': ({ args, token, tokenNative }) => (
     <div className="flex flex-col flex-wrap gap-2">
-      Metadata for <TokenDisplay token={token} amount={args?.amount} /> was updated to:
+      Metadata for <TokenDisplay token={tokenNative ?? token} amount={args?.amount} /> was updated to:
       <span>Name: {args?.name}</span>
       <span>Symbol: {args?.symbol}</span>
       <span>Decimals: {args?.decimals}</span>
       <span>Is Frozen: {args?.isFrozen ? 'Yes' : 'No'}</span>
     </div>
   ),
-  'assets.Burned': ({ args, token }) => (
+  'assets.Burned': ({ args, token, tokenNative }) => (
     <div className="flex flex-wrap gap-2">
-      <TokenDisplay token={token} amount={args?.balance} /> burned from
+      <TokenDisplay token={tokenNative ?? token} amount={args?.balance} /> burned from
       <AddressDisplay address={args?.owner} useShortenedAddress />
     </div>
   ),

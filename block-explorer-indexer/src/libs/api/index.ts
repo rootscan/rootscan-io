@@ -144,7 +144,7 @@ app.post('/getExtrinsic', async (req: Request, res: Response) => {
       .lean();
 
     const events = await DB.Event.find({ extrinsicId: String(data?.extrinsicId) })
-      .populate('token swapFromToken swapToToken nftCollection')
+      .populate('token swapFromToken swapToToken nftCollection tokenNative')
       .lean();
 
     if (data && events) {
@@ -166,8 +166,7 @@ app.post('/getToken', async (req: Request, res: Response) => {
 
     if (data) {
       if (data?.type === 'ERC20') {
-        const holders = await DB.Balance.find({ contractAddress }).countDocuments();
-        data.holders = holders;
+        data.holders = await DB.Balance.find({ contractAddress }).countDocuments();
       } else if (data?.type === 'ERC721' || data?.type === 'ERC1155') {
         const holders = await DB.NftOwner.find({ contractAddress }).distinct('owner');
         data.holders = holders?.length;
@@ -470,7 +469,7 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
       },
       options,
     );
-
+    logger.info('getNativeTransfersForAddress: data', data);
     return res.json(data);
   } catch (e) {
     processError(e, res);
