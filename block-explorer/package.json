@@ -55,7 +55,7 @@
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "2.17.10",
+    "viem": "2.21.0",
     "wagmi": "^1.4.13"
   },
   "devDependencies": {
