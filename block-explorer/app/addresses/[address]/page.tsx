@@ -177,9 +177,9 @@ const AssetsIssued = ({ tx, address }) => {
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>
-        <TokenDisplay token={tx?.tokenNative} amount={tx?.args?.totalSupply} hideCopyButton />
+        <TokenDisplay token={tx?.tokenNative} amount={tx?.args?.totalSupply || tx?.args?.amount} hideCopyButton />
       </TableCell>
-      <TableCell className="max-w-[150px] truncate">-</TableCell>
+      <TableCell className="max-w-[150px] truncate"></TableCell>
       <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
