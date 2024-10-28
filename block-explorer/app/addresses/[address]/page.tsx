@@ -166,9 +166,13 @@ const AssetsApprovedTransfer = ({ tx, address }) => {
 const AssetsIssued = ({ tx, address }) => {
   return (
     <TableRow>
-      <TableCell className="max-w-[150px] truncate">-</TableCell>
+      <TableCell className="max-w-[150px] truncate">
+        <Link href={`/extrinsics/${tx.extrinsicId}`}>
+          <span className="truncate">{tx.extrinsicId}</span>
+        </Link>
+      </TableCell>
       <TableCell>
-        <ExtrinsicMethod tx={tx} hideExtrinsic />
+        <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
         <InOutBadge address={address} from={'-'} to={tx?.args?.owner} />
