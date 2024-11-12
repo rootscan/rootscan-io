@@ -766,7 +766,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
 
         currency = tokenLookup.name;
 
-        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+        amount = formatUnits(BigInt(args.amount || 0), tokenLookup.decimals);
       }
 
       if (extrinsic.method === 'Issued') {
@@ -775,7 +775,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
         const tokenLookup = await findAndCacheToken(args.assetId);
         if (!tokenLookup || !tokenLookup?.decimals) continue;
         currency = tokenLookup.name;
-        amount = formatUnits(BigInt(args.totalSupply), tokenLookup.decimals);
+        amount = formatUnits(BigInt(args.totalSupply || 0), tokenLookup.decimals);
       }
 
       if (extrinsic.method === 'Burned') {
@@ -784,7 +784,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
         const tokenLookup = await findAndCacheToken(args.assetId);
         if (!tokenLookup || !tokenLookup?.decimals) continue;
         currency = tokenLookup.name;
-        amount = formatUnits(BigInt(args.balance), tokenLookup.decimals);
+        amount = formatUnits(BigInt(args.balance || 0), tokenLookup.decimals);
       }
 
       if (extrinsic.method === 'Reserved') {
@@ -793,7 +793,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
         const tokenLookup = await findAndCacheToken(1);
         if (!tokenLookup || !tokenLookup?.decimals) continue;
         currency = tokenLookup.name;
-        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+        amount = formatUnits(BigInt(args.amount || 0), tokenLookup.decimals);
       }
 
       if (extrinsic.method === 'Unreserved') {
@@ -802,7 +802,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
         const tokenLookup = await findAndCacheToken(1);
         if (!tokenLookup || !tokenLookup?.decimals) continue;
         currency = tokenLookup.name;
-        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+        amount = formatUnits(BigInt(args.amount || 0), tokenLookup.decimals);
       }
 
       if (extrinsic.section === 'balances' && extrinsic.method === 'Transfer') {
@@ -818,7 +818,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
 
         currency = tokenLookup.name;
 
-        amount = formatUnits(BigInt(args.amount), tokenLookup.decimals);
+        amount = formatUnits(BigInt(args.amount || 0), tokenLookup.decimals);
       }
 
       if (['nft', 'sft'].includes(extrinsic.section) && extrinsic.method === 'Transfer') {
