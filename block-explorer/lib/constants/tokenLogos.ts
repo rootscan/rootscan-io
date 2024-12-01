@@ -135,13 +135,18 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     // ASM AIFA
     "0xaAAaaaAa0000f064000000000000000000000000": "nft-asm-aifa-arenas.avif",
 
+    // The Third Kingdom
+    "0xccCCcccC0001f464000000000000000000000000": "token-stone.png",
+    "0xCCCCcCCC0001F864000000000000000000000000": "token-alloy.png",
+    "0xCcccccCC0001Fc64000000000000000000000000": "token-gold.png",
+    "0xcCCCCcCC00020064000000000000000000000000": "token-ooze.png",
+    "0xCCCCCcCc00020464000000000000000000000000": "token-gems.png",
   },
   7672: {
     // Root
     "0xcCcCCccC00000001000000000000000000000000": "token-root.png",
     // XRP
     "0xCCCCcCCc00000002000000000000000000000000": "token-xrp.png",
-
   },
 }
 
