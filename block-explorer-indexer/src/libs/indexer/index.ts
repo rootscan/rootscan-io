@@ -345,6 +345,10 @@ export default class Indexer {
       if (section === 'assets' && method === 'NewAccount') {
         await getTokenDetails(args?.account as Address, true);
       }
+      // parse totalSupply from assets.Issued event
+      if (section === 'assets' && method === 'Issued' && args?.assetId > 0) {
+        await getTokenDetails(assetIdToERC20Address(args?.assetId) as Address, true);
+      }
       // assets.MetadataSet;
       if (section === 'assets' && method === 'MetadataSet') {
         await getTokenDetails(assetIdToERC20Address(args?.assetId) as Address, true);
