@@ -341,6 +341,10 @@ export default class Indexer {
       if (section === 'assets' && method === 'ForceCreated') {
         await getTokenDetails(assetIdToERC20Address(args?.assetId) as Address, true);
       }
+      // assets.NewAccount
+      if (section === 'assets' && method === 'NewAccount') {
+        await getTokenDetails(args?.account as Address, true);
+      }
       // assets.MetadataSet;
       if (section === 'assets' && method === 'MetadataSet') {
         await getTokenDetails(assetIdToERC20Address(args?.assetId) as Address, true);

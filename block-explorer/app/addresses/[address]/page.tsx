@@ -17,7 +17,7 @@ import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData } from '@/lib/utils';
 import { ChevronRight, Flame } from 'lucide-react';
 import Link from 'next/link';
-import { getAddress } from 'viem';
+import { getAddress, zeroAddress } from 'viem';
 
 const getData = async ({ params, searchParams }) => {
   const data = await request(ApiCommand.getNativeTransfersForAddress, {
@@ -183,7 +183,9 @@ const AssetsIssued = ({ tx, address }) => {
       <TableCell>
         <TokenDisplay token={tx?.tokenNative} amount={tx?.args?.totalSupply || tx?.args?.amount} hideCopyButton />
       </TableCell>
-      <TableCell className="max-w-[150px] truncate"></TableCell>
+      <TableCell className="max-w-[150px] truncate">
+        <AddressDisplay address={zeroAddress} useShortenedAddress />
+      </TableCell>
       <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>

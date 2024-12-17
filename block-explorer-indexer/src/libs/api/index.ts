@@ -442,26 +442,34 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
       lean: true,
     };
 
+    const hasContract = await DB.Token.findOne({ contractAddress: req.body.address }).lean();
+
+    const or: Mongoose.FilterQuery<IEvent>[] = [
+      // Assets Pallet
+      { section: 'assets', method: 'Transferred', 'args.from': address },
+      { section: 'assets', method: 'Transferred', 'args.to': address },
+      { section: 'assets', method: 'ApprovedTransfer', 'args.source': address },
+      { section: 'assets', method: 'Issued', 'args.source': address },
+      { section: 'assets', method: 'Issued', 'args.owner': address },
+      { section: 'assets', method: 'Burned', 'args.owner': address },
+      // Balances Pallet
+      { section: 'balances', method: 'Reserved', 'args.who': address },
+      { section: 'balances', method: 'Transfer', 'args.from': address },
+      { section: 'balances', method: 'Transfer', 'args.to': address },
+      { section: 'balances', method: 'Unreserved', 'args.who': address },
+      // NFT, SFT Pallet
+      { section: { $in: ['nft', 'sft'] }, method: 'Transfer', 'args.previousOwner': address },
+      { section: { $in: ['nft', 'sft'] }, method: 'Transfer', 'args.newOwner': address },
+      { section: { $in: ['nft', 'sft'] }, method: 'Mint', 'args.owner': address },
+    ];
+
+    if (hasContract?.assetId || 0 > 0) {
+      or.push({ section: 'assets', method: 'Issued', 'args.assetId': hasContract?.assetId });
+    }
+
     const data = await DB.Event.paginate(
       {
-        $or: [
-          // Assets Pallet
-          { section: 'assets', method: 'Transferred', 'args.from': address },
-          { section: 'assets', method: 'Transferred', 'args.to': address },
-          { section: 'assets', method: 'ApprovedTransfer', 'args.source': address },
-          { section: 'assets', method: 'Issued', 'args.source': address },
-          { section: 'assets', method: 'Issued', 'args.owner': address },
-          { section: 'assets', method: 'Burned', 'args.owner': address },
-          // Balances Pallet
-          { section: 'balances', method: 'Reserved', 'args.who': address },
-          { section: 'balances', method: 'Transfer', 'args.from': address },
-          { section: 'balances', method: 'Transfer', 'args.to': address },
-          { section: 'balances', method: 'Unreserved', 'args.who': address },
-          // NFT, SFT Pallet
-          { section: { $in: ['nft', 'sft'] }, method: 'Transfer', 'args.previousOwner': address },
-          { section: { $in: ['nft', 'sft'] }, method: 'Transfer', 'args.newOwner': address },
-          { section: { $in: ['nft', 'sft'] }, method: 'Mint', 'args.owner': address },
-        ],
+        $or: or,
       },
       options,
     );
