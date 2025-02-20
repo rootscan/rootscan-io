@@ -5,7 +5,10 @@ const skipDomainsRegex = new RegExp(skipDomains.map((domain) => `(${domain})`).j
 const containsIpWithPortRegex = /(https?:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?\/?[\w\\/.-]*\b/;
 
 export function prepareTokenMetadataUrl(link: string | undefined): string | undefined {
-  if (!link) {
+  if (Array.isArray(link)) {
+    link = link[0];
+  }
+  if (!link || typeof link !== 'string') {
     return;
   }
   link = link.trim();
