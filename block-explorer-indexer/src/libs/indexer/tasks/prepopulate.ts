@@ -42,12 +42,13 @@ export const findAllEthereumBridgeContractAddresses = async (): Promise<void> =>
     const query =
       type === 'ERC20'
         ? {
-            assetId: Number(nativeId),
+            // contractAddress is unique. commented, to avoid duplicate error
+            // assetId: Number(nativeId),
             contractAddress: assetIdToERC20Address(nativeId),
           }
         : type === 'ERC721'
           ? {
-              collectionId: Number(nativeId),
+              // collectionId: Number(nativeId),
               contractAddress: collectionIdToERC721Address(nativeId),
             }
           : null;
@@ -68,6 +69,7 @@ export const findAllEthereumBridgeContractAddresses = async (): Promise<void> =>
     });
   }
 
+  console.dir(ops, { depth: 10 });
   await DB.Token.bulkWrite(ops);
 };
 
