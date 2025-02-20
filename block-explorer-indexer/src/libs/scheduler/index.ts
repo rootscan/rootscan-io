@@ -72,16 +72,16 @@ const scheduler = async () => {
     },
   );
 
-  await queue.add(
-    'PROCESS_NFT_OWNERS',
-    {},
-    {
-      jobId: 'PROCESS_NFT_OWNERS',
-      repeat: {
-        every: 60_000 * 60, // Every 60 mins
-      },
-    },
-  );
+  // await queue.add(
+  //   'PROCESS_NFT_OWNERS',
+  //   {},
+  //   {
+  //     jobId: 'PROCESS_NFT_OWNERS',
+  //     repeat: {
+  //       every: 60_000 * 60, // Every 60 mins
+  //     },
+  //   },
+  // );
 
   if (isRootChain(Number(process?.env?.CHAIN_ID))) {
     await queue.add(
@@ -149,7 +149,7 @@ const scheduler = async () => {
     emitOnBegin: true,
     onBlockNumber: async (blockNumber) => {
       logger.info(`Chain is on block ${Number(blockNumber)}`);
-      blocksQueue.add(Number(blockNumber));
+      setTimeout(() => blocksQueue.add(Number(blockNumber)), 1000);
     },
   });
   await blocksQueue.run();

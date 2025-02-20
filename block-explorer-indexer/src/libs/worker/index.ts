@@ -54,9 +54,9 @@ const start = async () => {
       case 'FIND_ETH_BRIDGE_CONTRACT_ADDRESSES':
         await findAllEthereumBridgeContractAddresses();
         break;
-      case 'PROCESS_NFT_OWNERS':
-        await new NftOwnersIndexer(DB, evmApi, job).processMissed();
-        break;
+      // case 'PROCESS_NFT_OWNERS':
+      //   await new NftOwnersIndexer(DB, evmApi, job).processMissed();
+      //   break;
       case 'PROCESS_NFT_OWNERS_METADATA':
         await new NftOwnersIndexer(DB, evmApi, job).processNftOwnersMetadata();
         break;
