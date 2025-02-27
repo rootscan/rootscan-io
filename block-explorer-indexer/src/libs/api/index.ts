@@ -735,6 +735,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
         { timestamp, section: 'balances', method: 'Unreserved', 'args.who': address },
       ],
     })
+
       .sort('-timestamp')
       .lean();
 
@@ -783,7 +784,7 @@ app.post('/generateReport', async (req: Request, res: Response) => {
         const tokenLookup = await findAndCacheToken(args.assetId);
         if (!tokenLookup || !tokenLookup?.decimals) continue;
         currency = tokenLookup.name;
-        amount = formatUnits(BigInt(args.totalSupply || 0), tokenLookup.decimals);
+        amount = formatUnits(BigInt(args.totalSupply || args.amount || 0), tokenLookup.decimals);
       }
 
       if (extrinsic.method === 'Burned') {
