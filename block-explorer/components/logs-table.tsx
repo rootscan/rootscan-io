@@ -41,7 +41,7 @@ export default function LogsTable({ logs }: { logs: Log[] }) {
                 <div className="flex flex-col gap-1">
                   {Object.entries(log.args).map(([key, value]) => (
                     <div key={key}>
-                      {key}: {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                      {key}: {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
                     </div>
                   ))}
                 </div>
