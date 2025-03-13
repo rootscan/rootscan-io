@@ -5,19 +5,21 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import Link from 'next/link';
-import { Address } from 'viem';
+import { getAddress } from 'viem';
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: { address: Address };
-  searchParams: { page?: number };
-}) {
+export default async function Page({ params, searchParams }: PageProps) {
+  const paramsObj = await params;
+  const searchParamsObj = await searchParams;
+  if (!paramsObj.address) {
+    return null;
+  }
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+
   const data = await request(ApiCommand.getNftCollectionsForAddress, {
-    address: params.address,
-    page: searchParams?.page || 1,
+    address: getAddress(paramsObj.address),
+    page,
   });
 
   const tokens = data?.docs;
@@ -44,7 +46,7 @@ export default async function Page({
                 <TableCell>{item.count}</TableCell>
                 <TableCell>
                   <div className="my-auto flex justify-end">
-                    <Link href={`/addresses/${params.address}/nft-inventory/${item.contractAddress}`}>
+                    <Link href={`/addresses/${paramsObj.address}/nft-inventory/${item.contractAddress}`}>
                       <Button size="sm" variant="outline">
                         {item.tokenLookUp.type === 'ERC1155' ? 'View SFTs' : 'View NFTs'}
                       </Button>

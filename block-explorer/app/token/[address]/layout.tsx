@@ -11,9 +11,15 @@ import { getAddress } from 'viem';
 
 import Menu from './components/menu';
 
-export default async function Layout({ params, children }) {
+interface LayoutProps {
+  children: React.ReactNode;
+  params: Promise<{ address: string }>;
+}
+
+export default async function Layout({ params, children }: LayoutProps) {
+  const paramsObj = await params;
   const data = await request(ApiCommand.getToken, {
-    contractAddress: getAddress(params.address),
+    contractAddress: getAddress(paramsObj.address),
   });
 
   return (

@@ -15,21 +15,37 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import { ChevronRight, Flame } from 'lucide-react';
 import Link from 'next/link';
 import { getAddress, zeroAddress } from 'viem';
 
-const getData = async ({ params, searchParams }) => {
+const getData = async ({ params, searchParams }: PageProps) => {
+  const paramsObj = await params;
+  const searchParamsObj = await searchParams;
+  if (!paramsObj.address) {
+    throw new Error('Address is required');
+  }
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
   const data = await request(ApiCommand.getNativeTransfersForAddress, {
-    address: getAddress(params.address),
-    page: searchParams.page,
+    address: getAddress(paramsObj.address),
+    page,
   });
   return data;
 };
-export default async function Page({ params, searchParams }) {
-  const data = await getData({ params, searchParams });
+
+export default async function Page({ params, searchParams }: PageProps) {
+  const paramsObj = await params;
+  const searchParamsObj = await searchParams;
+  if (!paramsObj.address) {
+    throw new Error('Address is required');
+  }
+  const data = await getData({
+    params: Promise.resolve(paramsObj),
+    searchParams: Promise.resolve(searchParamsObj || {}),
+  });
   const transactions = data?.docs;
-  const address = getAddress(params.address);
+  const address = getAddress(paramsObj.address);
 
   return (
     <div className="flex flex-col gap-4">
@@ -132,6 +148,7 @@ const AssetsTransferred = ({ tx, address }) => {
     </TableRow>
   );
 };
+
 const AssetsApprovedTransfer = ({ tx, address }) => {
   return (
     <TableRow>
@@ -163,6 +180,7 @@ const AssetsApprovedTransfer = ({ tx, address }) => {
     </TableRow>
   );
 };
+
 const AssetsIssued = ({ tx, address }) => {
   return (
     <TableRow>
@@ -239,7 +257,7 @@ const BalancesReserved = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge address={address} from={tx?.args?.who} to={tx?.args?.who} />
+        <InOutBadge address={address} from={address} to="" />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
@@ -254,11 +272,14 @@ const BalancesReserved = ({ tx, address }) => {
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.args?.who} useShortenedAddress />
+        <Tooltip text="Reserved">
+          <Badge variant="warning">Reserved</Badge>
+        </Tooltip>
       </TableCell>
     </TableRow>
   );
 };
+
 const BalancesTransfer = ({ tx, address }) => {
   return (
     <TableRow>
@@ -291,16 +312,8 @@ const BalancesTransfer = ({ tx, address }) => {
     </TableRow>
   );
 };
+
 const BalancesUnreserved = ({ tx, address }) => {
-  // ;<div className="flex flex-wrap items-center gap-2">
-  //   {args?.amount ? (
-  //     <TokenDisplay token={ROOT_TOKEN} amount={args?.amount} />
-  //   ) : (
-  //     <TokenDisplay token={ROOT_TOKEN} amount={0} />
-  //   )}
-  //   moved from reserved to free on
-  //   <AddressDisplay address={args?.who} useShortenedAddress />
-  // </div>
   return (
     <TableRow>
       <TableCell className="max-w-[150px] truncate">
@@ -312,19 +325,19 @@ const BalancesUnreserved = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge address={address} from={'0x000000000'} to={address} />
+        <InOutBadge address={address} from={''} to={address} />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>
-        {tx?.args?.amount ? (
-          <TokenDisplay token={ROOT_TOKEN} amount={tx?.args?.amount} />
-        ) : (
-          <TokenDisplay token={ROOT_TOKEN} amount={0} />
-        )}
+        <TokenDisplay token={ROOT_TOKEN} amount={tx?.args?.amount} hideCopyButton />
       </TableCell>
-      <TableCell className="max-w-[150px] truncate">-</TableCell>
+      <TableCell className="max-w-[150px] truncate">
+        <Tooltip text="Unreserved">
+          <Badge variant="success">Unreserved</Badge>
+        </Tooltip>
+      </TableCell>
       <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
@@ -347,29 +360,26 @@ const NFTTransfer = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge address={address} from={tx?.args?.previousOwner} to={tx?.args?.newOwner} />
+        <InOutBadge address={address} from={tx?.args?.from} to={tx?.args?.to} />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>
-        <div className="flex flex-col gap-2">
-          {tx?.args?.serialNumbers.map((tokenId, _) => (
-            <div className="flex items-center gap-2" key={_}>
-              <NftThumbnail contractAddress={tx?.nftCollection?.contractAddress} tokenId={tokenId} />
-              {tokenId} <TokenDisplay token={tx?.nftCollection} hideCopyButton />
-            </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {tx?.args?.tokenIds?.map((tokenId, _) => (
+            <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
           ))}
         </div>
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.args?.previousOwner} useShortenedAddress />
+        <AddressDisplay address={tx?.args?.from} useShortenedAddress />
       </TableCell>
       <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.args?.newOwner} useShortenedAddress />
+        <AddressDisplay address={tx?.args?.to} useShortenedAddress />
       </TableCell>
     </TableRow>
   );
@@ -387,34 +397,26 @@ const SFTTransfer = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge address={address} from={tx?.args?.previousOwner} to={tx?.args?.newOwner} />
+        <InOutBadge address={address} from={tx?.args?.from} to={tx?.args?.to} />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>
-        <div className="flex flex-col gap-2">
-          {tx?.args?.serialNumbers.map((tokenId, _) => (
-            <div className="flex items-center gap-2" key={`${_}_${tx?.nftCollection?.contractAddress}_${tokenId}`}>
-              <NftThumbnail contractAddress={tx?.nftCollection?.contractAddress} tokenId={tokenId} />
-              <div className="flex items-center gap-2">
-                <span>{tokenId}</span>
-                <Badge>x{tx?.args?.balances}</Badge>
-              </div>
-
-              <TokenDisplay token={tx?.nftCollection} hideCopyButton />
-            </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {tx?.args?.tokenIds?.map((tokenId, _) => (
+            <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
           ))}
         </div>
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.args?.previousOwner} useShortenedAddress />
+        <AddressDisplay address={tx?.args?.from} useShortenedAddress />
       </TableCell>
       <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.args?.newOwner} useShortenedAddress />
+        <AddressDisplay address={tx?.args?.to} useShortenedAddress />
       </TableCell>
     </TableRow>
   );
@@ -432,27 +434,21 @@ const SFTMint = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge address={address} from={'0x0000000000000000000000'} to={tx?.args?.owner} />
+        <InOutBadge address={address} from={'-'} to={tx?.args?.owner} />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
-      <TableCell className="max-w-[100px]">
-        <div className="flex flex-col gap-2">
-          {tx?.args?.serialNumbers.map((tokenId, _) => (
-            <div className="flex items-center gap-2" key={`${_}_${tx?.nftCollection?.contractAddress}_${tokenId}`}>
-              <NftThumbnail contractAddress={tx?.nftCollection?.contractAddress} tokenId={tokenId} />
-              <div className="flex items-center gap-2">
-                <span>{tokenId}</span>
-                <Badge>x{tx?.args?.balances}</Badge>
-              </div>
-
-              <TokenDisplay token={tx?.nftCollection} hideCopyButton />
-            </div>
+      <TableCell>
+        <div className="flex flex-wrap items-center gap-2">
+          {tx?.args?.tokenIds?.map((tokenId, _) => (
+            <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
           ))}
         </div>
       </TableCell>
-      <TableCell className="max-w-[150px] truncate">-</TableCell>
+      <TableCell className="max-w-[150px] truncate">
+        <AddressDisplay address={zeroAddress} useShortenedAddress />
+      </TableCell>
       <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>

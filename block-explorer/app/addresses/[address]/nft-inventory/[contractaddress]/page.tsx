@@ -9,21 +9,23 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ApiCommand, request } from '@/lib/api';
 import { getShortenedHash } from '@/lib/constants/knownAddresses.ts';
 import { getPaginationData } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
-import { Address } from 'viem';
+import { getAddress } from 'viem';
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: { contractaddress: Address; address: Address };
-  searchParams: { page?: number };
-}) {
+export default async function Page({ params, searchParams }: PageProps) {
+  const paramsObj = await params;
+  const searchParamsObj = await searchParams;
+
+  if (!paramsObj.address || !paramsObj.contractaddress) {
+    return null;
+  }
+
   const data = await request(ApiCommand.getNftsForAddress, {
-    address: params.address,
-    contractAddress: params?.contractaddress,
-    page: searchParams?.page || 1,
+    address: getAddress(paramsObj.address),
+    contractAddress: getAddress(paramsObj.contractaddress),
+    page: searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1,
     limit: 24,
   });
 
@@ -33,7 +35,7 @@ export default async function Page({
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <Tooltip text="Back to collection" asChild>
-          <Link href={`/addresses/${params.address}/nft-inventory`}>
+          <Link href={`/addresses/${paramsObj.address}/nft-inventory`}>
             <Button size="pagination" variant="outline">
               <ChevronLeft />
             </Button>

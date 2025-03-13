@@ -3,17 +3,17 @@ import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 
-export default async function Page({
-  searchParams,
-  params,
-}: {
-  searchParams: { page: number };
-  params: { blocknumber: number };
-}) {
+export default async function Page({ params, searchParams }: PageProps) {
+  const paramsObj = await params;
+  const searchParamsObj = await searchParams;
+  if (!paramsObj.blocknumber) {
+    return null;
+  }
   const data = await request(ApiCommand.getEvents, {
-    page: searchParams?.page ? searchParams?.page : 1,
-    query: { blockNumber: params.blocknumber },
+    page: searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1,
+    query: { blockNumber: paramsObj.blocknumber },
   });
 
   const events = data.docs;

@@ -8,20 +8,20 @@ import Link from 'next/link';
 
 import Menu from './components/menu';
 
-export async function generateMetadata({ params }) {
+interface LayoutProps {
+  children: React.ReactNode;
+  params: Promise<{ blocknumber: number }>;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ blocknumber: number }> }) {
+  const paramsObj = await params;
   return {
-    title: `Block #${params.blocknumber}`,
+    title: `Block #${paramsObj.blocknumber}`,
   };
 }
 
-export default async function Layout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: { blocknumber: number };
-}) {
-  const { blocknumber } = params;
+export default async function Layout({ children, params }: LayoutProps) {
+  const { blocknumber } = await params;
 
   return (
     <Container>

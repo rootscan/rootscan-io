@@ -3,18 +3,18 @@ import PaginationSuspense from '@/components/pagination-suspense';
 import TransactionsTable from '@/components/transactions-table';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
-import { PaginationParams } from '@/types/api-types';
+import { PageProps } from '@/types/page';
 
-export default async function Page({
-  searchParams,
-  params,
-}: {
-  searchParams: PaginationParams;
-  params: { blocknumber: number };
-}) {
+export default async function Page({ params, searchParams }: PageProps) {
+  const paramsObj = await params;
+  const searchParamsObj = await searchParams;
+  if (!paramsObj.blocknumber) {
+    return null;
+  }
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
   const data = await request(ApiCommand.getTransactionsInBlock, {
-    page: searchParams?.page || 1,
-    block: params.blocknumber,
+    page,
+    block: paramsObj.blocknumber,
   });
 
   const transactions = data?.docs;

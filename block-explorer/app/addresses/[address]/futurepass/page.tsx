@@ -5,13 +5,21 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import Link from 'next/link';
 import { Address, getAddress } from 'viem';
 
-export default async function Page({ params, searchParams }) {
+export default async function Page({ params, searchParams }: PageProps) {
+  const paramsObj = await params;
+  const searchParamsObj = await searchParams;
+  if (!paramsObj.address) {
+    return null;
+  }
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+
   const data = await request(ApiCommand.getFuturepasses, {
-    address: getAddress(params.address),
-    page: searchParams.page,
+    address: getAddress(paramsObj.address),
+    page,
   });
 
   const futurepasses = data?.docs;

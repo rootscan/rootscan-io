@@ -5,10 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CardDetail from '@/components/ui/card-detail';
 import { ApiCommand, request } from '@/lib/api';
+import { PageProps } from '@/types/page';
 import Link from 'next/link';
 
-export default async function Page({ params }: { params: { blocknumber: number } }) {
-  const { blocknumber } = params;
+export default async function Page({ params }: PageProps) {
+  const { blocknumber } = await params;
+  if (!blocknumber) {
+    throw new Error('Block number is required');
+  }
   if (Number(blocknumber) < 0) {
     throw new Error('There is no block lower than 0.');
   }

@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ApiCommand, request } from '@/lib/api';
 import { getAddressName } from '@/lib/constants/knownAddresses';
 import { getPaginationData } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import { SortDesc } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -19,9 +20,11 @@ export const metadata: Metadata = {
   title: 'Blocks',
 };
 
-export default async function Page({ searchParams }: { searchParams: { page: number } }) {
+export default async function Page({ searchParams }: PageProps) {
+  const searchParamsObj = await searchParams;
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
   const data = await request(ApiCommand.getBlocks, {
-    page: searchParams?.page ? searchParams?.page : 1,
+    page,
     limit: 24,
   });
   const blocks = data.docs;

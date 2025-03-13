@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN, XRP_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import { SortDesc } from 'lucide-react';
 import { Metadata } from 'next';
 
@@ -15,8 +16,10 @@ export const metadata: Metadata = {
   title: 'Addresses',
 };
 
-export default async function Page({ searchParams }: { searchParams: { page?: number } }) {
-  const data = await request(ApiCommand.getAddresses, { page: searchParams?.page || 1 });
+export default async function Page({ searchParams }: PageProps) {
+  const searchParamsObj = await searchParams;
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+  const data = await request(ApiCommand.getAddresses, { page });
   const addresses = data?.docs;
   return (
     <Container>

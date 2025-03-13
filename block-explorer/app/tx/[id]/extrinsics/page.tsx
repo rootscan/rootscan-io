@@ -1,30 +1,32 @@
-import BridgeTransactions from '@/components/bridge-transactions';
+import ExtrinsicsTable from '@/components/extrinsics-table';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
-import { getAddress } from 'viem';
-
-interface PageProps {
-  params: Promise<{ address: string }>;
-  searchParams: Promise<{ page?: string }>;
-}
+import { PageProps } from '@/types/page';
+import { Hash } from 'viem';
 
 export default async function Page({ params, searchParams }: PageProps) {
   const paramsObj = await params;
   const searchParamsObj = await searchParams;
+  if (!paramsObj.id) {
+    return null;
+  }
   const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
 
-  const data = await request(ApiCommand.getBridgeTransactions, {
+  const data = await request(ApiCommand.getExtrinsicsForAddress, {
+    address: paramsObj.id as Hash,
     page,
-    address: getAddress(paramsObj.address),
   });
-  const transactions = data?.docs;
+
+  const extrinsics = data?.docs;
+
+  if (!extrinsics?.length) return <NoData />;
 
   return (
     <div className="flex flex-col gap-4">
       <PaginationSuspense pagination={getPaginationData(data)} />
-      {!transactions?.length ? <NoData /> : <BridgeTransactions transactions={transactions} />}
+      <ExtrinsicsTable extrinsics={extrinsics} />
     </div>
   );
 }

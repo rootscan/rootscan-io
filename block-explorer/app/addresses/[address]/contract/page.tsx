@@ -2,16 +2,21 @@
 import CardDetail from '@/components/ui/card-detail';
 import { getContractVerification } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import { AlertTriangle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Address } from 'viem';
+import { getAddress } from 'viem';
 
 import CodeEditor from './components/code-editor';
 
-const getData = async ({ params }: { params: { address: Address } }) => {
+const getData = async ({ params }: PageProps) => {
+  const paramsObj = await params;
+  if (!paramsObj.address) {
+    return null;
+  }
   const fetchData = await getContractVerification({
-    contractAddress: params.address,
+    contractAddress: getAddress(paramsObj.address),
   }).catch(() => {
     return null;
   });
@@ -39,7 +44,7 @@ const getData = async ({ params }: { params: { address: Address } }) => {
   return parsedData;
 };
 
-export default async function Page({ params }: { params: { address: Address } }) {
+export default async function Page({ params }: PageProps) {
   const data = await getData({ params });
 
   if (!data) {

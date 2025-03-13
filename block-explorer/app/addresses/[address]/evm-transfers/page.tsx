@@ -10,22 +10,23 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
 import { TTokenType } from '@/types/models';
+import { PageProps } from '@/types/page';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { Address, getAddress } from 'viem';
+import { getAddress } from 'viem';
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: { address: Address };
-  searchParams: { page?: number };
-}) {
-  const address = getAddress(params.address);
+export default async function Page({ params, searchParams }: PageProps) {
+  const paramsObj = await params;
+  const searchParamsObj = await searchParams;
+  if (!paramsObj.address) {
+    return null;
+  }
+  const address = getAddress(paramsObj.address);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
 
   const data = await request(ApiCommand.getTokenTransfersFromAddress, {
-    address: params.address,
-    page: searchParams.page || 1,
+    address: getAddress(paramsObj.address),
+    page,
   });
   const transactions = data?.docs;
   if (!transactions?.length) return <NoData />;
