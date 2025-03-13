@@ -17,10 +17,10 @@ export const metadata: Metadata = {
   title: 'DEX',
 };
 
-export default async function Page({ searchParams }: { searchParams: { page?: number } }) {
-  const data = await request(ApiCommand.getDex, {
-    page: searchParams?.page || 1,
-  });
+export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+  const data = await request(ApiCommand.getDex, { page });
   const swaps = data?.docs;
 
   return (

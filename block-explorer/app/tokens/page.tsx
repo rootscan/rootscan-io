@@ -20,10 +20,12 @@ export const metadata: Metadata = {
   title: 'Tokens',
 };
 
-export default async function Page({ searchParams }: { searchParams: { page?: number; type: string } }) {
+export default async function Page({ searchParams }: { searchParams: { page?: string; type?: string } }) {
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
   const data = await request(ApiCommand.getTokens, {
-    page: searchParams?.page || 1,
-    type: searchParams?.type,
+    page,
+    type: searchParamsObj?.type || '',
   });
 
   const tokens = data?.docs;

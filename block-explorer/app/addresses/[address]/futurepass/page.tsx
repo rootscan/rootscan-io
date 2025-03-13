@@ -8,10 +8,20 @@ import { getPaginationData } from '@/lib/utils';
 import Link from 'next/link';
 import { Address, getAddress } from 'viem';
 
-export default async function Page({ params, searchParams }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { address: string };
+  searchParams: { page?: string };
+}) {
+  const paramsObj = await Promise.resolve(params);
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+
   const data = await request(ApiCommand.getFuturepasses, {
-    address: getAddress(params.address),
-    page: searchParams.page,
+    address: getAddress(paramsObj.address),
+    page,
   });
 
   const futurepasses = data?.docs;

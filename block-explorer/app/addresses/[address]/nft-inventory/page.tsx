@@ -6,18 +6,22 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
 import Link from 'next/link';
-import { Address } from 'viem';
+import { getAddress } from 'viem';
 
 export default async function Page({
   params,
   searchParams,
 }: {
-  params: { address: Address };
-  searchParams: { page?: number };
+  params: { address: string };
+  searchParams: { page?: string };
 }) {
+  const paramsObj = await Promise.resolve(params);
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+
   const data = await request(ApiCommand.getNftCollectionsForAddress, {
-    address: params.address,
-    page: searchParams?.page || 1,
+    address: getAddress(paramsObj.address),
+    page,
   });
 
   const tokens = data?.docs;
@@ -44,7 +48,7 @@ export default async function Page({
                 <TableCell>{item.count}</TableCell>
                 <TableCell>
                   <div className="my-auto flex justify-end">
-                    <Link href={`/addresses/${params.address}/nft-inventory/${item.contractAddress}`}>
+                    <Link href={`/addresses/${paramsObj.address}/nft-inventory/${item.contractAddress}`}>
                       <Button size="sm" variant="outline">
                         {item.tokenLookUp.type === 'ERC1155' ? 'View SFTs' : 'View NFTs'}
                       </Button>

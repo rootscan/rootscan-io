@@ -12,20 +12,23 @@ import { getPaginationData } from '@/lib/utils';
 import { TTokenType } from '@/types/models';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { Address, getAddress } from 'viem';
+import { getAddress } from 'viem';
 
 export default async function Page({
   params,
   searchParams,
 }: {
-  params: { address: Address };
-  searchParams: { page?: number };
+  params: { address: string };
+  searchParams: { page?: string };
 }) {
-  const address = getAddress(params.address);
+  const paramsObj = await Promise.resolve(params);
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const address = getAddress(paramsObj.address);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
 
   const data = await request(ApiCommand.getTokenTransfersFromAddress, {
-    address: params.address,
-    page: searchParams.page || 1,
+    address: getAddress(paramsObj.address),
+    page,
   });
   const transactions = data?.docs;
   if (!transactions?.length) return <NoData />;

@@ -8,18 +8,21 @@ import TokenDisplay from '@/components/token-display';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiCommand, request } from '@/lib/api';
 import { formatNumber, formatNumberDollars, getPaginationData } from '@/lib/utils';
-import { Address, formatUnits } from 'viem';
+import { formatUnits, getAddress } from 'viem';
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: { address: Address };
-  searchParams: { page?: number };
-}) {
+interface PageProps {
+  params: Promise<{ address: string }>;
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function Page({ params, searchParams }: PageProps) {
+  const paramsObj = await params;
+  const searchParamsObj = await searchParams;
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+
   const data = await request(ApiCommand.getTokenBalances, {
-    address: params.address,
-    page: searchParams?.page || 1,
+    address: getAddress(paramsObj.address),
+    page,
   });
 
   const balances = data?.docs;

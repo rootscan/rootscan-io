@@ -12,8 +12,10 @@ export const metadata: Metadata = {
   title: 'Bridge',
 };
 
-export default async function Page({ searchParams }) {
-  const data = await request(ApiCommand.getBridgeTransactions, { page: searchParams?.page || 1 });
+export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+  const data = await request(ApiCommand.getBridgeTransactions, { page });
   const transactions = data?.docs;
   return (
     <Container>

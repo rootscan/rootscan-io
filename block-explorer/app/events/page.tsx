@@ -12,8 +12,10 @@ export const metadata: Metadata = {
   title: 'Events',
 };
 
-export default async function Page({ searchParams }: { searchParams: { page?: number } }) {
-  const data = await request(ApiCommand.getEvents, { page: searchParams?.page || 1 });
+export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+  const data = await request(ApiCommand.getEvents, { page });
   const events = data?.docs;
   return (
     <Container>

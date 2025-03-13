@@ -5,13 +5,14 @@ import { cn } from '@/lib/utils';
 import { AlertTriangle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Address } from 'viem';
+import { getAddress } from 'viem';
 
 import CodeEditor from './components/code-editor';
 
-const getData = async ({ params }: { params: { address: Address } }) => {
+const getData = async ({ params }: { params: { address: string } }) => {
+  const paramsObj = await Promise.resolve(params);
   const fetchData = await getContractVerification({
-    contractAddress: params.address,
+    contractAddress: getAddress(paramsObj.address),
   }).catch(() => {
     return null;
   });
@@ -39,7 +40,7 @@ const getData = async ({ params }: { params: { address: Address } }) => {
   return parsedData;
 };
 
-export default async function Page({ params }: { params: { address: Address } }) {
+export default async function Page({ params }: { params: { address: string } }) {
   const data = await getData({ params });
 
   if (!data) {

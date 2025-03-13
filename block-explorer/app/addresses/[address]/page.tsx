@@ -19,17 +19,29 @@ import { ChevronRight, Flame } from 'lucide-react';
 import Link from 'next/link';
 import { getAddress, zeroAddress } from 'viem';
 
-const getData = async ({ params, searchParams }) => {
+const getData = async ({ params, searchParams }: { params: { address: string }; searchParams: { page?: string } }) => {
+  const paramsObj = await Promise.resolve(params);
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
   const data = await request(ApiCommand.getNativeTransfersForAddress, {
-    address: getAddress(params.address),
-    page: searchParams.page,
+    address: getAddress(paramsObj.address),
+    page,
   });
   return data;
 };
-export default async function Page({ params, searchParams }) {
-  const data = await getData({ params, searchParams });
+
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { address: string };
+  searchParams: { page?: string };
+}) {
+  const paramsObj = await Promise.resolve(params);
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const data = await getData({ params: paramsObj, searchParams: searchParamsObj });
   const transactions = data?.docs;
-  const address = getAddress(params.address);
+  const address = getAddress(paramsObj.address);
 
   return (
     <div className="flex flex-col gap-4">

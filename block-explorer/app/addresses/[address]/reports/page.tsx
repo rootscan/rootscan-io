@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { use } from 'react';
 
 import { DatePickerWithRange } from '@/components/date-picker-with-range';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 
-export default function Page({ params }) {
+export default function Page({ params }: { params: Promise<{ address: string }> }) {
+  const resolvedParams = use(params);
   const [date, setDate] = useState({ from: undefined, to: undefined });
   return (
     <Card>
@@ -32,7 +34,7 @@ export default function Page({ params }) {
               <Link
                 href={`/api/report?from=${new Date(date.from).toISOString()}&to=${new Date(
                   date.to,
-                ).toISOString()}&address=${params.address}`}
+                ).toISOString()}&address=${resolvedParams.address}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

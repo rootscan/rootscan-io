@@ -16,14 +16,16 @@ import { Address, getAddress } from 'viem';
 import Menu from './components/menu';
 import QrCode from './components/qr-code';
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params }: { params: { address: string } }) {
+  const paramsObj = await Promise.resolve(params);
   return {
-    title: `Address ${params.address}`,
+    title: `Address ${paramsObj.address}`,
   };
 }
 
-const getData = async ({ params }) => {
-  const data = await request(ApiCommand.getAddress, { address: getAddress(params.address) });
+const getData = async ({ params }: { params: { address: string } }) => {
+  const paramsObj = await Promise.resolve(params);
+  const data = await request(ApiCommand.getAddress, { address: getAddress(paramsObj.address) });
   return data;
 };
 
@@ -34,8 +36,9 @@ export default async function Layout({
   children: React.ReactNode;
   params: { address: Address };
 }) {
-  const { address } = params;
-  const data = await getData({ params });
+  const paramsObj = await Promise.resolve(params);
+  const address = paramsObj.address;
+  const data = await getData({ params: paramsObj });
   const rnsName = await getRnsName(address);
   const tags: string[] = [];
   if (getAddress(address)?.toLowerCase()?.startsWith('0xffffffff')) {

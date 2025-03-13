@@ -19,8 +19,10 @@ export const metadata: Metadata = {
   title: 'Staking',
 };
 
-export default async function Page({ searchParams }) {
-  const data = await request(ApiCommand.getStakingValidators, { page: searchParams?.page || 1 });
+export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+  const data = await request(ApiCommand.getStakingValidators, { page });
   const contracts = data?.docs;
 
   return (

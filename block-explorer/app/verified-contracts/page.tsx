@@ -12,8 +12,10 @@ export const metadata: Metadata = {
   title: 'Verified Contracts',
 };
 
-export default async function Page({ searchParams }) {
-  const data = await request(ApiCommand.getVerifiedContracts, { page: searchParams?.page || 1 });
+export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
+  const searchParamsObj = await Promise.resolve(searchParams);
+  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+  const data = await request(ApiCommand.getVerifiedContracts, { page });
   const contracts = data?.docs;
 
   return (
