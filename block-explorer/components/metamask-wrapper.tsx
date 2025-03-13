@@ -8,4 +8,4 @@ const AddToMetamask = dynamic(() => import('./add-to-metamask'), {
 
 export default function MetamaskWrapper() {
   return <AddToMetamask />;
-} 
+}

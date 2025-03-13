@@ -8,4 +8,4 @@ const ClientProgressBar = dynamic(() => import('./client-progressbar'), {
 
 export default function ProgressBarWrapper() {
   return <ClientProgressBar />;
-} 
+}

@@ -1,6 +1,7 @@
 import Container from '@/components/container';
 import QueryProvider from '@/components/layouts/query-provider';
 import MainSearch from '@/components/main-search';
+import ProgressBarWrapper from '@/components/progress-bar-wrapper';
 import SiteFooter from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { TailwindIndicator } from '@/components/tailwind-indicator';
@@ -10,7 +11,6 @@ import { cn } from '@/lib/utils';
 import '@/styles/globals.css';
 import { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import ProgressBarWrapper from '@/components/progress-bar-wrapper';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://rootscan.io/'),
