@@ -39,32 +39,54 @@ const fetcher = async ({
   const useUrl = noBaseUrl ? url : `${BASE_URL}${url}`;
   const cache: Partial<RequestInit> = cacheDuration ? { next: { revalidate: cacheDuration } } : { cache: 'no-store' };
 
-  return fetch(useUrl, {
-    method,
-    keepalive: false,
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    ...cache,
-    body,
-  }).then((resp: Response) => {
-    if (resp.ok) {
-      return resp.json();
+  try {
+    const response = await fetch(useUrl, {
+      method,
+      keepalive: false,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      ...cache,
+      body,
+    });
+
+    if (response.ok) {
+      return response.json();
     } else {
-      return resp.text().then((text: string) => {
-        console.log('Error: ', text);
-        let message = '';
-        try {
-          const err = JSON.parse(text);
-          message = err.message;
-        } catch (a) {
-          //
-        }
-        throw new Error(message || text);
+      const text = await response.text();
+      console.error('API Error Details:', {
+        url: useUrl,
+        method,
+        status: response.status,
+        statusText: response.statusText,
+        requestBody: body ? JSON.parse(body.toString()) : null,
+        responseBody: text,
+        timestamp: new Date().toISOString(),
       });
+
+      let message = '';
+      try {
+        const err = JSON.parse(text);
+        message = err.message;
+      } catch (a) {
+        message = text;
+      }
+      throw new Error(message || text);
     }
-  });
+  } catch (error) {
+    console.error('Fetcher Error:', {
+      url: useUrl,
+      method,
+      requestBody: body ? JSON.parse(body.toString()) : null,
+      error: error instanceof Error ? {
+        message: error.message,
+        stack: error.stack,
+      } : error,
+      timestamp: new Date().toISOString(),
+    });
+    throw error;
+  }
 };
 
 export type ApiIO<Input = Record<string, unknown>, Output = unknown> = {
