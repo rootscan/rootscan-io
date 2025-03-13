@@ -9,10 +9,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CardDetail from '@/components/ui/card-detail';
 import { ApiCommand, request } from '@/lib/api';
 import { camelCaseToWords } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import Link from 'next/link';
 
-export default async function Page({ params }) {
-  const data = await request(ApiCommand.getEvent, { eventId: params?.eventId });
+export default async function Page({ params }: PageProps) {
+  const paramsObj = await params;
+  if (!paramsObj.eventId) {
+    return null;
+  }
+
+  const data = await request(ApiCommand.getEvent, { eventId: paramsObj.eventId });
   if (!data) return <NoData />;
 
   return (
