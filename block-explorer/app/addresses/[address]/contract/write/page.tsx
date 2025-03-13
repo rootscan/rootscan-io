@@ -1,14 +1,18 @@
 import CustomConnectWallet from '@/components/custom-connectwallet';
 import { getContractVerification } from '@/lib/api';
-import { Address } from 'viem';
+import { PageProps } from '@/types/page';
 
 import WalletProvider from './components/wallet-provider';
 import WriteContract from './components/write-contract';
 
-const getData = async ({ params }) => {
+const getData = async ({ params }: PageProps) => {
+  const paramsObj = await params;
+  if (!paramsObj.address) {
+    return null;
+  }
   const chainId = Number(process?.env?.CHAIN_ID);
   const fetchData = await getContractVerification({
-    contractAddress: params.address,
+    contractAddress: paramsObj.address,
   }).catch(() => {
     return null;
   });
@@ -36,14 +40,22 @@ const getData = async ({ params }) => {
   return { data: parsedData, chainId };
 };
 
-export default async function Page({ params }: { params: { address: Address } }) {
-  const { data, chainId } = await getData({ params });
+export default async function Page({ params }: PageProps) {
+  const paramsObj = await params;
+  if (!paramsObj.address) {
+    return null;
+  }
+  const result = await getData({ params });
+  if (!result) {
+    return null;
+  }
+  const { data, chainId } = result;
 
   return (
     <WalletProvider chainId={chainId}>
       <div className="flex flex-col gap-4">
         <CustomConnectWallet />
-        <WriteContract data={data} address={params.address} />
+        <WriteContract data={data} address={paramsObj.address} />
       </div>
     </WalletProvider>
   );

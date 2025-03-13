@@ -14,14 +14,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ApiCommand, request } from '@/lib/api';
 import { XRP_TOKEN } from '@/lib/constants/tokens';
 import { camelCaseToWords, formatNumber, formatNumberDollars } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import { CornerLeftUp } from 'lucide-react';
 import Link from 'next/link';
 import { Hash, getAddress } from 'viem';
 
 import ShowMoreTransaction from './components/show-more-tx';
 
-export default async function Page({ params }: { params: { id: Hash } }) {
-  const transaction = await request(ApiCommand.getTransaction, { hash: params.id });
+export default async function Page({ params }: PageProps) {
+  const paramsObj = await params;
+  if (!paramsObj.id) {
+    return null;
+  }
+  const transaction = await request(ApiCommand.getTransaction, { hash: paramsObj.id as Hash });
 
   if (!transaction) return <NoData />;
 

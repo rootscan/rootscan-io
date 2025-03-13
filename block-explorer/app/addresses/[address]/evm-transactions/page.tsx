@@ -3,17 +3,15 @@ import PaginationSuspense from '@/components/pagination-suspense';
 import TransactionsTable from '@/components/transactions-table';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import { getAddress } from 'viem';
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: { address: string };
-  searchParams: { page?: string };
-}) {
-  const paramsObj = await Promise.resolve(params);
-  const searchParamsObj = await Promise.resolve(searchParams);
+export default async function Page({ params, searchParams }: PageProps) {
+  const paramsObj = await params;
+  const searchParamsObj = await searchParams;
+  if (!paramsObj.address) {
+    return null;
+  }
   const address = getAddress(paramsObj.address);
   const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
 
