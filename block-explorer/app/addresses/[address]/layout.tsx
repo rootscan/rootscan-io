@@ -16,29 +16,28 @@ import { Address, getAddress } from 'viem';
 import Menu from './components/menu';
 import QrCode from './components/qr-code';
 
-export async function generateMetadata({ params }: { params: { address: string } }) {
-  const paramsObj = await Promise.resolve(params);
+interface LayoutProps {
+  children: React.ReactNode;
+  params: Promise<{ address: Address }>;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ address: string }> }) {
+  const paramsObj = await params;
   return {
     title: `Address ${paramsObj.address}`,
   };
 }
 
-const getData = async ({ params }: { params: { address: string } }) => {
-  const paramsObj = await Promise.resolve(params);
+const getData = async ({ params }: { params: Promise<{ address: string }> }) => {
+  const paramsObj = await params;
   const data = await request(ApiCommand.getAddress, { address: getAddress(paramsObj.address) });
   return data;
 };
 
-export default async function Layout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: { address: Address };
-}) {
-  const paramsObj = await Promise.resolve(params);
+export default async function Layout({ children, params }: LayoutProps) {
+  const paramsObj = await params;
   const address = paramsObj.address;
-  const data = await getData({ params: paramsObj });
+  const data = await getData({ params: Promise.resolve(paramsObj) });
   const rnsName = await getRnsName(address);
   const tags: string[] = [];
   if (getAddress(address)?.toLowerCase()?.startsWith('0xffffffff')) {

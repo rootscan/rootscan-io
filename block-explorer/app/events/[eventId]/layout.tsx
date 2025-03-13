@@ -3,14 +3,20 @@ import Container from '@/components/container';
 import SectionTitle from '@/components/section-title';
 import TestnetWarning from '@/components/testnet-warning';
 
-export async function generateMetadata({ params }) {
+interface LayoutProps {
+  children: React.ReactNode;
+  params: Promise<{ eventId: string }>;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ eventId: string }> }) {
+  const paramsObj = await params;
   return {
-    title: `Event ${params.eventId}`,
+    title: `Event ${paramsObj.eventId}`,
   };
 }
 
-export default async function Layout({ children, params }: { children: React.ReactNode; params: { eventId: string } }) {
-  const { eventId } = params;
+export default async function Layout({ children, params }: LayoutProps) {
+  const { eventId } = await params;
 
   return (
     <Container>

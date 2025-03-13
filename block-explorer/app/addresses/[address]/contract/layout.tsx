@@ -2,8 +2,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 
-export default async function Layout({ children, params }: { children: React.ReactNode; params: { address: string } }) {
-  const paramsObj = await Promise.resolve(params);
+interface LayoutProps {
+  children: React.ReactNode;
+  params: Promise<{ address: string }>;
+}
+
+export default async function Layout({ children, params }: LayoutProps) {
+  const paramsObj = await params;
 
   return (
     <Card>

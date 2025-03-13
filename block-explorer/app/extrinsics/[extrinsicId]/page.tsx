@@ -24,8 +24,13 @@ import Link from 'next/link';
 
 import ExtrinsicIdDisplay from './components/extrinsicIdDisplay';
 
-export default async function Page({ params }: { params: { extrinsicId: string } }) {
-  const data = await request(ApiCommand.getExtrinsic, { extrinsicId: params?.extrinsicId });
+interface PageProps {
+  params: Promise<{ extrinsicId: string }>;
+}
+
+export default async function Page({ params }: PageProps) {
+  const { extrinsicId } = await params;
+  const data = await request(ApiCommand.getExtrinsic, { extrinsicId });
   if (!data) return <NoData />;
 
   const isProxy = data.isProxy;

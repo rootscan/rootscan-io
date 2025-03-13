@@ -5,20 +5,20 @@ import TestnetWarning from '@/components/testnet-warning';
 
 import Menu from './components/menu';
 
-export async function generateMetadata({ params }) {
+interface LayoutProps {
+  children: React.ReactNode;
+  params: Promise<{ extrinsicId: string }>;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ extrinsicId: string }> }) {
+  const paramsObj = await params;
   return {
-    title: `Extrinsic ${params.extrinsicId}`,
+    title: `Extrinsic ${paramsObj.extrinsicId}`,
   };
 }
 
-export default async function Layout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: { extrinsicId: string };
-}) {
-  const { extrinsicId } = params;
+export default async function Layout({ children, params }: LayoutProps) {
+  const { extrinsicId } = await params;
 
   return (
     <Container>
