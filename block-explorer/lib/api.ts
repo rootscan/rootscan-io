@@ -18,6 +18,7 @@ import { getName } from '@ensdomains/ensjs/public';
 import Debug from 'debug';
 import { Address, Hash } from 'viem';
 import { normalize } from 'viem/ens';
+import { logger } from './logger';
 
 const debug = Debug('rootscan:api');
 
@@ -55,7 +56,7 @@ const fetcher = async ({
       return response.json();
     } else {
       const text = await response.text();
-      console.error('API Error Details:', {
+      logger.error('API Error Details:', {
         url: useUrl,
         method,
         status: response.status,
@@ -75,7 +76,7 @@ const fetcher = async ({
       throw new Error(message || text);
     }
   } catch (error) {
-    console.error('Fetcher Error:', {
+    logger.error('Fetcher Error:', {
       url: useUrl,
       method,
       requestBody: body ? JSON.parse(body.toString()) : null,

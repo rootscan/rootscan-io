@@ -1,3 +1,5 @@
+// "use client";
+import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
 import Container from '@/components/container';
 import QueryProvider from '@/components/layouts/query-provider';
 import MainSearch from '@/components/main-search';
@@ -71,6 +73,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             </div>
             <TailwindIndicator />
             <ProgressBarWrapper />
+            <ServiceWorkerRegistration />
           </QueryProvider>
         </ThemeProvider>
       </body>
