@@ -9,12 +9,8 @@ import { fontLocal } from '@/lib/fonts';
 import { cn } from '@/lib/utils';
 import '@/styles/globals.css';
 import { Metadata, Viewport } from 'next';
-import dynamic from 'next/dynamic';
 import Script from 'next/script';
-
-const ClientProgressBar = dynamic(() => import('../components/client-progressbar'), {
-  ssr: false,
-});
+import ProgressBarWrapper from '@/components/progress-bar-wrapper';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://rootscan.io/'),
@@ -74,7 +70,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               <SiteFooter />
             </div>
             <TailwindIndicator />
-            <ClientProgressBar />
+            <ProgressBarWrapper />
           </QueryProvider>
         </ThemeProvider>
       </body>

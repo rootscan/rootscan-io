@@ -1,16 +1,12 @@
 import { SiGithub, SiX } from '@icons-pack/react-simple-icons';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { BackToTopButton } from './back-to-top';
 import Container from './container';
+import MetamaskWrapper from './metamask-wrapper';
 import { ThemeToggle } from './theme-toggle';
 import { Button } from './ui/button';
-
-const AddToMetamask = dynamic(() => import('./add-to-metamask'), {
-  ssr: false,
-});
 
 export default function SiteFooter() {
   return (
@@ -50,7 +46,7 @@ export default function SiteFooter() {
             </Link>
           </div>
           <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
-            <AddToMetamask />
+            <MetamaskWrapper />
             <Link href="https://github.com/rootscan/rootscan-io" target="_blank">
               <Button variant="ghost" size="icon">
                 <SiGithub size={20} />
