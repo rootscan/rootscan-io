@@ -11,6 +11,10 @@ interface Props {
 
 export async function NftThumbnail({ contractAddress, tokenId }: Props) {
   try {
+    // todo fix styles if not contractAddress provided
+    if (!contractAddress) {
+      return <div>{tokenId}</div>;
+    }
     const nft = handleRequestResult(await request(ApiCommand.getNft, { contractAddress, tokenId }));
     if (!nft) return null;
 

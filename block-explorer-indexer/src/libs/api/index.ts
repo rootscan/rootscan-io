@@ -473,6 +473,17 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
       },
       options,
     );
+
+    // calc contractAddress from collectionId if needed
+    const foundCollectionIds = data.docs.filter((i) => !!i.args?.collectionId).map((i) => i.args.collectionId);
+    if (foundCollectionIds.length) {
+      const tokens = await DB.Token.find({ collectionId: { $in: foundCollectionIds } });
+      data.docs.forEach((i) => {
+        i.args.contractAddress = tokens.find((t) => (t.collectionId = i.args.collectionId))?.contractAddress;
+      });
+    }
+    console.log('!!!!!! foundCollectionIds', foundCollectionIds);
+
     logger.info('getNativeTransfersForAddress: data', data);
     return res.json(data);
   } catch (e) {
