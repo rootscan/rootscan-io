@@ -389,6 +389,7 @@ const NFTTransfer = ({ tx, address }) => {
 };
 
 const SFTTransfer = ({ tx, address }) => {
+  const tokensIds = tx?.args?.tokenIds || tx?.args?.serialNumbers || [];
   return (
     <TableRow>
       <TableCell className="max-w-[150px] truncate">
@@ -400,26 +401,30 @@ const SFTTransfer = ({ tx, address }) => {
         <ExtrinsicMethod tx={tx} />
       </TableCell>
       <TableCell>
-        <InOutBadge address={address} from={tx?.args?.from} to={tx?.args?.to} />
+        <InOutBadge
+          address={address}
+          from={tx?.args?.from || tx?.args.previousOwner}
+          to={tx?.args?.to || tx?.args.newOwner}
+        />
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
       </TableCell>
       <TableCell>
         <div className="flex flex-wrap items-center gap-2">
-          {tx?.args?.tokenIds?.map((tokenId, _) => (
+          {tokensIds.map((tokenId, _) => (
             <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
           ))}
         </div>
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.args?.from} useShortenedAddress />
+        <AddressDisplay address={tx?.args?.from || tx?.args.previousOwner} useShortenedAddress />
       </TableCell>
       <TableCell className="max-w-[25px] text-muted-foreground">
         <ChevronRight className="size-4" />
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.args?.to} useShortenedAddress />
+        <AddressDisplay address={tx?.args?.to || tx?.args.newOwner} useShortenedAddress />
       </TableCell>
     </TableRow>
   );
