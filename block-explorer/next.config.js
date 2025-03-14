@@ -46,6 +46,34 @@ module.exports = {
         pathname: '**',
         port: '',
       },
+      {
+        // Third Kingdom
+        protocol: 'https',
+        hostname: 'cdn.enterthethirdkingdom.com',
+        pathname: '**',
+        port: '',
+      },
+      {
+        // Readyverse
+        protocol: 'https',
+        hostname: 'cdn.readyverse.com',
+        pathname: '**',
+        port: '',
+      },
+      {
+        // Project Tempus
+        protocol: 'https',
+        hostname: 'copper-outer-barnacle-981.mypinata.cloud',
+        pathname: '**',
+        port: '',
+      },
+      {
+        // Anti Social Media
+        protocol: 'https',
+        hostname: 'arweave.net',
+        pathname: '**',
+        port: '',
+      },
     ],
   },
   eslint: {

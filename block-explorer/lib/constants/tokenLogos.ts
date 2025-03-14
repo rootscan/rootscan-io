@@ -142,6 +142,17 @@ const logos: { [key: number]: { [key: Address]: string } } = {
     '0xCcccccCC0001Fc64000000000000000000000000': 'token-gold.png',
     '0xcCCCCcCC00020064000000000000000000000000': 'token-ooze.png',
     '0xCCCCCcCc00020464000000000000000000000000': 'token-gems.png',
+
+    // TTK Team Collection Logos
+    "0xbbBBbbBb00016064000000000000000000000000": "sft-ttk-team-token-cerebra.webp",
+    "0xbbBbbBbb00016464000000000000000000000000": "sft-ttk-team-token-valora.webp",
+    "0xbBbBbBBB00016864000000000000000000000000": "sft-ttk-team-token-lumera.webp",
+
+    // TTK Tickets
+    "0xbBBbBBbb00017064000000000000000000000000": "sft-ttk-tickets.webp",
+
+    // Readyverse Access Token
+    "0xbBBbBBbb00016c64000000000000000000000000": "sft-readyverse.webp",
   },
   7672: {
     // Root
