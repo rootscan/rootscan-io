@@ -5,7 +5,7 @@ import { ChevronRight, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
 import AddressDisplay from '../address-display';
-import NftThumbnail from '../nft-thumbnail';
+import { NftThumbnail } from '../nft-thumbnail';
 import TokenDisplay from '../token-display';
 import { Badge } from '../ui/badge';
 

@@ -1,10 +1,11 @@
 import { Fragment } from 'react';
 
 import AddressDisplay from '@/components/address-display';
+import { ErrorAlert } from '@/components/error-alert';
 import ExtrinsicMethod from '@/components/extrinsic-method';
 import InOutBadge from '@/components/in-out-badge';
 import NFTMint from '@/components/nft-mint-comp';
-import NftThumbnail from '@/components/nft-thumbnail';
+import { NftThumbnail } from '@/components/nft-thumbnail';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
 import TimeAgoDate from '@/components/time-ago-date';
@@ -14,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
-import { getPaginationData } from '@/lib/utils';
+import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
 import { ChevronRight, Flame } from 'lucide-react';
 import Link from 'next/link';
@@ -27,84 +28,88 @@ const getData = async ({ searchParams }: PageProps) => {
     address: zeroAddress, // Use zero address to get all transfers
     page,
   });
-  return data;
+  return handleRequestResult(data);
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  const searchParamsObj = await searchParams;
-  const data = await getData({
-    params: Promise.resolve({}),
-    searchParams: Promise.resolve(searchParamsObj || {}),
-  });
-  const transactions = data?.docs;
+  try {
+    const searchParamsObj = await searchParams;
+    const data = await getData({
+      params: Promise.resolve({}),
+      searchParams: Promise.resolve(searchParamsObj || {}),
+    });
+    const transactions = data?.docs;
 
-  return (
-    <div className="flex flex-col gap-4">
-      <PaginationSuspense pagination={getPaginationData(data)} />
-      {!transactions || transactions?.length === 0 ? (
-        <NoData />
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Extrinsic ID</TableHead>
-              <TableHead>Extrinsic Method</TableHead>
-              <TableHead />
-              <TableHead>Timestamp</TableHead>
-              <TableHead>Amount / TokenID(s)</TableHead>
-              <TableHead>From</TableHead>
-              <TableHead />
-              <TableHead>To</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {transactions.map((tx, _) => {
-              const { method, section } = tx;
-              if (section === 'assets' && method === 'Transferred') {
-                return <AssetsTransferred tx={tx} address={tx?.args?.to} key={_} />;
-              }
-              if (section === 'assets' && method === 'ApprovedTransfer') {
-                return <AssetsApprovedTransfer tx={tx} address={tx?.args?.to} key={_} />;
-              }
-              if (section === 'assets' && method === 'Issued') {
-                return <AssetsIssued tx={tx} address={tx?.args?.owner} key={_} />;
-              }
-              if (section === 'assets' && method === 'Burned') {
-                return <AssetsBurned tx={tx} address={tx?.args?.owner} key={_} />;
-              }
-              if (section === 'balances' && method === 'Reserved') {
-                return <BalancesReserved tx={tx} address={tx?.args?.who} key={_} />;
-              }
-              if (section === 'balances' && method === 'Transfer') {
-                return <BalancesTransfer tx={tx} address={tx?.args?.to} key={_} />;
-              }
-              if (section === 'balances' && method === 'Unreserved') {
-                return <BalancesUnreserved tx={tx} address={tx?.args?.who} key={_} />;
-              }
+    return (
+      <div className="flex flex-col gap-4">
+        <PaginationSuspense pagination={getPaginationData(data)} />
+        {!transactions || transactions?.length === 0 ? (
+          <NoData />
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Extrinsic ID</TableHead>
+                <TableHead>Extrinsic Method</TableHead>
+                <TableHead />
+                <TableHead>Timestamp</TableHead>
+                <TableHead>Amount / TokenID(s)</TableHead>
+                <TableHead>From</TableHead>
+                <TableHead />
+                <TableHead>To</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {transactions.map((tx, _) => {
+                const { method, section } = tx;
+                if (section === 'assets' && method === 'Transferred') {
+                  return <AssetsTransferred tx={tx} address={tx?.args?.to} key={_} />;
+                }
+                if (section === 'assets' && method === 'ApprovedTransfer') {
+                  return <AssetsApprovedTransfer tx={tx} address={tx?.args?.to} key={_} />;
+                }
+                if (section === 'assets' && method === 'Issued') {
+                  return <AssetsIssued tx={tx} address={tx?.args?.owner} key={_} />;
+                }
+                if (section === 'assets' && method === 'Burned') {
+                  return <AssetsBurned tx={tx} address={tx?.args?.owner} key={_} />;
+                }
+                if (section === 'balances' && method === 'Reserved') {
+                  return <BalancesReserved tx={tx} address={tx?.args?.who} key={_} />;
+                }
+                if (section === 'balances' && method === 'Transfer') {
+                  return <BalancesTransfer tx={tx} address={tx?.args?.to} key={_} />;
+                }
+                if (section === 'balances' && method === 'Unreserved') {
+                  return <BalancesUnreserved tx={tx} address={tx?.args?.who} key={_} />;
+                }
 
-              if (section === 'nft' && method === 'Transfer') {
-                return <NFTTransfer tx={tx} address={tx?.args?.to} key={_} />;
-              }
+                if (section === 'nft' && method === 'Transfer') {
+                  return <NFTTransfer tx={tx} address={tx?.args?.to} key={_} />;
+                }
 
-              if (section === 'nft' && method === 'Mint') {
-                return <NFTMint tx={tx} address={tx?.args?.owner} key={_} />;
-              }
+                if (section === 'nft' && method === 'Mint') {
+                  return <NFTMint tx={tx} address={tx?.args?.owner} key={_} />;
+                }
 
-              if (section === 'sft' && method === 'Transfer') {
-                return <SFTTransfer tx={tx} address={tx?.args?.to} key={_} />;
-              }
+                if (section === 'sft' && method === 'Transfer') {
+                  return <SFTTransfer tx={tx} address={tx?.args?.to} key={_} />;
+                }
 
-              if (section === 'sft' && method === 'Mint') {
-                return <SFTMint tx={tx} address={tx?.args?.owner} key={_} />;
-              }
+                if (section === 'sft' && method === 'Mint') {
+                  return <SFTMint tx={tx} address={tx?.args?.owner} key={_} />;
+                }
 
-              return <Fragment key={_} />;
-            })}
-          </TableBody>
-        </Table>
-      )}
-    </div>
-  );
+                return <Fragment key={_} />;
+              })}
+            </TableBody>
+          </Table>
+        )}
+      </div>
+    );
+  } catch (error) {
+    return <ErrorAlert error={error instanceof Error ? error : new Error('An unexpected error occurred')} />;
+  }
 }
 
 const AssetsTransferred = ({ tx, address }) => {

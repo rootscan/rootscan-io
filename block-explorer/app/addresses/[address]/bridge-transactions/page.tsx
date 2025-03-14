@@ -1,30 +1,38 @@
 import BridgeTransactions from '@/components/bridge-transactions';
+import { ErrorAlert } from '@/components/error-alert';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
 import { ApiCommand, request } from '@/lib/api';
-import { getPaginationData } from '@/lib/utils';
+import { getPaginationData, handleRequestResult } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import { getAddress } from 'viem';
 
-interface PageProps {
-  params: Promise<{ address: string }>;
-  searchParams: Promise<{ page?: string }>;
-}
-
 export default async function Page({ params, searchParams }: PageProps) {
-  const paramsObj = await params;
-  const searchParamsObj = await searchParams;
-  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+  try {
+    const paramsObj = await params;
+    if (!paramsObj.address) {
+      throw new Error('Address is required');
+    }
 
-  const data = await request(ApiCommand.getBridgeTransactions, {
-    page,
-    address: getAddress(paramsObj.address),
-  });
-  const transactions = data?.docs;
+    const searchParamsObj = await searchParams;
+    const page = Number(searchParamsObj?.page) || 1;
 
-  return (
-    <div className="flex flex-col gap-4">
-      <PaginationSuspense pagination={getPaginationData(data)} />
-      {!transactions?.length ? <NoData /> : <BridgeTransactions transactions={transactions} />}
-    </div>
-  );
+    const data = handleRequestResult(
+      await request(ApiCommand.getBridgeTransactions, {
+        address: getAddress(paramsObj.address),
+        page,
+      }),
+    );
+
+    if (!data.docs?.length) return <NoData />;
+
+    return (
+      <div className="flex flex-col gap-4">
+        <PaginationSuspense pagination={getPaginationData(data)} />
+        <BridgeTransactions transactions={data.docs} />
+      </div>
+    );
+  } catch (error) {
+    return <ErrorAlert error={error instanceof Error ? error : new Error('An unexpected error occurred')} />;
+  }
 }

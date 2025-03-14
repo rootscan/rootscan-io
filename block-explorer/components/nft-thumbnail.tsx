@@ -1,34 +1,33 @@
+import { ErrorAlert } from '@/components/error-alert';
 import { ApiCommand, request } from '@/lib/api';
-import { cn } from '@/lib/utils';
+import { handleRequestResult } from '@/lib/utils';
+import Image from 'next/image';
 import { Address } from 'viem';
 
-import SkeletonImage from './skeleton-image';
+interface Props {
+  contractAddress: Address;
+  tokenId: string;
+}
 
-const getData = async ({ contractAddress, tokenId }: { contractAddress: Address; tokenId: number | string }) => {
-  if (!contractAddress) return null;
-  const data = await request(ApiCommand.getNft, { contractAddress, tokenId });
-  return data;
-};
+export async function NftThumbnail({ contractAddress, tokenId }: Props) {
+  try {
+    const nft = handleRequestResult(await request(ApiCommand.getNft, { contractAddress, tokenId }));
+    if (!nft) return null;
 
-export default async function NftThumbnail({ contractAddress, tokenId }) {
-  const data = await getData({ contractAddress, tokenId });
-  const size = `h-12 w-12`;
-  if (!data?.image) {
+    const imageUrl = nft.image || '';
+
     return (
-      <div className={cn([size, `bg-muted text-muted-foreground grid select-none place-items-center rounded-xl`])}>
-        <div>NFT</div>
+      <div className="relative aspect-square w-full overflow-hidden rounded-lg border bg-muted">
+        <Image
+          src={imageUrl}
+          alt={`NFT #${tokenId}`}
+          className="object-cover"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
       </div>
     );
+  } catch (error) {
+    return <ErrorAlert error={error instanceof Error ? error : new Error('An unexpected error occurred')} />;
   }
-  return (
-    <SkeletonImage
-      src={data?.image}
-      width={250}
-      height={250}
-      priority
-      alt="nft_image"
-      unoptimized
-      className={cn([size, 'shrink-0 rounded-xl'])}
-    />
-  );
 }

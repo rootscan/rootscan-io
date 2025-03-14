@@ -1,44 +1,47 @@
+import { ErrorAlert } from '@/components/error-alert';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
 import TokenDisplay from '@/components/token-display';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiCommand, request } from '@/lib/api';
-import { getPaginationData } from '@/lib/utils';
+import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
 import Link from 'next/link';
 import { getAddress } from 'viem';
 
 export default async function Page({ params, searchParams }: PageProps) {
-  const paramsObj = await params;
-  const searchParamsObj = await searchParams;
-  if (!paramsObj.address) {
-    return null;
-  }
-  const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
+  try {
+    const paramsObj = await params;
+    if (!paramsObj.address) {
+      throw new Error('Address is required');
+    }
 
-  const data = await request(ApiCommand.getNftCollectionsForAddress, {
-    address: getAddress(paramsObj.address),
-    page,
-  });
+    const searchParamsObj = await searchParams;
+    const page = Number(searchParamsObj?.page) || 1;
 
-  const tokens = data?.docs;
-  if (!tokens?.length) return <NoData />;
+    const data = handleRequestResult(
+      await request(ApiCommand.getNftCollectionsForAddress, {
+        address: getAddress(paramsObj.address),
+        page,
+      }),
+    );
 
-  return (
-    <div className="flex flex-col gap-4">
-      <PaginationSuspense pagination={getPaginationData(data)} />
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Collection</TableHead>
-            <TableHead>NFTs Owned</TableHead>
-            <TableHead />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {tokens.map((item) => {
-            return (
+    if (!data.docs?.length) return <NoData />;
+
+    return (
+      <div className="flex flex-col gap-4">
+        <PaginationSuspense pagination={getPaginationData(data)} />
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Collection</TableHead>
+              <TableHead>NFTs Owned</TableHead>
+              <TableHead />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.docs.map((item) => (
               <TableRow key={item.contractAddress}>
                 <TableCell>
                   <TokenDisplay token={item.tokenLookUp} hideCopyButton overrideImageSizeClass="h-10 w-10 mr-2" />
@@ -54,10 +57,12 @@ export default async function Page({ params, searchParams }: PageProps) {
                   </div>
                 </TableCell>
               </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div>
-  );
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  } catch (error) {
+    return <ErrorAlert error={error instanceof Error ? error : new Error('An unexpected error occurred')} />;
+  }
 }
