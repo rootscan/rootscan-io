@@ -19,7 +19,7 @@ import Debug from 'debug';
 import { Address, Hash } from 'viem';
 import { normalize } from 'viem/ens';
 import { logger } from './logger';
-import { createServerAction, ServerActionError, ServerActionResult } from './action-utils';
+import { createServerAction, ServerActionError, ServerActionResult } from './action-utils.ts';
 
 const debug = Debug('rootscan:api');
 
