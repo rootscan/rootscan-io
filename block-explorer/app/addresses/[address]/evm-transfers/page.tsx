@@ -1,6 +1,6 @@
 import AddressDisplay from '@/components/address-display';
 import InOutBadge from '@/components/in-out-badge';
-import NftThumbnail from '@/components/nft-thumbnail';
+import { NftThumbnail } from '@/components/nft-thumbnail';
 import NoData from '@/components/no-data';
 import PaginationSuspense from '@/components/pagination-suspense';
 import TimeAgoDate from '@/components/time-ago-date';
@@ -8,7 +8,7 @@ import TokenDisplay from '@/components/token-display';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiCommand, request } from '@/lib/api';
-import { getPaginationData } from '@/lib/utils';
+import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { TTokenType } from '@/types/models';
 import { PageProps } from '@/types/page';
 import { ChevronRight } from 'lucide-react';
@@ -24,10 +24,13 @@ export default async function Page({ params, searchParams }: PageProps) {
   const address = getAddress(paramsObj.address);
   const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
 
-  const data = await request(ApiCommand.getTokenTransfersFromAddress, {
-    address: getAddress(paramsObj.address),
-    page,
-  });
+  const data = handleRequestResult(
+    await request(ApiCommand.getTokenTransfersFromAddress, {
+      address: getAddress(paramsObj.address),
+      page,
+    }),
+  );
+
   const transactions = data?.docs;
   if (!transactions?.length) return <NoData />;
 

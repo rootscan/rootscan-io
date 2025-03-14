@@ -7,7 +7,7 @@ import Link from 'next/link';
 import OnlyMainnet from './layouts/only-mainnet';
 import MainSearch from './main-search';
 import { Navigation } from './navigation';
-import RootPrice from './root-price';
+import { RootPrice } from './root-price';
 import TestnetWarning from './testnet-warning';
 import { Badge } from './ui/badge';
 

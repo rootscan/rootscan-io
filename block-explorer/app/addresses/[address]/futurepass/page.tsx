@@ -4,7 +4,7 @@ import PaginationSuspense from '@/components/pagination-suspense';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiCommand, request } from '@/lib/api';
-import { getPaginationData } from '@/lib/utils';
+import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
 import Link from 'next/link';
 import { Address, getAddress } from 'viem';
@@ -17,10 +17,12 @@ export default async function Page({ params, searchParams }: PageProps) {
   }
   const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
 
-  const data = await request(ApiCommand.getFuturepasses, {
-    address: getAddress(paramsObj.address),
-    page,
-  });
+  const data = handleRequestResult(
+    await request(ApiCommand.getFuturepasses, {
+      address: getAddress(paramsObj.address),
+      page,
+    }),
+  );
 
   const futurepasses = data?.docs;
   if (!futurepasses?.length) return <NoData />;

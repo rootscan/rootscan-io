@@ -19,6 +19,7 @@ import Debug from 'debug';
 import { Address, Hash } from 'viem';
 import { normalize } from 'viem/ens';
 import { logger } from './logger';
+import { createServerAction, ServerActionError, ServerActionResult } from './action-utils';
 
 const debug = Debug('rootscan:api');
 
@@ -38,7 +39,11 @@ const fetcher = async ({
   cacheDuration?: number;
 }) => {
   const useUrl = noBaseUrl ? url : `${BASE_URL}${url}`;
-  const cache: Partial<RequestInit> = cacheDuration ? { next: { revalidate: cacheDuration } } : { cache: 'no-store' };
+  
+  // Use dynamic caching strategy based on the endpoint
+  const cache: Partial<RequestInit> = {
+    next: { revalidate: cacheDuration || 10 }, // Default to 10 seconds if not specified
+  };
 
   try {
     const response = await fetch(useUrl, {
@@ -250,21 +255,27 @@ function debugInvoke(mark: string, command: string, args: unknown) {
 export async function request<T extends ValidCommand>(
   cmd: T,
   ...[args]: ApiCommandMap[T]['input'] extends never ? [] : [ApiCommandMap[T]['input']]
-): Promise<ApiCommandMap[T]['output']> {
-  const command = ApiCommand[cmd];
-  try {
-    debugInvoke('request', command, args);
-    const result = await fetcher({
-      url: '/' + command,
-      body: JSON.stringify(args),
-      ...commandOptions[command as string],
-    });
-    debugInvoke('response', command, result);
-    return result;
-  } catch (err) {
-    debugInvoke(`ERROR`, command, err);
-    throw err;
-  }
+): Promise<ServerActionResult<ApiCommandMap[T]['output']>> {
+  return createServerAction(async () => {
+    const command = ApiCommand[cmd];
+    try {
+      debugInvoke('request', command, args);
+      const result = await fetcher({
+        url: '/' + command,
+        body: JSON.stringify(args),
+        ...commandOptions[command as string],
+      });
+      debugInvoke('response', command, result);
+      return result;
+    } catch (err) {
+      debugInvoke(`ERROR`, command, err);
+      // Convert API errors to ServerActionError
+      if (err instanceof Error) {
+        throw new ServerActionError(err.message);
+      }
+      throw new ServerActionError('An unexpected error occurred');
+    }
+  })();
 }
 
 export const getContractVerification = ({ contractAddress }) => {

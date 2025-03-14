@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 
 import AddressDisplay from '@/components/address-display';
-import NftThumbnail from '@/components/nft-thumbnail';
+import { NftThumbnail } from '@/components/nft-thumbnail';
 import TimeAgoDate from '@/components/time-ago-date';
 import TokenDisplay from '@/components/token-display';
 import Tooltip from '@/components/tooltip';
@@ -78,7 +78,9 @@ const ETHBridgeSubmitEvent = ({ tx }: { tx: IExtrinsic<'ethBridge'> }) => {
               <div key={_}>
                 {item?.tokenIds?.map((tokenId, _) => (
                   <div className="flex items-center gap-2" key={`${_}_${item?.tokenAddress}_${tokenId}`}>
-                    <NftThumbnail contractAddress={tx?.bridgeErc721Token?.contractAddress} tokenId={tokenId} />
+                    {tx?.bridgeErc721Token?.contractAddress && (
+                      <NftThumbnail contractAddress={tx.bridgeErc721Token.contractAddress} tokenId={tokenId} />
+                    )}
                     {tokenId}
                     <TokenDisplay token={tx?.bridgeErc721Token} hideCopyButton />
                   </div>
