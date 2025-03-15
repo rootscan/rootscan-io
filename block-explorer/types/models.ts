@@ -76,7 +76,10 @@ type ExtrinsicSectionType = 'xrplBridge' | 'ethBridge' | string;
 
 type ExtrinsicSectionArgsType<T extends ExtrinsicSectionType> = T extends 'xrplBridge'
   ? {
-      transaction: { payment: { address: Address; amount: number } };
+      transaction: {
+        payment: { address: Address; amount: number };
+        currencyPayment: { address: Address; amount: number };
+      };
       destination: Address;
       amount: number;
       transaction_hash: string;

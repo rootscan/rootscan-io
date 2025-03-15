@@ -104,6 +104,7 @@ const ETHBridgeSubmitEvent = ({ tx }: { tx: IExtrinsic<'ethBridge'> }) => {
 };
 
 const XRPDeposit = ({ tx }: { tx: IExtrinsic<'xrplBridge'> }) => {
+  const payment = tx?.args?.transaction?.payment || tx?.args?.transaction?.currencyPayment;
   return (
     <TableRow>
       <TableCell className="max-w-[100px]">
@@ -115,10 +116,10 @@ const XRPDeposit = ({ tx }: { tx: IExtrinsic<'xrplBridge'> }) => {
       <TableCell>XRP</TableCell>
       <TableCell className="max-w-[150px] truncate">-</TableCell>
       <TableCell className="max-w-[150px] truncate">
-        <AddressDisplay address={tx?.args?.transaction?.payment?.address} useShortenedAddress />
+        <AddressDisplay address={payment?.address} useShortenedAddress />
       </TableCell>
       <TableCell>
-        <TokenDisplay token={XRP_TOKEN} amount={tx?.args?.transaction?.payment?.amount} hideCopyButton />
+        <TokenDisplay token={XRP_TOKEN} amount={payment?.amount} hideCopyButton />
       </TableCell>
       <TableCell>
         <Link href={`https://xrpscan.com/tx/${tx?.args?.transaction_hash}`} target="_blank">
