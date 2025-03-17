@@ -8,6 +8,8 @@ import { ApiCommand, request } from '@/lib/api';
 import { formatNumber, handleRequestResult } from '@/lib/utils';
 import { ArrowLeftRight, Clock, Pencil, Wallet } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 const getData = async () => {
   const [blocksResponse, transactionsResponse, extrinsicsResponse, chainSummaryResponse] = await Promise.all([
     request(ApiCommand.getBlocks, { page: 1, limit: 10 }),
