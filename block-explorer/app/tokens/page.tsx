@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiCommand, request } from '@/lib/api';
 import { cn, formatNumberDollars, getPaginationData, handleRequestResult } from '@/lib/utils';
+import { PageProps } from '@/types/page';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import millify from 'millify';
 import { Metadata } from 'next';
@@ -20,8 +21,8 @@ export const metadata: Metadata = {
   title: 'Tokens',
 };
 
-const getData = async ({ searchParams }: { searchParams: { page?: string; type?: string } }) => {
-  const searchParamsObj = await Promise.resolve(searchParams);
+const getData = async ({ searchParams }: { searchParams: Promise<{ page?: string; type?: string }> | undefined }) => {
+  const searchParamsObj = await searchParams;
   const page = searchParamsObj?.page ? parseInt(searchParamsObj.page) : 1;
   const data = await request(ApiCommand.getTokens, {
     page,
@@ -31,7 +32,7 @@ const getData = async ({ searchParams }: { searchParams: { page?: string; type?:
   return handleRequestResult(data);
 };
 
-export default async function Page({ searchParams }: { searchParams: { page?: string; type?: string } }) {
+export default async function Page({ searchParams }: PageProps) {
   const data = await getData({ searchParams });
   const tokens = data?.docs;
 
