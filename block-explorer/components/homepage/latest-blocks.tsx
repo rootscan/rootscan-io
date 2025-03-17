@@ -21,12 +21,12 @@ export default function LatestBlocks({ latestBlocks }: { latestBlocks: IBlock[] 
         </Link>
       </div>
       <div className="group flex flex-col gap-6 overflow-x-hidden lg:flex-row">
-        <Carousel>
-          <CarouselContent className="w-1/2">
+        <Carousel className="w-full">
+          <CarouselContent className="-ml-4">
             {latestBlocks?.map((block, index) => (
               <CarouselItem
                 key={block.number}
-                className={cn(['basis-1/1 md:basis-1/2 lg:basis-1/4', index === 0 && 'animate-block'])}
+                className={cn(['basis-full px-4 md:basis-1/2 lg:basis-1/4', index === 0 && 'animate-block'])}
               >
                 <Card>
                   <CardHeader>
