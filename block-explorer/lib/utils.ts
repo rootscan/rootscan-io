@@ -2,6 +2,8 @@ import { PaginationResponse } from '@/types/api-types';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { ServerActionResult } from './action-utils';
+import Debug from 'debug';
+const debug = Debug('rootscan:api');
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -35,8 +37,10 @@ export const camelCaseToWords = (str) => {
     .join(' ');
 };
 
+
 export function handleRequestResult<T>(result: ServerActionResult<T>): T {
   if (!result.success) {
+    debug('handleRequest error %o', result.error);
     throw new Error(result.error);
   }
   return result.value;

@@ -6,6 +6,9 @@ import { Undo } from 'lucide-react';
 
 export default function ExtrinsicIdDisplay({ extrinsicId, retroExtrinsicId }) {
   const [retro, setRetro] = useState<boolean>(false);
+
+  if (!extrinsicId && !retroExtrinsicId) return null;
+
   return (
     <div className="flex items-center gap-2 ">
       {retro ? <span>{retroExtrinsicId}</span> : <span>{extrinsicId}</span>}

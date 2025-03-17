@@ -1,37 +1,47 @@
-import { ErrorAlert } from '@/components/error-alert';
+import React from 'react';
+
 import { ApiCommand, request } from '@/lib/api';
-import { handleRequestResult } from '@/lib/utils';
-import Image from 'next/image';
+import { cn, handleRequestResult } from '@/lib/utils';
 import { Address } from 'viem';
 
-interface Props {
-  contractAddress: Address;
-  tokenId: string;
-}
+import SkeletonImage from './skeleton-image';
 
-export async function NftThumbnail({ contractAddress, tokenId }: Props) {
-  try {
-    // todo fix styles if not contractAddress provided
-    if (!contractAddress) {
-      return <div>{tokenId}</div>;
-    }
-    const nft = handleRequestResult(await request(ApiCommand.getNft, { contractAddress, tokenId }));
-    if (!nft) return null;
+const getData = async ({ contractAddress, tokenId }: { contractAddress: Address; tokenId: number | string }) => {
+  if (!contractAddress) return null;
+  const data = await request(ApiCommand.getNft, { contractAddress, tokenId });
+  return handleRequestResult(data);
+};
 
-    const imageUrl = nft.image || '';
+const size = `h-12 w-12`;
 
+export async function NftThumbnail({ contractAddress, tokenId }) {
+  if (!contractAddress) {
     return (
-      <div className="relative aspect-square w-full overflow-hidden rounded-lg border bg-muted">
-        <Image
-          src={imageUrl}
-          alt={`NFT #${tokenId}`}
-          className="object-cover"
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
+      <div className={cn([size, `bg-muted text-muted-foreground grid select-none place-items-center rounded-xl`])}>
+        <div>NFT</div>
       </div>
     );
-  } catch (error) {
-    return <ErrorAlert error={error instanceof Error ? error : new Error('An unexpected error occurred')} />;
   }
+
+  const data = await getData({ contractAddress, tokenId });
+
+  if (!data?.image) {
+    return (
+      <div className={cn([size, `bg-muted text-muted-foreground grid select-none place-items-center rounded-xl`])}>
+        <div>NFT</div>
+      </div>
+    );
+  }
+
+  return (
+    <SkeletonImage
+      src={data?.image}
+      width={250}
+      height={250}
+      priority
+      alt="nft_image"
+      unoptimized
+      className={cn([size, 'shrink-0 rounded-xl'])}
+    />
+  );
 }

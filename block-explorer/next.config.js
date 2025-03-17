@@ -2,6 +2,7 @@
 
 module.exports = {
   images: {
+    unoptimized: true,
     dangerouslyAllowSVG: true,
     remotePatterns: [
       {

@@ -9,6 +9,8 @@ export default function ExtrinsicStatus({
   extrinsic: IExtrinsic;
   showErrorInfo?: boolean;
 }) {
+  if (!extrinsic) return null;
+
   return (
     <div>
       {extrinsic?.isSuccess === false ? (
