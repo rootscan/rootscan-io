@@ -416,7 +416,10 @@ const SFTTransfer = ({ tx, address }) => {
       <TableCell>
         <div className="flex flex-wrap items-center gap-2">
           {tokensIds.map((tokenId, _) => (
-            <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
+            <>
+              <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
+              {tokenId}
+            </>
           ))}
         </div>
       </TableCell>
