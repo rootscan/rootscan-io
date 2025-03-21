@@ -3,11 +3,11 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 import * as Sentry from '@sentry/nextjs';
 
-console.log('1111 client SENTRY_DSN', process.env.SENTRY_DSN);
+console.log('1111 client NEXT_PUBLIC_SENTRY_DSN', process.env.NEXT_PUBLIC_SENTRY_DSN);
 
 Sentry.init({
   environment: process.env.ENVIRONMENT,
-  dsn: process.env.SENTRY_DSN,
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   tracesSampleRate: 1,
   debug: false,
 });

@@ -84,7 +84,7 @@ const nextConfig: NextConfig = {
   env: {
     CHAIN_ID: process.env.CHAIN_ID,
     ENVIRONMENT: process.env.ENVIRONMENT,
-    SENTRY_DSN: process.env.SENTRY_DSN,
+    NEXT_PUBLIC_SENTRY_DSN: process.env.SENTRY_DSN,
   },
   reactStrictMode: true,
   async redirects() {
@@ -137,11 +137,11 @@ export default withSentryConfig(nextConfig, {
   // tunnelRoute: "/monitoring",
 
   // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
+  disableLogger: false,
 
   // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
   // See the following for more information:
   // https://docs.sentry.io/product/crons/
   // https://vercel.com/docs/cron-jobs
-  automaticVercelMonitors: true,
+  automaticVercelMonitors: false,
 });

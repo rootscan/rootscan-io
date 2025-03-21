@@ -10,7 +10,7 @@ import { ArrowLeftRight, Clock, Pencil, Wallet } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-console.log('1111 page SENTRY_DSN', process.env.SENTRY_DSN);
+console.log('1111 page NEXT_PUBLIC_SENTRY_DSN', process.env.NEXT_PUBLIC_SENTRY_DSN);
 
 const getData = async () => {
   const [blocksResponse, transactionsResponse, extrinsicsResponse, chainSummaryResponse] = await Promise.all([
