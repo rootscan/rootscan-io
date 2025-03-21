@@ -37,7 +37,7 @@ COPY --chown=nodejs:nodejs --from=build /app/app/ ./app/
 COPY --chown=nodejs:nodejs --from=build /app/public/ ./public/
 COPY --chown=nodejs:nodejs --from=build /app/.next/ ./.next/
 COPY --chown=nodejs:nodejs --from=build /app/package.json ./package.json
-COPY --chown=nodejs:nodejs --from=build /app/next.config.js ./next.config.js
+COPY --chown=nodejs:nodejs --from=build /app/next.config.ts ./next.config.ts
 COPY --chown=nodejs:nodejs --from=deps /app/node_modules ./node_modules
 
 RUN ls -al /app
