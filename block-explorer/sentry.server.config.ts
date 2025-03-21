@@ -7,5 +7,5 @@ Sentry.init({
   environment: process.env.ENVIRONMENT,
   dsn: process.env.SENTRY_DSN,
   tracesSampleRate: 1,
-  debug: false,
+  debug: true,
 });
