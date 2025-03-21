@@ -84,7 +84,7 @@ const nextConfig: NextConfig = {
   env: {
     CHAIN_ID: process.env.CHAIN_ID,
     ENVIRONMENT: process.env.ENVIRONMENT,
-    NEXT_PUBLIC_SENTRY_DSN: process.env.SENTRY_DSN,
+    SENTRY_DSN: process.env.SENTRY_DSN,
   },
   reactStrictMode: true,
   async redirects() {
