@@ -119,7 +119,7 @@ export default withSentryConfig(nextConfig, {
 
   org: 'rootscan-io',
   project: 'block-explorer-web',
-  sentryUrl: 'http://sentry.sanctum.ai/',
+  sentryUrl: 'http://sentry.rootcan.io/',
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
