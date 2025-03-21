@@ -20,7 +20,6 @@
     }
   },
   "useInferencePlugins": false,
-  "nxCloudAccessToken": "NjE2YzBjMjQtMDIwOS00ZGE1LWExMDYtYTEzMDU1ZmFlNzQxfHJlYWQtd3JpdGU=",
   "plugins": [
     {
       "plugin": "@nx/eslint/plugin",
