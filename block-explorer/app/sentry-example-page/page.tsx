@@ -36,6 +36,7 @@ export default function Page() {
         </h1>
 
         <p>Get started by sending us a sample error:</p>
+        <div>SENTRY_DSN {process.env.SENTRY_DSN}</div>
         <button
           type="button"
           style={{
