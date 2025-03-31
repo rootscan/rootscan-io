@@ -268,11 +268,19 @@ export const components = {
   // "ethBridge.AuthoritySetChange": "",
   // "ethBridge.ProofDelayed": "",
   // "system.ExtrinsicFailed": "",
-  'system.ExtrinsicSuccess': ({ args }) => (
-    <div className="flex flex-wrap gap-2">
-      An extrinsic has succeeded with a weight of {args?.dispatchInfo?.weight}.
-    </div>
-  ),
+  'system.ExtrinsicSuccess': ({ args }) => {
+    const weight = args?.dispatchInfo?.weight;
+    return (
+      <div className="flex flex-wrap gap-2">
+        An extrinsic has succeeded with a weight of:
+        {weight && (
+          <span>
+            refTime: {weight.refTime.toString()}, proofSize: {weight.proofSize.toString()}
+          </span>
+        )}
+      </div>
+    );
+  },
   'system.NewAccount': ({ args }) => (
     <div className="flex flex-wrap gap-2">
       Account <AddressDisplay address={args?.account} useShortenedAddress /> was created by the system.
