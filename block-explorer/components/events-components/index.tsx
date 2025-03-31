@@ -511,7 +511,15 @@ export const getEventComponent = (props, extrinsicsMode = false) => {
     return null;
   }
 
-  const eventDetails = components?.[key]?.(props);
+  // Safely extract only the args that we need
+  const eventProps = {
+    args: props.args,
+    token: props.token,
+    tokenNative: props.tokenNative,
+    nftCollection: props.nftCollection,
+  };
+
+  const eventDetails = components?.[key]?.(eventProps);
   if (!eventDetails) {
     return <div>No parsed event found. Please refer to raw arguments.</div>;
   }
