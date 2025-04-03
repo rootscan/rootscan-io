@@ -479,12 +479,11 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
     if (foundCollectionIds.length) {
       const tokens = await DB.Token.find({ collectionId: { $in: foundCollectionIds } });
       data.docs.forEach((i) => {
-        i.args.contractAddress = tokens.find((t) => (t.collectionId = i.args.collectionId))?.contractAddress;
+        i.args.contractAddress = tokens.find((t) => t.collectionId === i.args.collectionId)?.contractAddress;
       });
     }
-    console.log('!!!!!! foundCollectionIds', foundCollectionIds);
 
-    logger.info('getNativeTransfersForAddress: data', data);
+    // logger.info('getNativeTransfersForAddress: data', data);
     return res.json(data);
   } catch (e) {
     processError(e, res);

@@ -18,8 +18,9 @@ import { getName } from '@ensdomains/ensjs/public';
 import Debug from 'debug';
 import { Address, Hash } from 'viem';
 import { normalize } from 'viem/ens';
+
+import { ServerActionError, ServerActionResult, createServerAction } from './action-utils.ts';
 import { logger } from './logger';
-import { createServerAction, ServerActionError, ServerActionResult } from './action-utils.ts';
 
 const debug = Debug('rootscan:api');
 
@@ -39,7 +40,7 @@ const fetcher = async ({
   cacheDuration?: number;
 }) => {
   const useUrl = noBaseUrl ? url : `${BASE_URL}${url}`;
-  
+
   // Use dynamic caching strategy based on the endpoint
   const cache: Partial<RequestInit> = {
     next: { revalidate: cacheDuration || 10 }, // Default to 10 seconds if not specified
@@ -85,10 +86,13 @@ const fetcher = async ({
       url: useUrl,
       method,
       requestBody: body ? JSON.parse(body.toString()) : null,
-      error: error instanceof Error ? {
-        message: error.message,
-        stack: error.stack,
-      } : error,
+      error:
+        error instanceof Error
+          ? {
+              message: error.message,
+              stack: error.stack,
+            }
+          : error,
       timestamp: new Date().toISOString(),
     });
     throw error;
@@ -230,7 +234,7 @@ const commandOptions = {
     cacheDuration: 60 * 15,
   },
   getNft: {
-    cacheDuration: 60 * 120,
+    cacheDuration: 60 * 30,
   },
   getRootPrice: {
     cacheDuration: 60 * 30,
