@@ -15,7 +15,7 @@ const scheduler = async () => {
     'FIND_FINALIZED_BLOCKS',
     {},
     {
-      priority: 3,
+      priority: 1,
       jobId: 'FIND_FINALIZED_BLOCKS',
       repeat: {
         every: 4000, // Every 4 seconds
