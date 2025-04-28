@@ -42,9 +42,11 @@ const fetcher = async ({
   const useUrl = noBaseUrl ? url : `${BASE_URL}${url}`;
 
   // Use dynamic caching strategy based on the endpoint
-  const cache: Partial<RequestInit> = {
-    next: { revalidate: cacheDuration || 10 }, // Default to 10 seconds if not specified
-  };
+  const cache: Partial<RequestInit> = cacheDuration
+    ? {
+        next: { revalidate: cacheDuration }, // Default to 10 seconds if not specified
+      }
+    : {};
 
   try {
     const response = await fetch(useUrl, {
