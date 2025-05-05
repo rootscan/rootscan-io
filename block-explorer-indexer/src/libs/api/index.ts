@@ -746,10 +746,10 @@ app.post('/generateReport', async (req: Request, res: Response) => {
       ],
     })
 
-      .sort('-timestamp')
+      .sort('timestamp')
       .lean();
 
-    let csv = `Date,Tx Hash,Type,Method,Amount,Currency,From,To\n`;
+    let csv = `Date,Tx Hash,Type,Method,Received Amount,Received Currency,Sent Amount,Sent Currency,From,To\n`;
 
     const findAndCacheToken = async (assetId: number, isCollectionId = false): Promise<IToken | null> => {
       if (extrinsicsTokenLookupCache[String(isCollectionId)][assetId]) {
@@ -871,7 +871,8 @@ app.post('/generateReport', async (req: Request, res: Response) => {
             : `SerialNumbers: ${args?.serialNumbers?.join('|')}`;
       }
 
-      csv += `${date},${txHash},${type},${extrinsic.method},${amount},${currency},${from},${to}\n`;
+      const amounts = type === 'in' || type === 'mint' ? `${amount},${currency},,` : `,,${amount},${currency}`;
+      csv += `${date},${txHash},${type},${extrinsic.method},${amounts},${from},${to}\n`;
     }
 
     const timestampEvmQuery = { $gte: moment(from).valueOf(), $lte: moment(to).valueOf() };
@@ -923,6 +924,18 @@ app.post('/generateReport', async (req: Request, res: Response) => {
     ]);
 
     for (const evmTx of evmTransactions) {
+      const foundTransactionInExtrinsic = extrinsics.find((e) => {
+        return (
+          e.method === 'Transfer' &&
+          e.section === 'balances' &&
+          e.args.amount === evmTx.events?.value &&
+          e.timestamp === evmTx.timestamp / 1000
+        );
+      });
+      // skip row if already exists in extrinsic event
+      if (foundTransactionInExtrinsic) {
+        continue;
+      }
       const args = evmTx.events;
       const date = moment(evmTx.timestamp).toISOString();
       const txHash = evmTx.hash;
@@ -932,7 +945,9 @@ app.post('/generateReport', async (req: Request, res: Response) => {
       const amount = args?.type === 'ERC20' ? args.formattedAmount : args.tokenId;
       const currency = args?.name;
 
-      csv += `${date},${txHash},${type},${amount},${currency},${from},${to}\n`;
+      const amounts = type === 'in' ? `${amount},${currency},,` : `,,${amount},${currency}`;
+
+      csv += `${date},${txHash},${type},EVMTransaction,${amounts},${from},${to}\n`;
     }
 
     return res.send(csv);
