@@ -7,7 +7,7 @@ import TokenDisplay from '@/components/token-display';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CardDetail from '@/components/ui/card-detail';
-import { ApiCommand, getRnsName, request } from '@/lib/api';
+import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { formatNumberDollars, handleRequestResult } from '@/lib/utils';
 import { generateAvatarURL } from '@cfx-kit/wallet-avatar';
@@ -43,7 +43,7 @@ export default async function Layout({ children, params }: LayoutProps) {
     const paramsObj = await params;
     const address = paramsObj.address;
     const data = await getData({ params: Promise.resolve(paramsObj) });
-    const rnsName = await getRnsName(address);
+    // const rnsName = await getRnsName(address); TODO: restore rnsName after RPC fix;
 
     if (!data) {
       return <ErrorAlert error={new Error('Address not found')} />;
@@ -105,14 +105,15 @@ export default async function Layout({ children, params }: LayoutProps) {
                       </div>
                     </CardDetail.Content>
                   </CardDetail.Wrapper>
-                  {rnsName && (
+                  {/* TODO: restore rnsName after RPC fix; 
+                   {rnsName && (
                     <CardDetail.Wrapper>
                       <CardDetail.Title>RNS</CardDetail.Title>
                       <CardDetail.Content>
                         <div className="flex items-center gap-2">{rnsName.name}</div>
                       </CardDetail.Content>
                     </CardDetail.Wrapper>
-                  )}
+                  )} */}
                 </div>
                 <CardDetail.Wrapper>
                   <CardDetail.Title>Root Balance</CardDetail.Title>
