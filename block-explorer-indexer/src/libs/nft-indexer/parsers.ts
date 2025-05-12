@@ -114,7 +114,7 @@ export const C_EVENT_PARSERS = {
           timestamp: event.timestamp,
         });
         acc.push({
-          contractAddress: collectionIdToERC721Address(collectionId),
+          contractAddress: collectionIdToERC1155Address(collectionId),
           collectionId,
           tokenId,
           owner: previousOwner,
