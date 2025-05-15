@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import AddressDisplay from '@/components/address-display';
 import Breadcrumbs from '@/components/breadcrumbs';
 import Container from '@/components/container';
@@ -7,6 +9,7 @@ import TokenDisplay from '@/components/token-display';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CardDetail from '@/components/ui/card-detail';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { formatNumberDollars, handleRequestResult } from '@/lib/utils';
@@ -16,6 +19,7 @@ import { Address, getAddress } from 'viem';
 
 import Menu from './components/menu';
 import QrCode from './components/qr-code';
+import { RnsName } from './components/rns-name.tsx';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -105,15 +109,12 @@ export default async function Layout({ children, params }: LayoutProps) {
                       </div>
                     </CardDetail.Content>
                   </CardDetail.Wrapper>
-                  {/* TODO: restore rnsName after RPC fix; 
-                   {rnsName && (
-                    <CardDetail.Wrapper>
-                      <CardDetail.Title>RNS</CardDetail.Title>
-                      <CardDetail.Content>
-                        <div className="flex items-center gap-2">{rnsName.name}</div>
-                      </CardDetail.Content>
-                    </CardDetail.Wrapper>
-                  )} */}
+                  <CardDetail.Wrapper>
+                    <CardDetail.Title>RNS</CardDetail.Title>
+                    <Suspense fallback={<Skeleton className="h-6 w-10" />}>
+                      <RnsName address={address} />
+                    </Suspense>
+                  </CardDetail.Wrapper>
                 </div>
                 <CardDetail.Wrapper>
                   <CardDetail.Title>Root Balance</CardDetail.Title>
