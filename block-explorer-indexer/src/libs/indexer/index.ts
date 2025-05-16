@@ -329,12 +329,12 @@ export default class Indexer {
       if (section === 'nft' && method === 'CollectionCreate') {
         await getTokenDetails(collectionIdToERC721Address(args?.collectionUuid) as Address, true);
       }
-      // nft.BaseUriSet, nft.NameSet;
-      if (section === 'nft' && ['BaseUriSet', 'NameSet'].includes(method)) {
+      // nft.BaseUriSet, nft.NameSet, nft.Mint;
+      if (section === 'nft' && ['BaseUriSet', 'NameSet', 'Mint'].includes(method)) {
         await getTokenDetails(collectionIdToERC721Address(args?.collectionId) as Address, true);
       }
-      // sft.CollectionCreate, sft.BaseUriSet, sft.NameSet
-      if (section === 'sft' && ['CollectionCreate', 'BaseUriSet', 'NameSet'].includes(method)) {
+      // sft.CollectionCreate, sft.BaseUriSet, sft.NameSet, sft.Mint
+      if (section === 'sft' && ['CollectionCreate', 'BaseUriSet', 'NameSet', 'Mint'].includes(method)) {
         await getTokenDetails(collectionIdToERC1155Address(args?.collectionId) as Address, true);
       }
       // assets.ForceCreated
