@@ -1,12 +1,19 @@
-import Container from '@/components/container';
-import LatestBlocks from '@/components/homepage/latest-blocks';
-import LatestExtrinsics from '@/components/homepage/latest-extrinsics';
-import LatestTransactions from '@/components/homepage/latest-transactions';
+import {
+  RiArrowRightUpLine,
+  RiSearchLine,
+  RiTimerLine,
+  RiPencilLine,
+  RiArrowLeftRightLine,
+  RiWalletLine
+} from '@remixicon/react'
+
+import { LatestBlocks } from '@/components/homepage/latest-blocks';
+import { LatestExtrinsics } from '@/components/homepage/latest-extrinsics';
+import { LatestTransactions } from '@/components/homepage/latest-transactions';
 import TargetTimeCountdown from '@/components/target-time-countdown';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { formatNumber, handleRequestResult } from '@/lib/utils';
-import { ArrowLeftRight, Clock, Pencil, Wallet } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +21,7 @@ const getData = async () => {
   const [blocksResponse, transactionsResponse, extrinsicsResponse, chainSummaryResponse] = await Promise.all([
     request(ApiCommand.getBlocks, { page: 1, limit: 10 }),
     request(ApiCommand.getTransactions, { page: 1, limit: 5 }),
-    request(ApiCommand.getExtrinsics, { page: 1, limit: 5 }),
+    request(ApiCommand.getExtrinsics, { page: 1, limit: 10 }),
     request(ApiCommand.getChainSummary),
   ]);
 
@@ -29,63 +36,81 @@ const getData = async () => {
 export default async function IndexPage() {
   const { latestBlocks, latestExtrinsics, latestTransactions, chainSummary } = await getData();
 
-  return (
-    <Container>
-      <div className="flex flex-col gap-8">
-        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { title: 'Target Block Time', value: '4s', icon: Clock },
-            {
-              title: 'Signed Extrinsics',
-              value: Number(chainSummary?.signedExtrinsics || 0),
-              icon: Pencil,
-            },
-            {
-              title: 'Total Transactions',
-              value: Number(chainSummary?.evmTransactions || 0),
-              icon: ArrowLeftRight,
-            },
-            {
-              title: 'Wallet Addresses',
-              value: Number(chainSummary?.addresses || 0),
-              icon: Wallet,
-            },
-          ].map((stat, _) => {
-            const Icon = stat.icon;
-            return (
-              <div key={_}>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                    <Icon className="size-5 text-muted-foreground" />
-                    <CardTitle className="text-xs uppercase text-muted-foreground">{stat.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {stat?.title === 'Target Block Time' ? (
-                        <TargetTimeCountdown />
-                      ) : (
-                        formatNumber(typeof stat.value === 'string' ? Number(stat.value) : stat.value)
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            );
-          })}
-        </section>
+  const stats = [
+    { title: 'Target Block Time', value: '4s', icon: RiTimerLine },
+    {
+      title: 'Signed Extrinsics',
+      value: Number(chainSummary?.signedExtrinsics || 0),
+      icon: RiPencilLine,
+    },
+    {
+      title: 'Total Transactions',
+      value: Number(chainSummary?.evmTransactions || 0),
+      icon: RiArrowLeftRightLine,
+    },
+    {
+      title: 'Wallet Addresses',
+      value: Number(chainSummary?.addresses || 0),
+      icon: RiWalletLine,
+    },
+  ]
 
-        <section className="grid grid-cols-12 gap-6">
-          <div className="col-span-full">
+  return (
+    <>
+      <div style={{ background: `url('/home-page-background.png') top / 100% no-repeat` }}>
+        <div className="container flex flex-col gap-6 p-4 pt-8 lg:px-8">
+          <div className="flex items-center py-4">
+            <div className="flex flex-1 flex-col gap-4">
+              <h1 className="text-[32px]/[44px] font-bold">Root Network Explorer</h1>
+              <div className="flex w-full max-w-[650px] items-center gap-4 rounded-[14px] bg-white p-2 dark:bg-black">
+                <p className="flex-1 pl-2 text-sm font-normal text-foreground/60">Search by address / txn hash / block...</p>
+                <Button className="p-2.5">
+                  <RiSearchLine className="size-5" />
+                </Button>
+              </div>
+            </div>
+            <div
+              className="rounded-[16px] p-px"
+              style={{ background: 'linear-gradient(90deg, #8F9AE9 0%, #E0BC95 50%, #F78F50 100%)' }}
+            >
+              <div className="flex max-w-[330px] flex-col gap-1 rounded-[15px] bg-white p-6 pt-5 dark:bg-black">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-[18px]/[28px] font-semibold">API Portal</h4>
+                  <RiArrowRightUpLine className="size-6" />
+                </div>
+                <p className="text-xs font-normal text-foreground/60">
+                  Kickstart your development on The Root Network with Rootscan’s <strong className="text-foreground">API</strong> and <strong className="text-foreground">RPC</strong> services
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <section className="grid grid-cols-4">
+            {stats.map(({ icon: Icon, ...stat }, i) => (
+              <div key={i} className="flex flex-col gap-3 border-r border-secondary bg-white p-6 first-of-type:rounded-l-[16px] last-of-type:rounded-r-[16px] last-of-type:border-r-0 dark:bg-black">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Icon className="size-5" />
+                  <span className="text-xs font-bold uppercase">{stat.title}</span>
+                </div>
+                <div className="text-2xl font-semibold">
+                  {stat?.title === 'Target Block Time' ? (
+                    <TargetTimeCountdown />
+                  ) : (
+                    formatNumber(typeof stat.value === 'string' ? Number(stat.value) : stat.value)
+                  )}
+                </div>
+              </div>
+            ))}
+          </section>
+
+          <div className="grid grid-cols-2 gap-6">
             <LatestBlocks latestBlocks={latestBlocks} />
-          </div>
-          <div className="col-span-full lg:col-span-8">
-            <LatestTransactions latestTransactions={latestTransactions} />
-          </div>
-          <div className="col-span-full lg:col-span-4">
             <LatestExtrinsics latestExtrinsics={latestExtrinsics} />
           </div>
-        </section>
+
+          <LatestTransactions latestTransactions={latestTransactions} />
+        </div>
       </div>
-    </Container>
+    </>
   );
 }

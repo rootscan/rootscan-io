@@ -1,68 +1,60 @@
 'use client';
 
-import SectionTitle from '@/components/section-title';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { IExtrinsic } from '@/types/models';
-import { FunctionSquare } from 'lucide-react';
 import Link from 'next/link';
+
+import { Button } from '@/components/ui/button.tsx';
+import { Card, CardHeader, CardTitle } from '@/components/ui/v2/card';
+import { IExtrinsic } from '@/types/models';
 
 import AddressDisplay from '../address-display';
 import TimeAgoDate from '../time-ago-date';
 
-export default function LatestExtrinsics({ latestExtrinsics }: { latestExtrinsics: IExtrinsic[] }) {
+type LatestExtrinsicsProps = {
+  latestExtrinsics: IExtrinsic[]
+}
+export const LatestExtrinsics = (props: LatestExtrinsicsProps) => {
+  const { latestExtrinsics } = props;
+
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <Link href="/extrinsics">
-          <SectionTitle>Extrinsics</SectionTitle>
-        </Link>
-      </div>
-      <div className="group flex flex-col gap-6">
-        {latestExtrinsics?.map((extrinsic) => (
-          <Card
+    <Card>
+      <CardHeader className="flex-row items-center justify-between">
+        <CardTitle>Extrinsics</CardTitle>
+        <Button asChild variant="secondary" size="sm">
+          <Link href="/extrinsics">View All</Link>
+        </Button>
+      </CardHeader>
+      {latestExtrinsics?.map((extrinsic) => {
+        const summary = [
+          ['Pallet', extrinsic?.section],
+          ['Method', extrinsic?.method],
+          ['Signer', <AddressDisplay address={extrinsic?.signer} useShortenedAddress className="text-xs font-semibold" />],
+        ]
+        return (
+          <div
             key={extrinsic?.extrinsicId}
-            // className={cn([_ === 0 && "duration-300 animate-in fade-in"])}
+            className="flex items-center gap-6 border-b border-[#F1F1F1] p-4 pl-6 last-of-type:border-b-0 dark:border-[#1C1C1C]"
           >
-            <CardHeader>
-              <CardTitle>
-                <div className="flex items-center gap-4">
-                  <FunctionSquare className="size-6 text-muted-foreground" />
-                  <Link href={`/extrinsics/${extrinsic?.extrinsicId}`} className="shrink-0">
-                    <span>{extrinsic?.extrinsicId}</span>
-                  </Link>
-                  <div className="ml-auto flex items-center">
-                    <span className="text-xs text-muted-foreground">
-                      <TimeAgoDate date={extrinsic?.timestamp * 1000} />
-                    </span>
-                  </div>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-row justify-between">
-                  <div className="flex gap-2 truncate">
-                    <span className="text-muted-foreground">Pallet</span>
-                    <span className="truncate">{extrinsic?.section}</span>
-                  </div>
-                </div>
-                <div className="flex flex-row justify-between">
-                  <div className="flex gap-2 truncate">
-                    <span className="text-muted-foreground">Method</span>
-                    <span className="truncate">{extrinsic?.method}</span>
-                  </div>
-                </div>
-                {extrinsic?.signer ? (
-                  <div className="flex gap-2">
-                    <span className="text-muted-foreground">Signer</span>
-                    <AddressDisplay address={extrinsic?.signer} useShortenedAddress />
-                  </div>
-                ) : null}
+            <div className="flex flex-1 items-center gap-4">
+              <div className="rounded-[12px] bg-[#F5F5F5] p-3 dark:bg-[#1C1C1C]">
+                <img src="/layers.png" alt="Layers" className="size-10" />
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
+              <div className="flex flex-col">
+                <h4 className="text-[18px]/[28px] font-semibold">{extrinsic?.extrinsicId}</h4>
+                <span className="text-xs text-foreground/40"><TimeAgoDate date={extrinsic?.timestamp * 1000} /></span>
+              </div>
+            </div>
+
+            <div className="flex min-w-[200px] flex-col gap-1 rounded-[12px] border border-[#F1F1F1] p-3 dark:border-[#1C1C1C]">
+              {summary.map(([label, value], i) => (
+                <div key={i} className="flex items-center justify-between gap-4">
+                  <p className="text-xs text-[#737373]">{label}</p>
+                  {typeof value === 'string' ? <p className="text-xs font-semibold">{value}</p> : value}
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      })}
+    </Card>
   );
 }

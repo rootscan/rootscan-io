@@ -1,8 +1,9 @@
-import { getAddressName, knownAddressNames } from '@/lib/constants/knownAddresses';
-import { cn } from '@/lib/utils';
-import { FileText } from 'lucide-react';
+import { RiFileList3Line } from '@remixicon/react';
 import Link from 'next/link';
 import { Address, getAddress, isAddress } from 'viem';
+
+import { getAddressName, knownAddressNames } from '@/lib/constants/knownAddresses';
+import { cn } from '@/lib/utils';
 
 import { CopyButton } from './copy-button';
 import Logo from './logo';
@@ -43,10 +44,10 @@ export default function AddressDisplay({
   const isFuturepass = address?.toLowerCase()?.startsWith('0xffffffff');
 
   return (
-    <div className={cn(['flex items-center gap-2', className ? className : ''])}>
+    <div className={cn(['flex font-semibold items-center gap-1.5 text-sm', className ? className : ''])}>
       {isContract ? (
         <Tooltip text="EVM Contract" asChild>
-          <FileText className="size-4 text-muted-foreground" />
+          <RiFileList3Line className="size-4 text-muted-foreground" />
         </Tooltip>
       ) : null}
       {isFuturepass ? (
