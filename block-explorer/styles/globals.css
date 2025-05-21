@@ -81,3 +81,17 @@
     overflow-wrap: anywhere;
   }
 }
+
+@layer utilities {
+  .h-stack {
+    @apply [&>div:last-of-type]:border-b-0 [&>div]:border-b [&>div]:border-[#F1F1F1] dark:[&>div]:border-[#1C1C1C];
+  }
+
+  .link-box {
+    @apply relative;
+  }
+
+  .link-overlay {
+    @apply before:absolute before:block before:content-[''] before:cursor-[inherit] before:size-full before:top-0 before:left-0 before:z-0;
+  }
+}

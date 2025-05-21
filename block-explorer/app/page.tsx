@@ -14,6 +14,7 @@ import TargetTimeCountdown from '@/components/target-time-countdown';
 import { Button } from '@/components/ui/button.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { formatNumber, handleRequestResult } from '@/lib/utils';
+import { Search } from '@/components/homepage/search.tsx';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,24 +59,25 @@ export default async function IndexPage() {
   return (
     <>
       <div style={{ background: `url('/home-page-background.png') top / 100% no-repeat` }}>
-        <div className="container flex flex-col gap-6 p-4 pt-8 lg:px-8">
+        <div className="container flex flex-col gap-6 px-4 pt-8 pb-14 lg:px-8">
           <div className="flex items-center py-4">
             <div className="flex flex-1 flex-col gap-4">
               <h1 className="text-[32px]/[44px] font-bold">Root Network Explorer</h1>
-              <div className="flex w-full max-w-[650px] items-center gap-4 rounded-[14px] bg-white p-2 dark:bg-black">
-                <p className="flex-1 pl-2 text-sm font-normal text-foreground/60">Search by address / txn hash / block...</p>
-                <Button className="p-2.5">
-                  <RiSearchLine className="size-5" />
-                </Button>
-              </div>
+              <Search />
             </div>
             <div
-              className="rounded-[16px] p-px"
+              className="link-box rounded-[16px] p-px"
               style={{ background: 'linear-gradient(90deg, #8F9AE9 0%, #E0BC95 50%, #F78F50 100%)' }}
             >
-              <div className="flex max-w-[330px] flex-col gap-1 rounded-[15px] bg-white p-6 pt-5 dark:bg-black">
+              <div
+                className="flex max-w-[330px] flex-col gap-1 rounded-[15px] bg-white p-6 pt-5 hover:bg-api-portal-banner dark:bg-black"
+              >
                 <div className="flex items-center justify-between">
-                  <h4 className="text-[18px]/[28px] font-semibold">API Portal</h4>
+                  <a
+                    href="https://build.rootscan.io/"
+                    target="_blank"
+                    className="link-overlay text-[18px]/[28px] font-semibold"
+                  >API Portal</a>
                   <RiArrowRightUpLine className="size-6" />
                 </div>
                 <p className="text-xs font-normal text-foreground/60">

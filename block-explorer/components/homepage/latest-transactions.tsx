@@ -28,16 +28,21 @@ export const LatestTransactions = (props: LatestTransactionsProps) => {
           <Link href="/evm-transactions">View All</Link>
         </Button>
       </CardHeader>
-      <div className="[&>div:last-of-type]:border-b-0 [&>div]:border-b [&>div]:border-[#F1F1F1] dark:[&>div]:border-[#1C1C1C]">
+      <div className="h-stack">
         {latestTransactions?.map((transaction, _) => (
-          <CardContent key={transaction?.hash || _} className="flex flex-row items-center gap-4">
+          <CardContent key={transaction?.hash || _} className="flex flex-row items-center gap-4 p-6">
             <div className="rounded-[12px] bg-[#F5F5F5] p-3 dark:bg-[#1C1C1C]">
               <img src="/arrows.png" alt="Arrows" className="size-10" />
             </div>
 
             <div className="flex flex-1 flex-col gap-1.5">
               <div className="flex items-center gap-2">
-                <p className="flex-1 text-[16px]/[24px] font-semibold">{transaction.hash}</p>
+                <Link
+                  href={`/tx/${transaction.hash}`}
+                  className="flex-1 text-[16px]/[24px] font-semibold"
+                >
+                  {transaction.hash}
+                </Link>
                 {transaction?.toLookup?.isContract ? <Badge variant="info">Contract Call</Badge> : null}
                 {transaction?.tags?.map((tag, _) => (
                   <Badge variant="info" key={_}>

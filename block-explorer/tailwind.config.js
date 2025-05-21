@@ -13,6 +13,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         'main-image': "url('/bg.jpg')",
+        'api-portal-banner': "linear-gradient(90deg, rgba(143, 154, 233, 0.10) 0%, rgba(224, 188, 149, 0.10) 50%, rgba(247, 143, 80, 0.10) 100%)",
       },
       colors: {
         border: 'hsl(var(--border))',

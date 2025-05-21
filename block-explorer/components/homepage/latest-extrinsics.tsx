@@ -3,7 +3,7 @@
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button.tsx';
-import { Card, CardHeader, CardTitle } from '@/components/ui/v2/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/v2/card';
 import { IExtrinsic } from '@/types/models';
 
 import AddressDisplay from '../address-display';
@@ -23,38 +23,45 @@ export const LatestExtrinsics = (props: LatestExtrinsicsProps) => {
           <Link href="/extrinsics">View All</Link>
         </Button>
       </CardHeader>
-      {latestExtrinsics?.map((extrinsic) => {
-        const summary = [
-          ['Pallet', extrinsic?.section],
-          ['Method', extrinsic?.method],
-          ['Signer', <AddressDisplay address={extrinsic?.signer} useShortenedAddress className="text-xs font-semibold" />],
-        ]
-        return (
-          <div
-            key={extrinsic?.extrinsicId}
-            className="flex items-center gap-6 border-b border-[#F1F1F1] p-4 pl-6 last-of-type:border-b-0 dark:border-[#1C1C1C]"
-          >
-            <div className="flex flex-1 items-center gap-4">
-              <div className="rounded-[12px] bg-[#F5F5F5] p-3 dark:bg-[#1C1C1C]">
-                <img src="/layers.png" alt="Layers" className="size-10" />
-              </div>
-              <div className="flex flex-col">
-                <h4 className="text-[18px]/[28px] font-semibold">{extrinsic?.extrinsicId}</h4>
-                <span className="text-xs text-foreground/40"><TimeAgoDate date={extrinsic?.timestamp * 1000} /></span>
-              </div>
-            </div>
-
-            <div className="flex min-w-[200px] flex-col gap-1 rounded-[12px] border border-[#F1F1F1] p-3 dark:border-[#1C1C1C]">
-              {summary.map(([label, value], i) => (
-                <div key={i} className="flex items-center justify-between gap-4">
-                  <p className="text-xs text-[#737373]">{label}</p>
-                  {typeof value === 'string' ? <p className="text-xs font-semibold">{value}</p> : value}
+      <div className="h-stack">
+        {latestExtrinsics?.map((extrinsic) => {
+          const summary = [
+            ['Pallet', extrinsic?.section],
+            ['Method', extrinsic?.method],
+            ['Signer', <AddressDisplay address={extrinsic?.signer} useShortenedAddress className="text-xs font-semibold" />],
+          ]
+          return (
+            <CardContent
+              key={extrinsic?.extrinsicId}
+              className="flex items-center gap-6 pl-6"
+            >
+              <div className="flex flex-1 items-center gap-4">
+                <div className="rounded-[12px] bg-[#F5F5F5] p-3 dark:bg-[#1C1C1C]">
+                  <img src="/layers.png" alt="Layers" className="size-10" />
                 </div>
-              ))}
-            </div>
-          </div>
-        )
-      })}
+                <div className="flex flex-col">
+                  <Link
+                    href={`/extrinsics/${extrinsic?.extrinsicId}`}
+                    className="text-[18px]/[28px] font-semibold"
+                  >
+                    {extrinsic?.extrinsicId}
+                  </Link>
+                  <span className="text-xs text-foreground/40"><TimeAgoDate date={extrinsic?.timestamp * 1000} /></span>
+                </div>
+              </div>
+
+              <div className="flex min-w-[200px] flex-col gap-1 rounded-[12px] border border-[#F1F1F1] p-3 dark:border-[#1C1C1C]">
+                {summary.map(([label, value], i) => (
+                  <div key={i} className="flex items-center justify-between gap-4">
+                    <p className="text-xs text-[#737373]">{label}</p>
+                    {typeof value === 'string' ? <p className="text-xs font-semibold">{value}</p> : value}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          )
+        })}
+      </div>
     </Card>
   );
 }
