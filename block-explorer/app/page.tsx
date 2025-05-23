@@ -56,8 +56,8 @@ export default async function IndexPage() {
 
   return (
     <div style={{ background: `url('/home-page-background.png') top / 100% no-repeat` }}>
-      <div className="container flex flex-col gap-6 px-4 md:px-6 xl:px-14 pt-8 md:pt-10 xl:pt-8 pb-6 xl:pb-14 lg:px-8">
-        <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:gap-0 xl:py-4">
+      <div className="container grid grid-cols-2 gap-4 md:gap-6 px-4 md:px-6 xl:px-14 pt-8 md:pt-10 xl:pt-8 pb-6 xl:pb-14 lg:px-8">
+        <section className="col-span-2 flex flex-col gap-6 xl:flex-row xl:items-center xl:gap-0 xl:py-4">
           <div className="flex flex-1 flex-col gap-4">
             <h1 className="text-[32px]/[44px] font-bold">The Root Network Explorer</h1>
             <div className="w-full xl:max-w-[650px]">
@@ -84,11 +84,11 @@ export default async function IndexPage() {
               </p>
             </div>
           </div>
-        </div>
+        </section>
 
-        <section className="bg-white grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 rounded-[16px] dark:bg-black">
+        <section className="bg-secondary col-span-2 gap-px grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 overflow-hidden rounded-[16px]">
           {stats.map(({ icon: Icon, ...stat }, i) => (
-            <div key={i} className="flex flex-col gap-3 border-r border-secondary  p-6 last-of-type:border-r-0">
+            <div key={i} className="bg-white flex flex-col gap-2 md:gap-3 p-4 md:p-6 dark:bg-black">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Icon className="size-5" />
                 <span className="text-xs font-bold uppercase">{stat.title}</span>
@@ -104,12 +104,17 @@ export default async function IndexPage() {
           ))}
         </section>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="col-span-2 xl:col-span-1">
           <LatestBlocks latestBlocks={latestBlocks} />
+        </div>
+
+        <div className="col-span-2 xl:col-span-1">
           <LatestExtrinsics latestExtrinsics={latestExtrinsics} />
         </div>
 
-        <LatestTransactions latestTransactions={latestTransactions} />
+        <div className="col-span-2">
+          <LatestTransactions latestTransactions={latestTransactions} />
+        </div>
       </div>
     </div>
   );
