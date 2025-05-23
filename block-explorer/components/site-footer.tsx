@@ -15,7 +15,7 @@ export default function SiteFooter() {
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 text-sm">
           <div />
           <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
-            {/* <ThemeToggle /> */}
+            {/*<ThemeToggle />*/}
             <BackToTopButton />
           </div>
         </div>
