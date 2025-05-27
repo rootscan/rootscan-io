@@ -1,9 +1,9 @@
 'use client';
 
-import { RiFileCopyLine, RiCheckLine } from '@remixicon/react'
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
+import { RiCheckLine, RiFileCopyLine } from '@remixicon/react';
 
 const copyToClipboardWithMeta = async (value: string) => {
   navigator.clipboard.writeText(value);

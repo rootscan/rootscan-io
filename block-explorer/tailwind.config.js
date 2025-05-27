@@ -13,7 +13,8 @@ module.exports = {
     extend: {
       backgroundImage: {
         'main-image': "url('/bg.jpg')",
-        'api-portal-banner': "linear-gradient(90deg, rgba(143, 154, 233, 0.10) 0%, rgba(224, 188, 149, 0.10) 50%, rgba(247, 143, 80, 0.10) 100%)",
+        'api-portal-banner':
+          'linear-gradient(90deg, rgba(143, 154, 233, 0.10) 0%, rgba(224, 188, 149, 0.10) 50%, rgba(247, 143, 80, 0.10) 100%)',
         'footer-pattern-desktop': "url('/footer-pattern-desktop.png')",
         'footer-pattern-tablet': "url('/footer-pattern-tablet.png')",
         'footer-pattern-mobile': "url('/footer-pattern-mobile.png')",

@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { RiSearchLine } from '@remixicon/react';
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 
 import { Button } from '@/components/ui/button.tsx';
 import { performSearchMainSearch } from '@/lib/helpers.ts';
+import { RiSearchLine } from '@remixicon/react';
 
 export const Search = () => {
   const [value, setValue] = useState('');
@@ -13,11 +13,11 @@ export const Search = () => {
     if (!value.trim()) return;
     await performSearchMainSearch(value);
     setValue('');
-  }
+  };
 
   const handlePress = async (e: KeyboardEvent) => {
     if (e?.key === 'Enter') {
-      handleSearch()
+      handleSearch();
     }
   };
 
@@ -38,5 +38,5 @@ export const Search = () => {
         <RiSearchLine className="size-5" />
       </Button>
     </div>
-  )
-}
+  );
+};

@@ -1,9 +1,8 @@
 'use client';
 
-import { RiComputerLine, RiSunLine, RiMoonLine } from '@remixicon/react'
-import { useTheme } from 'next-themes';
-
 import { SegmentedControl, SegmentedControlList, SegmentedControlTrigger } from '@/components/ui/segmented-control';
+import { RiComputerLine, RiMoonLine, RiSunLine } from '@remixicon/react';
+import { useTheme } from 'next-themes';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();

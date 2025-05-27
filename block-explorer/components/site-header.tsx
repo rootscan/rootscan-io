@@ -1,9 +1,8 @@
 import { Fragment } from 'react';
 
+import { SiteTopBar } from '@/components/site-top-bar.tsx';
 import Image from 'next/image';
 import Link from 'next/link';
-
-import { SiteTopBar } from '@/components/site-top-bar.tsx';
 
 import { Navigation } from './navigation';
 import TestnetWarning from './testnet-warning';

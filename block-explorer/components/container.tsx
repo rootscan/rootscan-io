@@ -11,7 +11,5 @@ export default function Container({ children, className }: { children: React.Rea
 }
 
 export function ContainerV2({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div className={cn('container px-4 md:px-6 xl:px-14 lg:px-8', className)} {...props} />
-  );
+  return <div className={cn('container px-4 md:px-6 xl:px-14 lg:px-8', className)} {...props} />;
 }

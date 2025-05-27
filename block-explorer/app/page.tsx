@@ -1,11 +1,3 @@
-import {
-  RiArrowRightUpLine,
-  RiTimerLine,
-  RiPencilLine,
-  RiArrowLeftRightLine,
-  RiWalletLine
-} from '@remixicon/react'
-
 import { LatestBlocks } from '@/components/homepage/latest-blocks';
 import { LatestExtrinsics } from '@/components/homepage/latest-extrinsics';
 import { LatestTransactions } from '@/components/homepage/latest-transactions';
@@ -13,6 +5,7 @@ import { Search } from '@/components/homepage/search.tsx';
 import TargetTimeCountdown from '@/components/target-time-countdown';
 import { ApiCommand, request } from '@/lib/api';
 import { formatNumber, handleRequestResult } from '@/lib/utils';
+import { RiArrowLeftRightLine, RiArrowRightUpLine, RiPencilLine, RiTimerLine, RiWalletLine } from '@remixicon/react';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,7 +45,7 @@ export default async function IndexPage() {
       value: Number(chainSummary?.addresses || 0),
       icon: RiWalletLine,
     },
-  ]
+  ];
 
   return (
     <div style={{ background: `url('/home-page-background.png') top / 100% no-repeat` }}>
@@ -68,19 +61,21 @@ export default async function IndexPage() {
             className="link-box rounded-[16px] p-px"
             style={{ background: 'linear-gradient(90deg, #8F9AE9 0%, #E0BC95 50%, #F78F50 100%)' }}
           >
-            <div
-              className="flex flex-col gap-1 rounded-[15px] bg-white p-6 pt-5 hover:bg-api-portal-banner dark:bg-black xl:max-w-[330px]"
-            >
+            <div className="flex flex-col gap-1 rounded-[15px] bg-white p-6 pt-5 hover:bg-api-portal-banner dark:bg-black xl:max-w-[330px]">
               <div className="flex items-center justify-between">
                 <a
                   href="https://build.rootscan.io/"
                   target="_blank"
                   className="link-overlay text-[18px]/[28px] font-semibold"
-                >API Portal</a>
+                >
+                  API Portal
+                </a>
                 <RiArrowRightUpLine className="size-6" />
               </div>
               <p className="text-xs font-normal text-foreground/60">
-                Kickstart your development on The Root Network with Rootscan’s <strong className="text-foreground">API</strong> and <strong className="text-foreground">RPC</strong> services
+                Kickstart your development on The Root Network with Rootscan’s{' '}
+                <strong className="text-foreground">API</strong> and <strong className="text-foreground">RPC</strong>{' '}
+                services
               </p>
             </div>
           </div>

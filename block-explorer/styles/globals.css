@@ -92,6 +92,6 @@
   }
 
   .link-overlay {
-    @apply before:absolute before:block before:content-[''] before:cursor-[inherit] before:size-full before:top-0 before:left-0 before:z-0;
+    @apply before:absolute before:left-0 before:top-0 before:z-0 before:block before:size-full before:cursor-[inherit] before:content-[''];
   }
 }

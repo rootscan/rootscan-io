@@ -1,22 +1,21 @@
 'use client';
 
-import { generateAvatarURL } from '@cfx-kit/wallet-avatar';
-import { RiArrowRightSLine } from '@remixicon/react'
-import Image from 'next/image';
-import Link from 'next/link';
-import { getAddress } from 'viem';
-
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button.tsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/v2/card';
 import { IEVMTransaction } from '@/types/models';
+import { generateAvatarURL } from '@cfx-kit/wallet-avatar';
+import { RiArrowRightSLine } from '@remixicon/react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { getAddress } from 'viem';
 
 import AddressDisplay from '../address-display';
 import TimeAgoDate from '../time-ago-date';
 
 type LatestTransactionsProps = {
-  latestTransactions: IEVMTransaction[]
-}
+  latestTransactions: IEVMTransaction[];
+};
 export const LatestTransactions = (props: LatestTransactionsProps) => {
   const { latestTransactions } = props;
 
@@ -35,11 +34,11 @@ export const LatestTransactions = (props: LatestTransactionsProps) => {
       </div>
     </Card>
   );
-}
+};
 
 type TransactionCardProps = {
   transaction: IEVMTransaction;
-}
+};
 export const TransactionCard = (props: TransactionCardProps) => {
   const { transaction } = props;
 
@@ -47,11 +46,13 @@ export const TransactionCard = (props: TransactionCardProps) => {
     <div className="flex flex-wrap items-center gap-2">
       {transaction?.toLookup?.isContract ? <Badge variant="info">Contract Call</Badge> : null}
       {transaction?.tags?.map((tag, _) => (
-        <Badge variant="info" key={_}>{tag}</Badge>
+        <Badge variant="info" key={_}>
+          {tag}
+        </Badge>
       ))}
       {transaction.status === 'success' ? <Badge variant="success">Confirmed</Badge> : null}
     </div>
-  )
+  );
 
   const renderDirection = () => (
     <div className="flex flex-wrap items-center gap-1.5 md:justify-start">
@@ -92,7 +93,7 @@ export const TransactionCard = (props: TransactionCardProps) => {
         useShortenedAddress
       />
     </div>
-  )
+  );
 
   return (
     <CardContent className="flex flex-col gap-3 p-4 md:gap-4 md:p-6">
@@ -125,5 +126,5 @@ export const TransactionCard = (props: TransactionCardProps) => {
 
       <div className="md:hidden">{renderDirection()}</div>
     </CardContent>
-  )
-}
+  );
+};

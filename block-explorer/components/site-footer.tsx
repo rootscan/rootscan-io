@@ -1,4 +1,4 @@
-import { RiArrowRightUpLine, RiGithubFill, RiTwitterXFill, RiDiscordFill } from '@remixicon/react'
+import { RiArrowRightUpLine, RiDiscordFill, RiGithubFill, RiTwitterXFill } from '@remixicon/react';
 import Image from 'next/image';
 import Link from 'next/link';
 

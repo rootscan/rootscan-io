@@ -1,9 +1,8 @@
+import { getAddressName, knownAddressNames } from '@/lib/constants/knownAddresses';
+import { cn } from '@/lib/utils';
 import { RiFileList3Line } from '@remixicon/react';
 import Link from 'next/link';
 import { Address, getAddress, isAddress } from 'viem';
-
-import { getAddressName, knownAddressNames } from '@/lib/constants/knownAddresses';
-import { cn } from '@/lib/utils';
 
 import { CopyButton } from './copy-button';
 import Logo from './logo';
