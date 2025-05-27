@@ -1,68 +1,52 @@
 'use client';
 
-import SectionTitle from '@/components/section-title';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ReactNode } from 'react';
+
+import { DataItemCard } from '@/components/homepage/data-item-card.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Card, CardHeader, CardTitle } from '@/components/ui/v2/card';
 import { IExtrinsic } from '@/types/models';
-import { FunctionSquare } from 'lucide-react';
 import Link from 'next/link';
 
 import AddressDisplay from '../address-display';
 import TimeAgoDate from '../time-ago-date';
 
-export default function LatestExtrinsics({ latestExtrinsics }: { latestExtrinsics: IExtrinsic[] }) {
+type LatestExtrinsicsProps = {
+  latestExtrinsics: IExtrinsic[];
+};
+export const LatestExtrinsics = (props: LatestExtrinsicsProps) => {
+  const { latestExtrinsics } = props;
+
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <Link href="/extrinsics">
-          <SectionTitle>Extrinsics</SectionTitle>
-        </Link>
+    <Card>
+      <CardHeader className="flex-row items-center justify-between">
+        <CardTitle>Extrinsics</CardTitle>
+        <Button asChild variant="secondary" size="sm">
+          <Link href="/extrinsics">View All</Link>
+        </Button>
+      </CardHeader>
+      <div className="h-stack">
+        {latestExtrinsics?.map((extrinsic) => {
+          const summary: Array<[string, string | number | ReactNode]> = [
+            ['Pallet', extrinsic?.section],
+            ['Method', extrinsic?.method],
+            [
+              'Signer',
+              <AddressDisplay address={extrinsic?.signer} useShortenedAddress className="text-xs font-semibold" />,
+            ],
+          ];
+          return (
+            <DataItemCard key={extrinsic?.extrinsicId} iconSrc="/layers.png" summary={summary}>
+              <Link href={`/extrinsics/${extrinsic?.extrinsicId}`} className="text-[18px]/[28px] font-semibold">
+                {extrinsic?.extrinsicId}
+              </Link>
+              <span className="text-xs text-foreground/40">
+                <TimeAgoDate date={extrinsic?.timestamp * 1000} />
+              </span>
+            </DataItemCard>
+          );
+        })}
       </div>
-      <div className="group flex flex-col gap-6">
-        {latestExtrinsics?.map((extrinsic) => (
-          <Card
-            key={extrinsic?.extrinsicId}
-            // className={cn([_ === 0 && "duration-300 animate-in fade-in"])}
-          >
-            <CardHeader>
-              <CardTitle>
-                <div className="flex items-center gap-4">
-                  <FunctionSquare className="size-6 text-muted-foreground" />
-                  <Link href={`/extrinsics/${extrinsic?.extrinsicId}`} className="shrink-0">
-                    <span>{extrinsic?.extrinsicId}</span>
-                  </Link>
-                  <div className="ml-auto flex items-center">
-                    <span className="text-xs text-muted-foreground">
-                      <TimeAgoDate date={extrinsic?.timestamp * 1000} />
-                    </span>
-                  </div>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-row justify-between">
-                  <div className="flex gap-2 truncate">
-                    <span className="text-muted-foreground">Pallet</span>
-                    <span className="truncate">{extrinsic?.section}</span>
-                  </div>
-                </div>
-                <div className="flex flex-row justify-between">
-                  <div className="flex gap-2 truncate">
-                    <span className="text-muted-foreground">Method</span>
-                    <span className="truncate">{extrinsic?.method}</span>
-                  </div>
-                </div>
-                {extrinsic?.signer ? (
-                  <div className="flex gap-2">
-                    <span className="text-muted-foreground">Signer</span>
-                    <AddressDisplay address={extrinsic?.signer} useShortenedAddress />
-                  </div>
-                ) : null}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
+    </Card>
   );
-}
+};

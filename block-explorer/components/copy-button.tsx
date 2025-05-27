@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
-import { Check, Copy } from 'lucide-react';
+import { RiCheckLine, RiFileCopyLine } from '@remixicon/react';
 
 const copyToClipboardWithMeta = async (value: string) => {
   navigator.clipboard.writeText(value);
@@ -21,16 +21,16 @@ export const CopyButton = ({ value, className, ...props }: { value: string; clas
   return (
     <div
       className={cn(
-        'text-muted-foreground relative z-10 ml-1 inline-flex cursor-pointer items-center justify-center rounded-md border-neutral-200 text-sm font-medium transition-all focus:outline-none',
+        'text-muted-foreground relative z-10 inline-flex cursor-pointer items-center justify-center rounded-md border-neutral-200 text-sm font-medium transition-all focus:outline-none',
         className,
       )}
       {...props}
     >
       {hasCopied ? (
-        <Check className="size-4" />
+        <RiCheckLine className="size-3.5" />
       ) : (
-        <Copy
-          className="size-4"
+        <RiFileCopyLine
+          className="size-3.5"
           onClick={() => {
             copyToClipboardWithMeta(value);
             setHasCopied(true);

@@ -1,17 +1,22 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Moon, Sun } from 'lucide-react';
+import { SegmentedControl, SegmentedControlList, SegmentedControlTrigger } from '@/components/ui/segmented-control';
+import { RiComputerLine, RiMoonLine, RiSunLine } from '@remixicon/react';
 import { useTheme } from 'next-themes';
 
 export function ThemeToggle() {
-  const { setTheme, theme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   return (
-    <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-      <Sun className="h-6 w-[1.3rem] dark:hidden" />
-      <Moon className="hidden size-5 dark:block" />
-      <span className="sr-only">Toggle theme</span>
-    </Button>
+    <>
+      <SegmentedControl size="sm" value={theme} onValueChange={setTheme}>
+        <SegmentedControlList aria-label="Toggle theme">
+          <SegmentedControlTrigger value="system" aria-label="System" icon={<RiComputerLine />} />
+          <SegmentedControlTrigger value="light" aria-label="Light" icon={<RiSunLine />} />
+          <SegmentedControlTrigger value="dark" aria-label="Dark" icon={<RiMoonLine />} />
+        </SegmentedControlList>
+      </SegmentedControl>
+      <div className="hidden">{theme?.toString()}</div>
+    </>
   );
 }
