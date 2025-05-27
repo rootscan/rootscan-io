@@ -47,12 +47,12 @@ const SegmentedControlList = React.forwardRef<
 SegmentedControlList.displayName = 'SegmentedControlList'
 
 const segmentedControlTriggerVariants = cva(
-  'font-semibold inline-flex items-center justify-center whitespace-nowrap rounded-[6px] ring-offset-background text-[#737373] hover:text-foreground dark:hover:text-foreground dark:text-[#999999] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:text-foreground data-[state=active]:shadow-sm',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-[6px] font-semibold text-[#737373] ring-offset-background transition-all hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm dark:text-[#999999] dark:hover:text-foreground dark:data-[state=active]:text-foreground',
   {
     variants: {
       size: {
-        md: 'gap-2 h-8 px-4 py-1.5 text-[14px]/[20px] [&>svg]:size-[18px]',
-        sm: 'gap-1.5 h-6 px-3 py-1 text-[12px]/[16px] [&>svg]:size-[16px]',
+        md: 'h-8 gap-2 px-4 py-1.5 text-[14px]/[20px] [&>svg]:size-[18px]',
+        sm: 'h-6 gap-1.5 px-3 py-1 text-[12px]/[16px] [&>svg]:size-[16px]',
       },
       icon: {
         none: '',

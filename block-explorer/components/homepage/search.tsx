@@ -28,7 +28,7 @@ export const Search = () => {
   return (
     <div className="flex items-center gap-4 rounded-[14px] bg-white p-2 dark:bg-black">
       <input
-        className="bg-transparent flex-1 h-10 pl-2 text-sm font-normal placeholder:text-foreground/60 focus:outline-none"
+        className="h-10 flex-1 bg-transparent pl-2 text-sm font-normal placeholder:text-foreground/60 focus:outline-none"
         placeholder="Search by address / txn hash / block..."
         value={value}
         onChange={handleChangeValue}

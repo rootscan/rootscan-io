@@ -18,7 +18,7 @@ export const DataItemCard = (props: DataItemCardProps) => {
   const [openSummary, setOpenSummary] = useState(false)
 
   return (
-    <CardContent className="flex flex-col gap-3 pl-6 relative lg:flex-row lg:gap-6 lg:items-center">
+    <CardContent className="relative flex flex-col gap-3 pl-6 lg:flex-row lg:items-center lg:gap-6">
       <Button
         variant="secondary"
         size="sm"
@@ -28,7 +28,7 @@ export const DataItemCard = (props: DataItemCardProps) => {
         <RiArrowDownSLine className="size-4" />
       </Button>
       <div className="flex flex-1 items-center gap-4">
-        <div className="rounded-[12px] bg-[#F5F5F5] p-3 shrink-0 dark:bg-[#1C1C1C]">
+        <div className="shrink-0 rounded-[12px] bg-[#F5F5F5] p-3 dark:bg-[#1C1C1C]">
           <img src={iconSrc} alt="" className="size-10" />
         </div>
         <div className="flex flex-col">

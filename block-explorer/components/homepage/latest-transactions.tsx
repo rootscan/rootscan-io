@@ -44,7 +44,7 @@ export const TransactionCard = (props: TransactionCardProps) => {
   const { transaction } = props;
 
   const renderBadges = () => (
-    <div className="flex flex-wrap gap-2 items-center">
+    <div className="flex flex-wrap items-center gap-2">
       {transaction?.toLookup?.isContract ? <Badge variant="info">Contract Call</Badge> : null}
       {transaction?.tags?.map((tag, _) => (
         <Badge variant="info" key={_}>{tag}</Badge>
@@ -95,11 +95,11 @@ export const TransactionCard = (props: TransactionCardProps) => {
   )
 
   return (
-    <CardContent className="flex flex-col gap-3 md:gap-4 p-4 md:p-6">
+    <CardContent className="flex flex-col gap-3 p-4 md:gap-4 md:p-6">
       <div className="md:hidden">{renderBadges()}</div>
 
       <div className="flex flex-row items-center gap-4">
-        <div className="rounded-[12px] bg-[#F5F5F5] p-3 shrink-0 dark:bg-[#1C1C1C]">
+        <div className="shrink-0 rounded-[12px] bg-[#F5F5F5] p-3 dark:bg-[#1C1C1C]">
           <img src="/arrows.png" alt="Arrows" className="size-10" />
         </div>
 
@@ -107,7 +107,7 @@ export const TransactionCard = (props: TransactionCardProps) => {
           <div className="flex items-center gap-2">
             <Link
               href={`/tx/${transaction.hash}`}
-              className="flex-1 text-[16px]/[24px] font-semibold line-clamp-1"
+              className="line-clamp-1 flex-1 text-[16px]/[24px] font-semibold"
               style={{ wordBreak: 'break-all' }}
             >
               {transaction.hash}
