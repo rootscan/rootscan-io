@@ -11,9 +11,9 @@ import { Badge } from './ui/badge';
 export function SiteHeader() {
   return (
     <Fragment>
-      <header className="z-40 flex w-full flex-col bg-white py-4 dark:bg-black/50">
+      <header className="z-40 flex w-full flex-col bg-white py-4 dark:bg-black">
         <SiteTopBar />
-        <div className="container flex items-center justify-between gap-4 space-x-4 pt-0 sm:space-x-0 lg:pt-4">
+        <div className="container flex items-center justify-between gap-4 space-x-4 px-4 pt-0 sm:space-x-0 lg:px-8 lg:pt-4">
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/site-logos/rootscan-logo.png"
