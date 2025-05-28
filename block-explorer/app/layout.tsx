@@ -1,8 +1,6 @@
 // "use client";
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
-import Container from '@/components/container';
 import QueryProvider from '@/components/layouts/query-provider';
-import MainSearch from '@/components/main-search';
 import ProgressBarWrapper from '@/components/progress-bar-wrapper';
 import SiteFooter from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
@@ -65,9 +63,6 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <QueryProvider>
             <div className="relative flex min-h-screen flex-col justify-between">
               <SiteHeader />
-              <Container className="lg:hidden">
-                <MainSearch />
-              </Container>
               {children}
               <SiteFooter />
             </div>

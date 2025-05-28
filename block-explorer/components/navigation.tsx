@@ -112,6 +112,10 @@ export function Navigation() {
 export const MobileMenu = () => {
   const [open, setOpen] = useState<boolean>(false);
 
+  const pathname = usePathname();
+
+  const isHomePage = pathname === '/';
+
   return (
     <Fragment>
       <div className="block lg:hidden">
@@ -119,7 +123,13 @@ export const MobileMenu = () => {
           {open ? <RiCloseLargeLine className="size-6" /> : <RiMenuLine className="size-6" />}
         </div>
       </div>
-      <div className={cn([open ? 'absolute left-0 top-[64px] !m-0 w-full' : 'hidden'])}>
+      <div
+        className={cn(
+          'absolute left-0 top-[64px] !m-0 w-full',
+          !open && 'hidden',
+          isHomePage ? 'top-[96px]' : 'top-[128px]',
+        )}
+      >
         <Card className="rounded-b-2xl rounded-t-none dark:bg-black">
           <CardContent className="p-2">
             <div className="flex flex-col gap-0.5">
@@ -156,6 +166,7 @@ export const MobileMenu = () => {
                                 key={i}
                                 href={subitem.href}
                                 className="cursor-pointer rounded-[4px] px-3 py-2 text-[14px]/[20px] font-semibold"
+                                onClick={() => setOpen(false)}
                               >
                                 {subitem.title}
                               </Link>
