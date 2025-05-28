@@ -12,20 +12,20 @@ export const SiteTopBar = () => {
   const isHomePage = pathname === '/';
 
   return (
-    <div className="hidden border-b pb-4 lg:block">
-      <div className="container">
+    <div className="border-b pb-[11px] pt-3">
+      <div className="container px-4 lg:px-8">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex w-full select-none items-center gap-2 text-xs text-primary/80">
+          <div className="hidden w-full select-none items-center gap-2 text-xs text-primary/80 lg:flex">
             <OnlyMainnet>
               <RootPrice />
             </OnlyMainnet>
-            {isHomePage && <div className="flex-1" />}
+            {isHomePage && <div className="hidden lg:flex-1" />}
             <RiGasStationLine className="size-4 text-muted-foreground" />{' '}
             <span className="text-muted-foreground">EVM Gas: </span>
             <span>7500 Gwei</span>
           </div>
           {!isHomePage && (
-            <div className="hidden max-w-2xl grow lg:block">
+            <div className="w-full grow lg:max-w-[656px]">
               <MainSearch />
             </div>
           )}
