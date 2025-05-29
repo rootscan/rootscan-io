@@ -44,13 +44,13 @@ export const TransactionCard = (props: TransactionCardProps) => {
 
   const renderBadges = () => (
     <div className="flex flex-wrap items-center gap-2">
-      {transaction?.toLookup?.isContract ? <Badge variant="info">Contract Call</Badge> : null}
+      {transaction?.toLookup?.isContract ? <Badge color="blue">Contract Call</Badge> : null}
       {transaction?.tags?.map((tag, _) => (
-        <Badge variant="info" key={_}>
+        <Badge color="blue" key={_}>
           {tag}
         </Badge>
       ))}
-      {transaction.status === 'success' ? <Badge variant="success">Confirmed</Badge> : null}
+      {transaction.status === 'success' ? <Badge color="green">Confirmed</Badge> : null}
     </div>
   );
 

@@ -157,7 +157,7 @@ export default function Page() {
                     <h3 className="shrink">{item?.title}</h3>
                     <p className="grow text-xs text-muted-foreground">{item?.description}</p>
                     <div>
-                      <Badge variant="outline">{item?.category}</Badge>
+                      <Badge type="linear">{item?.category}</Badge>
                     </div>
                   </div>
                 </Link>

@@ -15,11 +15,11 @@ export default function ExtrinsicStatus({
     <div>
       {extrinsic?.isSuccess === false ? (
         <div className="flex items-center gap-1">
-          <Badge variant="destructive">Failed</Badge>
-          {showErrorInfo ? <Badge variant="outline">Reason: {extrinsic?.errorInfo || 'Unknown'}</Badge> : null}
+          <Badge color="orange">Failed</Badge>
+          {showErrorInfo ? <Badge type="linear">Reason: {extrinsic?.errorInfo || 'Unknown'}</Badge> : null}
         </div>
       ) : (
-        <Badge variant="success">Success</Badge>
+        <Badge color="green">Success</Badge>
       )}
     </div>
   );

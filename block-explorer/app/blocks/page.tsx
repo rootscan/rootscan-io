@@ -56,11 +56,11 @@ export default async function Page({ searchParams }: PageProps) {
                   <TableCell className="max-w-fit md:max-w-[120px] lg:max-w-[60px]">
                     {block?.isFinalized ? (
                       <div>
-                        <Badge variant="success">Finalized</Badge>
+                        <Badge color="green">Finalized</Badge>
                       </div>
                     ) : (
                       <div className="flex items-center">
-                        <Badge variant="warning">Unfinalized</Badge>
+                        <Badge color="orange">Unfinalized</Badge>
                       </div>
                     )}
                   </TableCell>

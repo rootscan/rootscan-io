@@ -5,7 +5,7 @@ import { Badge } from './ui/badge';
 export default function TransactionStatusBadge({ status }: { status: 'reverted' | 'success' | 'pending' }) {
   if (status === 'reverted') {
     return (
-      <Badge variant="destructive">
+      <Badge color="orange">
         <div className="flex items-center gap-1">
           <AlertCircle className="size-4" /> Reverted
         </div>
@@ -13,7 +13,7 @@ export default function TransactionStatusBadge({ status }: { status: 'reverted' 
     );
   } else if (status === 'success') {
     return (
-      <Badge variant="success">
+      <Badge color="green">
         <div className="flex items-center gap-1">
           <Check className="size-4" /> Success
         </div>
@@ -21,7 +21,7 @@ export default function TransactionStatusBadge({ status }: { status: 'reverted' 
     );
   } else if (!status) {
     return (
-      <Badge variant="info">
+      <Badge color="blue">
         {' '}
         <div className="flex items-center gap-1">
           <Clock className="size-4" /> Pending

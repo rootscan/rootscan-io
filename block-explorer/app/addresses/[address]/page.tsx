@@ -271,7 +271,7 @@ const BalancesReserved = ({ tx, address }) => {
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
         <Tooltip text="Reserved">
-          <Badge variant="warning">Reserved</Badge>
+          <Badge color="orange">Reserved</Badge>
         </Tooltip>
       </TableCell>
     </TableRow>
@@ -333,7 +333,7 @@ const BalancesUnreserved = ({ tx, address }) => {
       </TableCell>
       <TableCell className="max-w-[150px] truncate">
         <Tooltip text="Unreserved">
-          <Badge variant="success">Unreserved</Badge>
+          <Badge color="green">Unreserved</Badge>
         </Tooltip>
       </TableCell>
       <TableCell className="max-w-[25px] text-muted-foreground">

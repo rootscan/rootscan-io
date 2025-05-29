@@ -200,13 +200,7 @@ export default async function Layout({ children, params }: LayoutProps) {
                   <CardDetail.Wrapper>
                     <CardDetail.Title>Tags</CardDetail.Title>
                     <CardDetail.Content>
-                      <div className="mt-2 flex gap-2">
-                        {tags?.map((tag, _) => (
-                          <Badge variant="default" key={_}>
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
+                      <div className="mt-2 flex gap-2">{tags?.map((tag, _) => <Badge key={_}>{tag}</Badge>)}</div>
                     </CardDetail.Content>
                   </CardDetail.Wrapper>
                 ) : null}

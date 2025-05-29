@@ -32,13 +32,14 @@ export default function MainSearch() {
   };
 
   useKeyDown('/', handleFocus);
+  useKeyDown('Escape', () => inputRef.current?.blur());
 
   return (
     <div className="relative">
       <RiSearchLine className="absolute left-4 top-3 -z-10 size-4 text-muted-foreground" />
       <Input
         ref={inputRef}
-        className="px-10"
+        className="px-10 focus:outline-0"
         placeholder="Search by address / txn hash / block..."
         value={value}
         onChange={handleChangeValue}

@@ -4,12 +4,7 @@ import { Fragment, useState } from 'react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible.tsx';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu.tsx';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card.tsx';
 import { cn } from '@/lib/utils';
 import { RiArrowDownSLine, RiCloseLargeLine, RiMenuLine } from '@remixicon/react';
 import Link from 'next/link';
@@ -84,21 +79,20 @@ export function Navigation() {
               {isLink ? (
                 headerMenuLink
               ) : (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>{headerMenuLink}</DropdownMenuTrigger>
-                  <DropdownMenuContent className="flex flex-col gap-1 rounded-[12px] bg-popover p-2">
+                <HoverCard openDelay={0}>
+                  <HoverCardTrigger asChild>{headerMenuLink}</HoverCardTrigger>
+                  <HoverCardContent className="flex w-fit flex-col gap-1 rounded-[12px] bg-popover p-2">
                     {subitems?.map((subitem, i) => (
-                      <DropdownMenuItem key={i} asChild>
-                        <Link
-                          href={subitem.href}
-                          className="cursor-pointer rounded-[4px] px-3 py-2 text-[14px]/[20px] font-semibold"
-                        >
-                          {subitem.title}
-                        </Link>
-                      </DropdownMenuItem>
+                      <Link
+                        key={i}
+                        href={subitem.href}
+                        className="cursor-pointer rounded-[4px] px-3 py-2 text-[14px]/[20px] font-semibold hover:bg-[#F5F5F5] dark:hover:bg-[#1C1C1C]"
+                      >
+                        {subitem.title}
+                      </Link>
                     ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  </HoverCardContent>
+                </HoverCard>
               )}
             </Fragment>
           );
