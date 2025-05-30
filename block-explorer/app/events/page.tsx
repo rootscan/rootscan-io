@@ -3,7 +3,6 @@ import Container from '@/components/container';
 import { ErrorAlert } from '@/components/error-alert';
 import EventsTable from '@/components/events-table';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import SectionTitle from '@/components/section-title';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
@@ -22,19 +21,13 @@ export default async function Page({ searchParams }: PageProps) {
     const data = handleRequestResult(await request(ApiCommand.getEvents, { page }));
 
     return (
-      <Container>
-        <div className="flex flex-col gap-4">
+      <Container className="flex flex-col gap-6">
+        <div className="space-y-4">
           <Breadcrumbs />
           <SectionTitle>Events</SectionTitle>
-          {!data.docs?.length ? (
-            <NoData />
-          ) : (
-            <>
-              <PaginationSuspense pagination={getPaginationData(data)} />
-              <EventsTable events={data.docs} />
-            </>
-          )}
         </div>
+
+        {!data.docs?.length ? <NoData /> : <EventsTable events={data.docs} pagination={getPaginationData(data)} />}
       </Container>
     );
   } catch (error) {
