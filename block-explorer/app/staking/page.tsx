@@ -25,6 +25,8 @@ export default async function Page({ searchParams }: PageProps) {
     const searchParamsObj = await searchParams;
     const page = Number(searchParamsObj?.page) || 1;
 
+    const numberFormatter = new Intl.NumberFormat('en-US', { style: 'decimal' });
+
     const data = handleRequestResult(await request(ApiCommand.getStakingValidators, { page }));
 
     if (!data.docs?.length) return <NoData />;
@@ -44,7 +46,9 @@ export default async function Page({ searchParams }: PageProps) {
 
         <Table>
           <TableCaption>
-            <TableNavigation pagination={getPaginationData(data)} />
+            <TableNavigation pagination={getPaginationData(data)}>
+              {!data?.skipFullCount && <p>Showing {numberFormatter.format(data.totalDocs)} results</p>}
+            </TableNavigation>
           </TableCaption>
           <TableHeader>
             <TableRow>
