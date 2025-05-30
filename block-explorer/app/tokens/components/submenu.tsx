@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 
-import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export default function SubMenu() {
@@ -28,41 +28,20 @@ export default function SubMenu() {
     [searchParams],
   );
   const params = new URLSearchParams(searchParams);
-  const currentType = params.get('type');
+  const currentType = params.get('type') || 'undefined';
+
   return (
-    <div className="flex gap-3">
-      <Button
-        variant={!currentType ? 'default' : 'outline'}
-        onClick={() => {
-          router.push(pathname + '?' + createQueryString('type', 'undefined'));
-        }}
-      >
-        All
-      </Button>
-      <Button
-        variant={currentType === 'ERC20' ? 'default' : 'outline'}
-        onClick={() => {
-          router.push(pathname + '?' + createQueryString('type', 'ERC20'));
-        }}
-      >
-        ERC20
-      </Button>
-      <Button
-        variant={currentType === 'ERC721' ? 'default' : 'outline'}
-        onClick={() => {
-          router.push(pathname + '?' + createQueryString('type', 'ERC721'));
-        }}
-      >
-        ERC721
-      </Button>
-      <Button
-        variant={currentType === 'ERC1155' ? 'default' : 'outline'}
-        onClick={() => {
-          router.push(pathname + '?' + createQueryString('type', 'ERC1155'));
-        }}
-      >
-        ERC1155
-      </Button>
-    </div>
+    <Tabs
+      variant="pill"
+      value={currentType}
+      onValueChange={(newValue) => router.push(pathname + '?' + createQueryString('type', newValue))}
+    >
+      <TabsList>
+        <TabsTrigger value="undefined">All</TabsTrigger>
+        <TabsTrigger value="ERC20">ERC20</TabsTrigger>
+        <TabsTrigger value="ERC721">ERC721</TabsTrigger>
+        <TabsTrigger value="ERC1155">ERC1155</TabsTrigger>
+      </TabsList>
+    </Tabs>
   );
 }
