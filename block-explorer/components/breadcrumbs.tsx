@@ -18,7 +18,7 @@ export default function Breadcrumbs() {
   };
 
   return (
-    <div className="flex max-w-full select-none flex-wrap gap-2 text-xs text-muted-foreground">
+    <div className="flex max-w-full select-none flex-wrap gap-1 text-sm text-muted-foreground">
       <Link href="/" className="duration-300 ease-in-out hover:text-primary">
         <span>Home</span>
       </Link>
@@ -29,7 +29,10 @@ export default function Breadcrumbs() {
             <span>/</span>
             <Link
               href={remaps[href] || href}
-              className={cn(['hover:text-primary duration-300 ease-in-out', _ === paths?.length - 1 ? 'truncate' : ''])}
+              className={cn([
+                'hover:text-primary duration-300 ease-in-out last-of-type:font-semibold last-of-type:text-foreground',
+                _ === paths?.length - 1 ? 'truncate' : '',
+              ])}
             >
               <span className="capitalize">
                 {isAddress(item) || item?.startsWith('0x')

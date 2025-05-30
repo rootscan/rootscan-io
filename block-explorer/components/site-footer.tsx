@@ -2,7 +2,6 @@ import { RiArrowRightUpLine, RiDiscordFill, RiGithubFill, RiTwitterXFill } from 
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { ContainerV2 } from './container';
 import MetamaskWrapper from './metamask-wrapper';
 import { ThemeToggle } from './theme-toggle';
 import { Button } from './ui/button';
@@ -10,7 +9,7 @@ import { Button } from './ui/button';
 export default function SiteFooter() {
   return (
     <div className="flex w-full flex-col bg-white dark:bg-black/50">
-      <ContainerV2 className="flex flex-col gap-8 py-10">
+      <div className="container flex flex-col gap-8 py-10">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <h3 className="text-[20px]/[32px] font-semibold">
             Kickstart your development on The Root Network with Rootscan’s API and RPC services
@@ -21,9 +20,9 @@ export default function SiteFooter() {
           </Button>
         </div>
         <div className="aspect-[345/75] bg-footer-pattern-mobile bg-contain bg-center bg-no-repeat md:aspect-[724/75] md:bg-footer-pattern-tablet xl:aspect-[1334/75] xl:bg-footer-pattern-desktop" />
-      </ContainerV2>
+      </div>
       <div className="hidden h-px w-full border-b md:block" />
-      <ContainerV2 className="flex flex-wrap gap-4 py-6 md:flex-nowrap md:items-center">
+      <div className="container flex flex-wrap gap-4 py-6 md:flex-nowrap md:items-center">
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/site-logos/rootscan-logo.png"
@@ -57,8 +56,8 @@ export default function SiteFooter() {
         <div className="w-full md:w-fit [&>button]:w-full md:[&>button]:w-fit">
           <MetamaskWrapper />
         </div>
-      </ContainerV2>
-      <ContainerV2 className="flex flex-wrap gap-4 pb-6 md:items-center xl:flex-nowrap">
+      </div>
+      <div className="container flex flex-wrap gap-4 pb-6 md:items-center xl:flex-nowrap">
         <p className="w-full text-sm font-normal text-muted-foreground xl:w-fit">
           Rootscan is a Block Explorer tailored for The Root Network, an innovative decentralized network.
         </p>
@@ -68,7 +67,7 @@ export default function SiteFooter() {
         </Link>
         <div className="flex-1 xl:hidden" />
         <ThemeToggle />
-      </ContainerV2>
+      </div>
     </div>
   );
 }

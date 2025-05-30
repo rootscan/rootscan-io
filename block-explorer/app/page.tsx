@@ -1,3 +1,4 @@
+import Container from '@/components/container.tsx';
 import { LatestBlocks } from '@/components/homepage/latest-blocks';
 import { LatestExtrinsics } from '@/components/homepage/latest-extrinsics';
 import { LatestTransactions } from '@/components/homepage/latest-transactions';
@@ -49,7 +50,7 @@ export default async function IndexPage() {
 
   return (
     <div style={{ background: `url('/home-page-background.png') top / 100% no-repeat` }}>
-      <div className="container grid grid-cols-2 gap-4 px-4 pb-6 pt-8 md:gap-6 md:px-6 md:pt-10 lg:px-8 xl:px-14 xl:pb-14 xl:pt-8">
+      <Container className="grid grid-cols-2 gap-4 pt-8 md:gap-6 md:pt-10 xl:pt-8">
         <section className="col-span-2 flex flex-col gap-6 xl:flex-row xl:items-center xl:gap-0 xl:py-4">
           <div className="flex flex-1 flex-col gap-4">
             <h1 className="text-[32px]/[44px] font-bold">The Root Network Explorer</h1>
@@ -110,7 +111,7 @@ export default async function IndexPage() {
         <div className="col-span-2">
           <LatestTransactions latestTransactions={latestTransactions} />
         </div>
-      </div>
+      </Container>
     </div>
   );
 }

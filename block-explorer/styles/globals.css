@@ -225,6 +225,16 @@
 }
 
 @layer utilities {
+  .container {
+    @apply px-4 md:px-6 xl:px-14;
+  }
+
+  @media (min-width: 1400px) {
+    .container {
+      @apply max-w-[1440px];
+    }
+  }
+
   .h-stack {
     @apply [&>div:last-of-type]:border-b-0 [&>div]:border-b [&>div]:border-[#F1F1F1] dark:[&>div]:border-[#1C1C1C];
   }

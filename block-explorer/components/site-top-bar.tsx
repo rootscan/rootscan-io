@@ -13,7 +13,7 @@ export const SiteTopBar = () => {
 
   return (
     <div className="border-b">
-      <div className="container flex h-12 items-center justify-between gap-4 px-4 py-2 lg:px-8">
+      <div className="container flex h-12 items-center justify-between gap-4 py-2">
         <div className="hidden w-full select-none items-center gap-2 text-xs text-primary/80 lg:flex">
           <OnlyMainnet>
             <RootPrice />

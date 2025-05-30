@@ -52,7 +52,7 @@ export function Navigation() {
 
   return (
     <Fragment>
-      <div className="hidden items-center gap-0.5 px-4 lg:flex">
+      <div className="hidden items-center gap-0.5 lg:flex">
         {items.map((item, _) => {
           const { title } = item;
           const { href, target } = item as HeaderMenuLink;
