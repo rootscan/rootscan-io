@@ -6,24 +6,31 @@ import TimeAgoDate from '@/components/time-ago-date';
 import TokenDisplay from '@/components/token-display';
 import Tooltip from '@/components/tooltip';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
 import { ETH_TOKEN, XRP_TOKEN } from '@/lib/constants/tokens';
+import { PaginationResponse } from '@/types/api-types.ts';
 import { IExtrinsic } from '@/types/models';
-import { ExternalLink, SortDesc } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
-export default function BridgeTransactions({ transactions }: { transactions: IExtrinsic[] }) {
+interface BridgeTransactionsProps {
+  transactions: IExtrinsic[];
+  pagination?: Omit<PaginationResponse<unknown>, 'docs'>;
+}
+export default function BridgeTransactions({ transactions, pagination }: BridgeTransactionsProps) {
   return (
     <Fragment>
       <Table>
+        {!!pagination && (
+          <TableCaption>
+            <TableNavigation pagination={pagination} />
+          </TableCaption>
+        )}
         <TableHeader>
           <TableRow>
             <TableHead>Type</TableHead>
-            <TableHead>
-              <div className="flex items-center gap-2">
-                <SortDesc className="size-5" /> Timestamp
-              </div>
-            </TableHead>
+            <TableHead>Timestamp</TableHead>
             <TableHead>Blockchain</TableHead>
             <TableHead>From</TableHead>
             <TableHead>Beneficiary</TableHead>

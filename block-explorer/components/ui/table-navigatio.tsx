@@ -11,10 +11,11 @@ export const TableNavigation = React.forwardRef<HTMLDivElement, TableNavigationP
   ({ className, children, pagination, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('flex flex-wrap md:flex-nowrap gap-4 md:items-center md:justify-between py-4 px-5', className)}
+      className={cn('flex flex-wrap md:flex-nowrap gap-4 md:items-center py-4 px-5', className)}
       {...props}
     >
       {children}
+      <div className="flex-1" />
       {!!pagination && (
         <div className="flex items-center gap-1">
           <PaginationSuspense pagination={pagination} />
