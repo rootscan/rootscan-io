@@ -1,15 +1,13 @@
-import { Fragment, Suspense } from 'react';
-
 import AddressDisplay from '@/components/address-display';
 import Breadcrumbs from '@/components/breadcrumbs';
 import Container from '@/components/container';
 import { ErrorAlert } from '@/components/error-alert';
 import NoData from '@/components/no-data';
-import Pagination from '@/components/pagination';
 import SectionTitle from '@/components/section-title';
 import TokenDisplay from '@/components/token-display';
 import Tooltip from '@/components/tooltip';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
@@ -32,55 +30,56 @@ export default async function Page({ searchParams }: PageProps) {
     if (!data.docs?.length) return <NoData />;
 
     return (
-      <Container>
-        <div className="flex flex-col gap-4">
+      <Container className="flex flex-col gap-6">
+        <div className="space-y-4">
           <Breadcrumbs />
           <SectionTitle>Staking</SectionTitle>
-          <p className="text-xs">
+          <p className="text-sm">
             If you own $ROOT and wish to stake, please visit{' '}
-            <Link href="https://staking.therootnetwork.com/" className="text-primary" target="_blank">
+            <Link href="https://staking.therootnetwork.com/" className="text-text-info-primary" target="_blank">
               here.
             </Link>
           </p>
-          <Suspense fallback={<Fragment />}>
-            <Pagination pagination={getPaginationData(data)} />
-          </Suspense>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Validator</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Nominators</TableHead>
-                <TableHead>Total Root Nominated</TableHead>
-                <TableHead className="text-center">Validated Blocks (24h)</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.docs.map((item, _) => (
-                <TableRow key={_}>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <AddressDisplay address={item.validator} useShortenedAddress />
-                      {item?.isOversubscribed ? (
-                        <Tooltip
-                          text={`Validators can only pay out the first 256 nominators per era. \n You will not earn rewards if you are 257 or higher nominator.`}
-                        >
-                          <AlertTriangle className="size-4 text-orange-400" />
-                        </Tooltip>
-                      ) : null}
-                    </div>
-                  </TableCell>
-                  <TableCell>{item?.validatorName}</TableCell>
-                  <TableCell>{item.nominators}</TableCell>
-                  <TableCell>
-                    <TokenDisplay token={ROOT_TOKEN} amount={item?.totalRootNominated} hideCopyButton />
-                  </TableCell>
-                  <TableCell className="text-center">{item?.blocksValidated || 0}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
         </div>
+
+        <Table>
+          <TableCaption>
+            <TableNavigation pagination={getPaginationData(data)} />
+          </TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Validator</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Nominators</TableHead>
+              <TableHead>Total Root Nominated</TableHead>
+              <TableHead>Validated Blocks (24h)</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.docs.map((item, _) => (
+              <TableRow key={_}>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <AddressDisplay address={item.validator} useShortenedAddress />
+                    {item?.isOversubscribed ? (
+                      <Tooltip
+                        text={`Validators can only pay out the first 256 nominators per era. \n You will not earn rewards if you are 257 or higher nominator.`}
+                      >
+                        <AlertTriangle className="size-4 text-orange-400" />
+                      </Tooltip>
+                    ) : null}
+                  </div>
+                </TableCell>
+                <TableCell>{item?.validatorName}</TableCell>
+                <TableCell>{item.nominators}</TableCell>
+                <TableCell>
+                  <TokenDisplay token={ROOT_TOKEN} amount={item?.totalRootNominated} hideCopyButton />
+                </TableCell>
+                <TableCell>{item?.blocksValidated || 0}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </Container>
     );
   } catch (error) {
