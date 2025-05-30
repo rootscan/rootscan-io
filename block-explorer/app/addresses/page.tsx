@@ -11,7 +11,6 @@ import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN, XRP_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
-import { SortDesc } from 'lucide-react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -41,11 +40,7 @@ export default async function Page({ searchParams }: PageProps) {
           <TableHeader>
             <TableRow>
               <TableHead>Address</TableHead>
-              <TableHead>
-                <div className="flex items-center gap-2">
-                  <SortDesc className="size-5" /> Root Balance
-                </div>
-              </TableHead>
+              <TableHead>Root Balance</TableHead>
               <TableHead>XRP Balance</TableHead>
             </TableRow>
           </TableHeader>
