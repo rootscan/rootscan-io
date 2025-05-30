@@ -1,4 +1,3 @@
-import getTokenLogo from '@/lib/constants/tokenLogos';
 import { cn, formatNumber } from '@/lib/utils';
 import { IToken } from '@/types/models';
 import { formatUnits } from 'viem';
@@ -7,7 +6,7 @@ import AddressDisplay from './address-display';
 import TokenLogo from './token-logo';
 import Tooltip from './tooltip';
 
-export default async function TokenDisplay({
+export default function TokenDisplay({
   token,
   amount,
   hideCopyButton = false,
@@ -27,7 +26,7 @@ export default async function TokenDisplay({
   if (!token) {
     return;
   }
-  const hasLogo = getTokenLogo(token?.contractAddress) || null;
+
   return (
     <div className={cn(['flex items-center gap-2 truncate', className ? className : ''])}>
       {!isNaN(amount as number) ? (
@@ -35,7 +34,7 @@ export default async function TokenDisplay({
       ) : null}
       <Tooltip text={token?.contractAddress} asChild>
         <div className="inline-flex items-center gap-1 truncate">
-          {hasLogo && !hideLogo ? (
+          {!hideLogo ? (
             <div className={cn([overrideImageSizeClass ? overrideImageSizeClass : 'size-5', 'shrink-0'])}>
               <TokenLogo contractAddress={token?.contractAddress} width={250} height={250} />
             </div>

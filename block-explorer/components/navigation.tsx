@@ -4,7 +4,6 @@ import { Fragment, useState } from 'react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible.tsx';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card.tsx';
 import { cn } from '@/lib/utils';
 import { RiArrowDownSLine, RiCloseLargeLine, RiMenuLine } from '@remixicon/react';
 import Link from 'next/link';
@@ -70,7 +69,7 @@ export function Navigation() {
               ])}
             >
               {title}
-              {!isLink && <RiArrowDownSLine className="size-4 transition-all group-data-[state=open]:rotate-180" />}
+              {!isLink && <RiArrowDownSLine className="size-4 transition-all group-hover:rotate-180" />}
             </Link>
           );
 
@@ -79,20 +78,24 @@ export function Navigation() {
               {isLink ? (
                 headerMenuLink
               ) : (
-                <HoverCard openDelay={0}>
-                  <HoverCardTrigger asChild>{headerMenuLink}</HoverCardTrigger>
-                  <HoverCardContent className="flex w-fit flex-col gap-1 rounded-[12px] bg-popover p-2">
-                    {subitems?.map((subitem, i) => (
-                      <Link
-                        key={i}
-                        href={subitem.href}
-                        className="cursor-pointer rounded-[4px] px-3 py-2 text-[14px]/[20px] font-semibold hover:bg-[#F5F5F5] dark:hover:bg-[#1C1C1C]"
-                      >
-                        {subitem.title}
-                      </Link>
-                    ))}
-                  </HoverCardContent>
-                </HoverCard>
+                <div className="group relative">
+                  {headerMenuLink}
+                  <div className="absolute left-1/2 top-full z-50 mt-1 hidden w-fit -translate-x-1/2 group-hover:block">
+                    {/* Invisible bridge to maintain hover state */}
+                    <div className="absolute -top-1 left-1/2 h-1 w-full -translate-x-1/2" />
+                    <div className="flex w-fit flex-col gap-1 rounded-[12px] border bg-popover p-2 shadow-md">
+                      {subitems?.map((subitem, i) => (
+                        <Link
+                          key={i}
+                          href={subitem.href}
+                          className="cursor-pointer whitespace-nowrap rounded-[4px] px-3 py-2 text-[14px]/[20px] font-semibold hover:bg-[#F5F5F5] dark:hover:bg-[#1C1C1C]"
+                        >
+                          {subitem.title}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               )}
             </Fragment>
           );

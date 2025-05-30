@@ -40,7 +40,8 @@ export default async function Page({ searchParams }: PageProps) {
           <TableCaption>
             <TableNavigation pagination={getPaginationData(blocks)}>
               <p>
-                Showing blocks between #{blocks.docs?.[0].number} to #{blocks.docs?.[blocks.docs.length - 1].number}
+                Showing blocks between <span className="font-semibold">{blocks.docs?.[0].number}</span> to{' '}
+                <span className="font-semibold">{blocks.docs?.[blocks.docs.length - 1].number}</span>
               </p>
             </TableNavigation>
           </TableCaption>

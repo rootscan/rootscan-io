@@ -104,8 +104,8 @@ export default async function Page({ searchParams }: PageProps) {
                   {token?.totalSupplyFormatted
                     ? millify(token?.totalSupplyFormatted)
                     : token?.totalSupply
-                      ? millify(token?.totalSupply)
-                      : '-'}
+                    ? millify(token?.totalSupply)
+                    : '-'}
                 </TableCell>
               </TableRow>
             ))}

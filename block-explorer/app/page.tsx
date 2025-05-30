@@ -12,9 +12,9 @@ export const dynamic = 'force-dynamic';
 
 const getData = async () => {
   const [blocksResponse, transactionsResponse, extrinsicsResponse, chainSummaryResponse] = await Promise.all([
-    request(ApiCommand.getBlocks, { page: 1, limit: 10 }),
+    request(ApiCommand.getBlocks, { page: 1, limit: 5 }),
     request(ApiCommand.getTransactions, { page: 1, limit: 5 }),
-    request(ApiCommand.getExtrinsics, { page: 1, limit: 10 }),
+    request(ApiCommand.getExtrinsics, { page: 1, limit: 5 }),
     request(ApiCommand.getChainSummary),
   ]);
 
@@ -59,7 +59,7 @@ export default async function IndexPage() {
             </div>
           </div>
           <div
-            className="link-box rounded-[16px] p-px"
+            className="link-box group rounded-[16px] p-px"
             style={{ background: 'linear-gradient(90deg, #8F9AE9 0%, #E0BC95 50%, #F78F50 100%)' }}
           >
             <div className="flex flex-col gap-1 rounded-[15px] bg-white p-6 pt-5 hover:bg-api-portal-banner dark:bg-black xl:max-w-[330px]">
@@ -71,10 +71,10 @@ export default async function IndexPage() {
                 >
                   API Portal
                 </a>
-                <RiArrowRightUpLine className="size-6" />
+                <RiArrowRightUpLine className="size-6 transition-transform duration-300 ease-in-out group-hover:rotate-45" />
               </div>
               <p className="text-xs font-normal text-foreground/60">
-                Kickstart your development on The Root Network with Rootscan’s{' '}
+                Kickstart your development on The Root Network with Rootscan's{' '}
                 <strong className="text-foreground">API</strong> and <strong className="text-foreground">RPC</strong>{' '}
                 services
               </p>
