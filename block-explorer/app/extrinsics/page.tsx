@@ -3,7 +3,6 @@ import Container from '@/components/container';
 import { ErrorAlert } from '@/components/error-alert';
 import ExtrinsicsTable from '@/components/extrinsics-table';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import SectionTitle from '@/components/section-title';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
@@ -23,13 +22,12 @@ export default async function Page({ searchParams }: PageProps) {
     if (!data.docs?.length) return <NoData />;
 
     return (
-      <Container>
-        <div className="flex flex-col gap-4">
+      <Container className="flex flex-col gap-6">
+        <div className="space-y-4">
           <Breadcrumbs />
           <SectionTitle>Extrinsics</SectionTitle>
-          <PaginationSuspense pagination={getPaginationData(data)} />
-          <ExtrinsicsTable extrinsics={data.docs} />
         </div>
+        <ExtrinsicsTable extrinsics={data.docs} pagination={getPaginationData(data)} />
       </Container>
     );
   } catch (error) {
