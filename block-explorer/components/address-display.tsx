@@ -35,10 +35,10 @@ export default function AddressDisplay({
   const name = knownAddressNames[getAddress(address)]
     ? knownAddressNames[getAddress(address)]
     : rnsName?.trim().length
-    ? rnsName
-    : nameTag?.trim().length
-    ? nameTag
-    : getAddressName(address, useShortenedAddress);
+      ? rnsName
+      : nameTag?.trim().length
+        ? nameTag
+        : getAddressName(address, useShortenedAddress);
 
   const isFuturepass = address?.toLowerCase()?.startsWith('0xffffffff');
 

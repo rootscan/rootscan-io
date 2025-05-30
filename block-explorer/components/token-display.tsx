@@ -6,15 +6,7 @@ import AddressDisplay from './address-display';
 import TokenLogo from './token-logo';
 import Tooltip from './tooltip';
 
-export default function TokenDisplay({
-  token,
-  amount,
-  hideCopyButton = false,
-  overrideImageSizeClass,
-  className,
-  isTokenTracker,
-  hideLogo,
-}: {
+interface TokenDisplayProps {
   token?: IToken;
   amount?: bigint | number;
   hideCopyButton?: boolean;
@@ -22,33 +14,35 @@ export default function TokenDisplay({
   className?: string;
   isTokenTracker?: boolean;
   hideLogo?: boolean;
-}) {
+}
+export default async function TokenDisplay(props: TokenDisplayProps) {
+  const { token, amount, hideCopyButton = false, overrideImageSizeClass, className, isTokenTracker, hideLogo } = props;
+
   if (!token) {
     return;
   }
 
   return (
-    <div className={cn(['flex items-center gap-2 truncate', className ? className : ''])}>
-      {!isNaN(amount as number) ? (
-        <div>{amount ? formatNumber(Number(formatUnits(BigInt(amount), token?.decimals || 0))) : '0'}</div>
-      ) : null}
-      <Tooltip text={token?.contractAddress} asChild>
-        <div className="inline-flex items-center gap-1 truncate">
-          {!hideLogo ? (
-            <div className={cn([overrideImageSizeClass ? overrideImageSizeClass : 'size-5', 'shrink-0'])}>
-              <TokenLogo contractAddress={token?.contractAddress} width={250} height={250} />
-            </div>
-          ) : null}
+    <Tooltip text={token?.contractAddress} asChild>
+      <div className={cn(['inline-flex items-center gap-1 truncate', className ? className : ''])}>
+        {!hideLogo ? (
+          <div className={cn([overrideImageSizeClass ? overrideImageSizeClass : 'size-5', 'shrink-0'])}>
+            <TokenLogo contractAddress={token?.contractAddress} width={250} height={250} />
+          </div>
+        ) : null}
 
-          <AddressDisplay
-            address={token?.contractAddress}
-            nameTag={`${token?.name} ${token?.symbol ? `(${token?.symbol})` : ''}`}
-            hideCopyButton={hideCopyButton}
-            className="truncate"
-            isTokenTracker={isTokenTracker}
-          />
-        </div>
-      </Tooltip>
-    </div>
+        {!isNaN(amount as number) ? (
+          <div>{amount ? formatNumber(Number(formatUnits(BigInt(amount), token?.decimals || 0))) : '0'}</div>
+        ) : null}
+
+        <AddressDisplay
+          address={token?.contractAddress}
+          nameTag={token?.symbol ?? token?.name ?? ''}
+          hideCopyButton={hideCopyButton}
+          className="truncate text-text-secondary"
+          isTokenTracker={isTokenTracker}
+        />
+      </div>
+    </Tooltip>
   );
 }

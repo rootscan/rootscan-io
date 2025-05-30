@@ -85,17 +85,17 @@ type ExtrinsicSectionArgsType<T extends ExtrinsicSectionType> = T extends 'xrplB
       transaction_hash: string;
     }
   : T extends 'ethBridge'
-  ? {
-      type: string;
-      to: Address;
-      erc20Value: { amount: number };
-      ethValue: { amount: number };
-      erc721Value: { tokenIds: string[]; tokenAddress: Address }[];
-      tx_hash: string;
-    }
-  : // TODO
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Record<string, any>;
+    ? {
+        type: string;
+        to: Address;
+        erc20Value: { amount: number };
+        ethValue: { amount: number };
+        erc721Value: { tokenIds: string[]; tokenAddress: Address }[];
+        tx_hash: string;
+      }
+    : // TODO
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Record<string, any>;
 
 export interface IExtrinsic<T extends ExtrinsicSectionType = string> {
   block: number;
