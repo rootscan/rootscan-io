@@ -1,11 +1,13 @@
 import AddressDisplay from '@/components/address-display';
 import TransactionStatusBadge from '@/components/transaction-status-badge';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
 import { getShortenedHash } from '@/lib/constants/knownAddresses';
 import { camelCaseToWords, cn, formatNumber } from '@/lib/utils';
+import { PaginationResponse } from '@/types/api-types.ts';
 import { IEVMTransaction } from '@/types/models';
-import { AlertCircle, ChevronRight, SortDesc } from 'lucide-react';
+import { AlertCircle, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Address } from 'viem';
 
@@ -14,32 +16,38 @@ import InOutBadge from './in-out-badge';
 import TimeAgoDate from './time-ago-date';
 import Tooltip from './tooltip';
 
+interface TransactionsTableProps {
+  transactions: IEVMTransaction[];
+  isAddressPage?: boolean;
+  address?: Address;
+  pagination?: Omit<PaginationResponse<unknown>, 'docs'>;
+}
 export default function TransactionsTable({
   transactions,
   isAddressPage,
   address,
-}: {
-  transactions: IEVMTransaction[];
-  isAddressPage?: boolean;
-  address?: Address;
-}) {
+  pagination,
+}: TransactionsTableProps) {
   return (
     <Table>
+      {!!pagination && (
+        <TableCaption>
+          <TableNavigation pagination={pagination}>
+            <p>Showing the last 500k records</p>
+          </TableNavigation>
+        </TableCaption>
+      )}
       <TableHeader>
         <TableRow>
           {!isAddressPage ? <TableHead>Status</TableHead> : null}
           <TableHead>Hash</TableHead>
           <TableHead>Method</TableHead>
-          <TableHead>
-            <div className="flex items-center gap-2">
-              <SortDesc className="size-5" /> Block
-            </div>
-          </TableHead>
-          <TableHead className="text-center">Timestamp</TableHead>
+          <TableHead>Block</TableHead>
+          <TableHead>Timestamp</TableHead>
           <TableHead>From</TableHead>
           <TableHead />
           <TableHead>To</TableHead>
-          <TableHead className="text-center">Value</TableHead>
+          <TableHead>Value</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -75,7 +83,7 @@ export default function TransactionsTable({
             <TableCell>
               <Link href={`/blocks/${tx.blockNumber}`}>{tx.blockNumber}</Link>
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell>
               <TimeAgoDate date={tx.timestamp} />
             </TableCell>
             <TableCell className="truncate">
@@ -110,7 +118,7 @@ export default function TransactionsTable({
               />
               {/* )} */}
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell>
               <span className="text-xs text-muted-foreground">
                 {tx.valueFormatted ? formatNumber(parseFloat(tx.valueFormatted)) : '0'} XRP
               </span>
