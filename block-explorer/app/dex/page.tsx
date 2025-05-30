@@ -7,13 +7,13 @@ import SectionTitle from '@/components/section-title';
 import TimeAgoDate from '@/components/time-ago-date';
 import TokenDisplay from '@/components/token-display';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { Address } from 'viem';
-import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
 
 export const metadata: Metadata = {
   title: 'DEX',
