@@ -1,5 +1,3 @@
-import { Fragment } from 'react';
-
 import Breadcrumbs from '@/components/breadcrumbs';
 import Container from '@/components/container';
 import SectionTitle from '@/components/section-title';
@@ -135,11 +133,11 @@ const resources = {
 
 export default function Page() {
   return (
-    <Container>
-      <div className="flex flex-col gap-6">
-        <Breadcrumbs />
+    <Container className="flex flex-col gap-4">
+      <Breadcrumbs />
+      <div className="space-y-16">
         {Object.keys(resources)?.map((section, _) => (
-          <Fragment key={_}>
+          <div key={_} className="space-y-6">
             <SectionTitle>{section}</SectionTitle>
             <section className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
               {resources[section].map((item, _) => (
@@ -163,7 +161,7 @@ export default function Page() {
                 </Link>
               ))}
             </section>
-          </Fragment>
+          </div>
         ))}
       </div>
     </Container>
