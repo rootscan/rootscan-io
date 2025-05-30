@@ -4,29 +4,65 @@ import { cn } from '@/lib/utils';
 import { type VariantProps, cva } from 'class-variance-authority';
 
 const badgeVariants = cva(
-  'inline-flex select-none items-center whitespace-nowrap rounded-[6px] border px-1.5 py-0.5 text-[.5625rem] font-semibold uppercase leading-[-.01688rem] transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+  'inline-flex select-none items-center whitespace-nowrap rounded-[6px] px-1.5 text-[9px]/[14px] font-bold uppercase transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
   {
     variants: {
-      variant: {
-        default: 'border-transparent bg-secondary text-secondary-foreground',
-        secondary: 'border-transparent bg-white text-secondary-foreground dark:bg-[#090909]/50',
-        destructive: 'border-transparent bg-destructive text-destructive-foreground',
-        outline: 'text-foreground',
-        info: 'border-transparent bg-blue-200 text-blue-800',
-        success: 'border-transparent bg-green-200 text-green-800',
-        warning: 'border-transparent bg-orange-200 text-orange-800',
+      size: {
+        sm: 'h-5 px-[6px] py-[3px]',
+        md: 'h-6 px-[8px] py-[5px]',
+      },
+      color: {
+        grey: '',
+        green: '',
+        orange: '',
+        blue: '',
+      },
+      type: {
+        filled: '',
+        linear: 'border bg-surface-container',
       },
     },
+    compoundVariants: [
+      {
+        color: 'grey',
+        type: 'linear',
+        className: 'border-border-primary text-text-foreground',
+      },
+      {
+        color: 'grey',
+        type: 'filled',
+        className: 'bg-surface-hover-secondary text-text-foreground',
+      },
+      {
+        color: 'green',
+        type: 'filled',
+        className: 'bg-tag-green-dark text-tag-green-light',
+      },
+      {
+        color: 'orange',
+        type: 'filled',
+        className: 'bg-tag-orange-dark text-tag-orange-light',
+      },
+      {
+        color: 'blue',
+        type: 'filled',
+        className: 'bg-tag-blue-dark text-tag-blue-light',
+      },
+    ],
     defaultVariants: {
-      variant: 'default',
+      size: 'sm',
+      color: 'grey',
+      type: 'filled',
     },
   },
 );
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
+export interface BadgeProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
+    VariantProps<typeof badgeVariants> {}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
-  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
+function Badge({ className, size, color, type, ...props }: BadgeProps) {
+  return <div className={cn(badgeVariants({ size, color, type }), className)} {...props} />;
 }
 
 export { Badge, badgeVariants };

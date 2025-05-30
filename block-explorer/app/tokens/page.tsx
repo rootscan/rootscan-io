@@ -95,7 +95,7 @@ export default async function Page({ searchParams }: PageProps) {
                   </OnlyMainnet>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline">{token?.type}</Badge>
+                  <Badge type="linear">{token?.type}</Badge>
                 </TableCell>
                 <TableCell>
                   {token?.collectionId ? token?.collectionId : token?.assetId ? token?.assetId : '-'}

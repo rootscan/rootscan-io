@@ -47,10 +47,8 @@ export default function Menu({
         if (!isContract && item?.title === 'Contract') return null;
         return (
           <Link href={item.href} key={_}>
-            <Badge
-              variant={pathname === item.href ? 'default' : 'secondary'}
-              className="h-[32px] !max-h-[32px] rounded-xl text-xs font-normal capitalize"
-            >
+            {/*TODO: update according to the design*/}
+            <Badge size="md" type={pathname === item.href ? 'linear' : 'filled'}>
               <div className="flex items-center gap-1">
                 <span>{item.title}</span>
                 {item.hasCheckmark ? (

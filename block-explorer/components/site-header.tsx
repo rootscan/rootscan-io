@@ -13,7 +13,7 @@ export function SiteHeader() {
     <Fragment>
       <header className="z-40 flex w-full flex-col bg-white dark:bg-black">
         <SiteTopBar />
-        <div className="container flex items-center justify-between gap-4 space-x-4 p-4 sm:space-x-0 lg:px-8">
+        <div className="container flex items-center justify-between gap-4 space-x-4 py-4 sm:space-x-0">
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/site-logos/rootscan-logo.png"

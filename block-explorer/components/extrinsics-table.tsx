@@ -2,10 +2,12 @@
 
 import { Fragment } from 'react';
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
 import { camelCaseToWords } from '@/lib/utils';
+import { PaginationResponse } from '@/types/api-types.ts';
 import { IExtrinsic } from '@/types/models';
-import { ChevronRight, SortDesc } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 import AddressDisplay from './address-display';
@@ -15,19 +17,29 @@ import TimeAgoDate from './time-ago-date';
 import Tooltip from './tooltip';
 import { Badge } from './ui/badge';
 
-export default function ExtrinsicsTable({ extrinsics }: { extrinsics: IExtrinsic[] }) {
+interface ExtrinsicsTableProps {
+  extrinsics: IExtrinsic[];
+  pagination?: Omit<PaginationResponse<unknown>, 'docs'>;
+}
+export default function ExtrinsicsTable({ extrinsics, pagination }: ExtrinsicsTableProps) {
   if (!extrinsics?.length) return <NoData />;
   return (
     <Table>
+      {!!pagination && (
+        <TableCaption>
+          <TableNavigation pagination={pagination}>
+            <p>
+              Showing extrinsics between #{extrinsics[0].extrinsicId} to #
+              {extrinsics[extrinsics.length - 1].extrinsicId}
+            </p>
+          </TableNavigation>
+        </TableCaption>
+      )}
       <TableHeader>
         <TableRow>
           <TableHead>Status</TableHead>
           <TableHead>Extrinsic ID</TableHead>
-          <TableHead>
-            <div className="flex items-center gap-2">
-              <SortDesc className="size-5" /> Block
-            </div>
-          </TableHead>
+          <TableHead>Block</TableHead>
           <TableHead>Timestamp</TableHead>
           <TableHead>Pallet</TableHead>
           <TableHead>Method</TableHead>
@@ -50,7 +62,7 @@ export default function ExtrinsicsTable({ extrinsics }: { extrinsics: IExtrinsic
               <TimeAgoDate date={extrinsic.timestamp * 1000} />
             </TableCell>
             <TableCell className="capitalize">
-              <div className="flex flex-wrap items-center gap-1">
+              <div className="flex items-center gap-1">
                 <Badge>{extrinsic.section ? camelCaseToWords(extrinsic.section) : null}</Badge>
                 {extrinsic.isProxy ? (
                   <Fragment>
@@ -67,7 +79,7 @@ export default function ExtrinsicsTable({ extrinsics }: { extrinsics: IExtrinsic
               </div>
             </TableCell>
             <TableCell className="capitalize">
-              <div className="flex flex-wrap items-center gap-1">
+              <div className="flex items-center gap-1">
                 <Badge>{extrinsic.method ? camelCaseToWords(extrinsic.method) : null}</Badge>
                 {extrinsic.isProxy ? (
                   <Fragment>

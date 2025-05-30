@@ -58,11 +58,11 @@ export default async function Page({ params }: PageProps) {
               <CardDetail.Content>
                 {block.isFinalized ? (
                   <div>
-                    <Badge variant="success">Finalized</Badge>
+                    <Badge color="green">Finalized</Badge>
                   </div>
                 ) : (
                   <div>
-                    <Badge variant="warning">Unfinalized</Badge>
+                    <Badge color="orange">Unfinalized</Badge>
                   </div>
                 )}
               </CardDetail.Content>

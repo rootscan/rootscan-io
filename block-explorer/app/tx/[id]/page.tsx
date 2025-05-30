@@ -286,7 +286,7 @@ export default async function Page({ params }: PageProps) {
                   <TokenDisplay token={XRP_TOKEN} hideCopyButton />
                   <OnlyMainnet>
                     {transaction?.xrpPriceData?.price ? (
-                      <Badge variant="outline">
+                      <Badge type="linear">
                         {formatNumberDollars(Number(transaction.transactionFee) * transaction?.xrpPriceData?.price, 2)}
                       </Badge>
                     ) : null}
@@ -302,7 +302,7 @@ export default async function Page({ params }: PageProps) {
                   <span className="text-muted-foreground">Tags</span>
                   <div className="mt-1 flex flex-wrap items-center gap-2">
                     {transaction?.tags?.map((tag, _) => (
-                      <Badge variant="info" key={_}>
+                      <Badge color="blue" key={_}>
                         {tag}
                       </Badge>
                     ))}

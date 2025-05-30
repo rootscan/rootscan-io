@@ -1,23 +1,33 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
 import { camelCaseToWords } from '@/lib/utils';
+import { PaginationResponse } from '@/types/api-types.ts';
 import { IEvent } from '@/types/models';
-import { SortDesc } from 'lucide-react';
 import Link from 'next/link';
 
 import TimeAgoDate from './time-ago-date';
 import { Badge } from './ui/badge';
 
-export default function EventsTable({ events }: { events: IEvent[] }) {
+interface EventsTableProps {
+  events: IEvent[];
+  pagination?: Omit<PaginationResponse<unknown>, 'docs'>;
+}
+export default function EventsTable({ events, pagination }: EventsTableProps) {
   return (
     <Table>
+      {!!pagination && (
+        <TableCaption>
+          <TableNavigation pagination={pagination}>
+            <p>
+              Showing events between #{events[0].eventId} to #{events[events.length - 1].eventId}
+            </p>
+          </TableNavigation>
+        </TableCaption>
+      )}
       <TableHeader>
         <TableRow>
           <TableHead>Event ID</TableHead>
-          <TableHead>
-            <div className="flex items-center gap-2">
-              <SortDesc className="size-5" /> Block
-            </div>
-          </TableHead>
+          <TableHead>Block</TableHead>
           <TableHead>Extrinsic ID</TableHead>
           <TableHead>Timestamp</TableHead>
           <TableHead>Pallet</TableHead>

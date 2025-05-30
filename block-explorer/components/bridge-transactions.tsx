@@ -55,11 +55,7 @@ const ETHBridgeSubmitEvent = ({ tx }: { tx: IExtrinsic<'ethBridge'> }) => {
   return (
     <TableRow>
       <TableCell className="max-w-[100px]">
-        {tx?.args?.type === 'inbox' ? (
-          <Badge variant="success">Deposit</Badge>
-        ) : (
-          <Badge variant="warning">Withdraw</Badge>
-        )}
+        {tx?.args?.type === 'inbox' ? <Badge color="green">Deposit</Badge> : <Badge color="orange">Withdraw</Badge>}
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
@@ -108,7 +104,7 @@ const XRPDeposit = ({ tx }: { tx: IExtrinsic<'xrplBridge'> }) => {
   return (
     <TableRow>
       <TableCell className="max-w-[100px]">
-        <Badge variant="success">Deposit</Badge>
+        <Badge color="green">Deposit</Badge>
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />
@@ -134,7 +130,7 @@ const XRPWithdraw = ({ tx }: { tx: IExtrinsic<'xrplBridge'> }) => {
   return (
     <TableRow>
       <TableCell className="max-w-[100px]">
-        <Badge variant="destructive">Withdraw</Badge>
+        <Badge color="orange">Withdraw</Badge>
       </TableCell>
       <TableCell>
         <TimeAgoDate date={tx?.timestamp * 1000} />

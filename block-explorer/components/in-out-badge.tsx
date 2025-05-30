@@ -2,12 +2,12 @@ import { Badge } from './ui/badge';
 
 export default function InOutBadge({ address, from, to }) {
   if (from === address && to === address) {
-    return <Badge variant="info">Self</Badge>;
+    return <Badge color="blue">Self</Badge>;
   }
   if (from === address) {
-    return <Badge variant="warning">Out</Badge>;
+    return <Badge color="orange">Out</Badge>;
   }
   if (to === address) {
-    return <Badge variant="success">In</Badge>;
+    return <Badge color="green">In</Badge>;
   }
 }

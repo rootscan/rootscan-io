@@ -47,7 +47,7 @@ export const LatestBlocks = (props: LatestBlocksProps) => {
                   <TimeAgoDate date={block.timestamp} />
                 </span>
               ) : (
-                <span className="text-xs text-[#FB923C]">Unfinalized</span>
+                <span className="text-xs text-text-warning-primary">Unfinalized</span>
               )}
             </DataItemCard>
           );

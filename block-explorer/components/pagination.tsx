@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { PaginationResponse } from '@/types/api-types';
-import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { RiArrowLeftSLine, RiArrowRightSLine, RiLoader4Line } from '@remixicon/react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Button } from './ui/button';
@@ -35,17 +35,18 @@ export default function Pagination({ pagination }: { pagination?: Omit<Paginatio
 
   return (
     <div className="flex items-center justify-end gap-4">
-      {isLoading ? <Loader2 className="size-5 animate-spin text-muted-foreground" /> : null}
+      {isLoading ? <RiLoader4Line className="size-5 animate-spin text-muted-foreground" /> : null}
       <div className="flex items-center justify-end gap-6">
         {!pagination?.skipFullCount ? (
           <span className="text-sm text-muted-foreground">
             Page {pagination?.page} of {pagination?.totalPages}
           </span>
         ) : null}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Button
-            variant="outline"
-            size="pagination"
+            variant="secondary"
+            size="sm"
+            className="px-2"
             onClick={() => {
               router.push(
                 pathname +
@@ -55,24 +56,19 @@ export default function Pagination({ pagination }: { pagination?: Omit<Paginatio
             }}
             disabled={!pagination?.hasPrevPage}
           >
-            <ChevronLeft />
+            <RiArrowLeftSLine className="size-4" />
           </Button>
+          <p className="px-3">Page {currentPage}</p>
           <Button
-            variant="outline"
-            size="pagination"
-            className="w-full cursor-default select-none border-none hover:bg-transparent"
-          >
-            {currentPage}
-          </Button>
-          <Button
-            variant="outline"
-            size="pagination"
+            variant="secondary"
+            size="sm"
+            className="px-2"
             onClick={() => {
               router.push(pathname + '?' + createQueryString('page', String(Number(currentPage) + 1)));
             }}
             disabled={!pagination?.hasNextPage}
           >
-            <ChevronRight />
+            <RiArrowRightSLine className="size-4" />
           </Button>
         </div>
       </div>

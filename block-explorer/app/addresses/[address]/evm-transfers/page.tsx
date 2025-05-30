@@ -64,7 +64,7 @@ export default async function Page({ params, searchParams }: PageProps) {
                 <InOutBadge address={address} from={tx.from} to={tx.to} />
               </TableCell>
               <TableCell>
-                <Badge variant="outline">{tx.type}</Badge>
+                <Badge type="linear">{tx.type}</Badge>
               </TableCell>
               <TableCell>
                 <TimeAgoDate date={tx?.timestamp} />
