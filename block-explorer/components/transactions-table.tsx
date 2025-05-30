@@ -2,7 +2,7 @@ import AddressDisplay from '@/components/address-display';
 import TransactionStatusBadge from '@/components/transaction-status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { getShortenedHash } from '@/lib/constants/knownAddresses';
 import { camelCaseToWords, cn, formatNumber } from '@/lib/utils';
 import { PaginationResponse } from '@/types/api-types.ts';

@@ -3,7 +3,7 @@
 import { Fragment } from 'react';
 
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { camelCaseToWords } from '@/lib/utils';
 import { PaginationResponse } from '@/types/api-types.ts';
 import { IExtrinsic } from '@/types/models';

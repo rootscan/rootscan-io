@@ -7,7 +7,7 @@ import SectionTitle from '@/components/section-title';
 import TokenDisplay from '@/components/token-display';
 import Tooltip from '@/components/tooltip';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
