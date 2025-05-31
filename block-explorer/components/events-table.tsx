@@ -19,7 +19,8 @@ export default function EventsTable({ events, pagination }: EventsTableProps) {
         <TableCaption>
           <TableNavigation pagination={pagination}>
             <p>
-              Showing events between #{events[0].eventId} to #{events[events.length - 1].eventId}
+              Showing events between <strong>{events[0].eventId}</strong> to{' '}
+              <strong>{events[events.length - 1].eventId}</strong>
             </p>
           </TableNavigation>
         </TableCaption>
