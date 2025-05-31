@@ -14,9 +14,19 @@ interface TokenDisplayProps {
   className?: string;
   isTokenTracker?: boolean;
   hideLogo?: boolean;
+  shortFormat?: boolean;
 }
 export default async function TokenDisplay(props: TokenDisplayProps) {
-  const { token, amount, hideCopyButton = false, overrideImageSizeClass, className, isTokenTracker, hideLogo } = props;
+  const {
+    token,
+    amount,
+    hideCopyButton = false,
+    overrideImageSizeClass,
+    className,
+    isTokenTracker,
+    hideLogo,
+    shortFormat = false,
+  } = props;
 
   if (!token) {
     return;
@@ -37,9 +47,13 @@ export default async function TokenDisplay(props: TokenDisplayProps) {
 
         <AddressDisplay
           address={token?.contractAddress}
-          nameTag={token?.symbol ?? token?.name ?? ''}
+          nameTag={
+            shortFormat
+              ? (token?.symbol ?? token?.name ?? '')
+              : `${token?.name} ${token?.symbol ? `(${token?.symbol})` : ''}`
+          }
           hideCopyButton={hideCopyButton}
-          className="truncate text-text-secondary"
+          className={cn('truncate', shortFormat && 'text-text-secondary')}
           isTokenTracker={isTokenTracker}
         />
       </div>

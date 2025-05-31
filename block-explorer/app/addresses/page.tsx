@@ -51,10 +51,10 @@ export default async function Page({ searchParams }: PageProps) {
                   <AddressDisplay address={item.address} useShortenedAddress />
                 </TableCell>
                 <TableCell>
-                  <TokenDisplay token={ROOT_TOKEN} amount={item.balance?.free} hideCopyButton />
+                  <TokenDisplay token={ROOT_TOKEN} amount={item.balance?.free} hideCopyButton shortFormat={true} />
                 </TableCell>
                 <TableCell>
-                  <TokenDisplay token={XRP_TOKEN} amount={item.xrpBalance || 0} hideCopyButton />
+                  <TokenDisplay token={XRP_TOKEN} amount={item.xrpBalance || 0} hideCopyButton shortFormat={true} />
                 </TableCell>
               </TableRow>
             ))}

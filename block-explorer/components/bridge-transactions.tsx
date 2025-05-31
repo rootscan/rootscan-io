@@ -74,7 +74,7 @@ const ETHBridgeSubmitEvent = ({ tx }: { tx: IExtrinsic<'ethBridge'> }) => {
       </TableCell>
       <TableCell>
         {tx?.args?.erc20Value ? (
-          <TokenDisplay token={tx?.bridgeErc20Token} amount={tx?.args?.erc20Value?.amount} hideCopyButton />
+          <TokenDisplay token={tx?.bridgeErc20Token} amount={tx?.args?.erc20Value?.amount} hideCopyButton shortFormat />
         ) : tx?.args?.erc721Value ? (
           <div>
             {tx?.args?.erc721Value?.map((item, _) => (
@@ -85,14 +85,14 @@ const ETHBridgeSubmitEvent = ({ tx }: { tx: IExtrinsic<'ethBridge'> }) => {
                       <NftThumbnail contractAddress={tx.bridgeErc721Token.contractAddress} tokenId={tokenId} />
                     )}
                     {tokenId}
-                    <TokenDisplay token={tx?.bridgeErc721Token} hideCopyButton />
+                    <TokenDisplay token={tx?.bridgeErc721Token} hideCopyButton shortFormat />
                   </div>
                 ))}
               </div>
             ))}
           </div>
         ) : tx?.args?.ethValue ? (
-          <TokenDisplay token={ETH_TOKEN} amount={tx?.args?.ethValue?.amount} hideCopyButton />
+          <TokenDisplay token={ETH_TOKEN} amount={tx?.args?.ethValue?.amount} hideCopyButton shortFormat />
         ) : null}
       </TableCell>
       <TableCell>
@@ -122,7 +122,7 @@ const XRPDeposit = ({ tx }: { tx: IExtrinsic<'xrplBridge'> }) => {
         <AddressDisplay address={payment?.address} useShortenedAddress />
       </TableCell>
       <TableCell>
-        <TokenDisplay token={XRP_TOKEN} amount={payment?.amount} hideCopyButton />
+        <TokenDisplay token={XRP_TOKEN} amount={payment?.amount} hideCopyButton shortFormat />
       </TableCell>
       <TableCell>
         <Link href={`https://xrpscan.com/tx/${tx?.args?.transaction_hash}`} target="_blank">
@@ -148,7 +148,7 @@ const XRPWithdraw = ({ tx }: { tx: IExtrinsic<'xrplBridge'> }) => {
         <AddressDisplay address={tx?.args?.destination} useShortenedAddress />
       </TableCell>
       <TableCell>
-        <TokenDisplay token={XRP_TOKEN} amount={tx?.args?.amount} hideCopyButton />
+        <TokenDisplay token={XRP_TOKEN} amount={tx?.args?.amount} hideCopyButton shortFormat />
       </TableCell>
       <TableCell>
         <Link href={`https://xrpscan.com/tx/${tx?.args?.transaction_hash}`} target="_blank">

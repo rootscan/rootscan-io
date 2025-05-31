@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { Undo } from 'lucide-react';
+import { RiCornerUpLeftLine } from '@remixicon/react';
 
 export default function ExtrinsicIdDisplay({ extrinsicId, retroExtrinsicId }) {
   const [retro, setRetro] = useState<boolean>(false);
@@ -13,7 +13,7 @@ export default function ExtrinsicIdDisplay({ extrinsicId, retroExtrinsicId }) {
     <div className="flex items-center gap-2 ">
       {retro ? <span>{retroExtrinsicId}</span> : <span>{extrinsicId}</span>}
 
-      <Undo onClick={() => setRetro(!retro)} className="cursor-pointer" />
+      <RiCornerUpLeftLine onClick={() => setRetro(!retro)} className="size-5 cursor-pointer" />
     </div>
   );
 }

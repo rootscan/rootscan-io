@@ -69,6 +69,7 @@ export default async function Page({ searchParams }: PageProps) {
                     token={swap.swapFromToken}
                     amount={swap.args?.supply_Asset_amount as number}
                     hideCopyButton
+                    shortFormat
                   />
                 </TableCell>
                 <TableCell>
@@ -76,6 +77,7 @@ export default async function Page({ searchParams }: PageProps) {
                     token={swap.swapToToken}
                     amount={swap.args?.target_Asset_amount as number}
                     hideCopyButton
+                    shortFormat
                   />
                 </TableCell>
               </TableRow>

@@ -29,8 +29,8 @@ export default function ExtrinsicsTable({ extrinsics, pagination }: ExtrinsicsTa
         <TableCaption>
           <TableNavigation pagination={pagination}>
             <p>
-              Showing extrinsics between #{extrinsics[0].extrinsicId} to #
-              {extrinsics[extrinsics.length - 1].extrinsicId}
+              Showing extrinsics between <strong>{extrinsics[0].extrinsicId}</strong> to{' '}
+              <strong>{extrinsics[extrinsics.length - 1].extrinsicId}</strong>
             </p>
           </TableNavigation>
         </TableCaption>

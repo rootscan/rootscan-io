@@ -77,7 +77,12 @@ export default async function Page({ searchParams }: PageProps) {
                 <TableCell>{item?.validatorName}</TableCell>
                 <TableCell>{item.nominators}</TableCell>
                 <TableCell>
-                  <TokenDisplay token={ROOT_TOKEN} amount={item?.totalRootNominated} hideCopyButton />
+                  <TokenDisplay
+                    token={ROOT_TOKEN}
+                    amount={item?.totalRootNominated}
+                    hideCopyButton
+                    shortFormat={true}
+                  />
                 </TableCell>
                 <TableCell>{item?.blocksValidated || 0}</TableCell>
               </TableRow>

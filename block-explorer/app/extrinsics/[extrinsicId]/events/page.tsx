@@ -1,7 +1,6 @@
 import { ErrorAlert } from '@/components/error-alert';
 import EventsTable from '@/components/events-table';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
@@ -29,8 +28,7 @@ export default async function Page({ searchParams, params }: PageProps) {
 
     return (
       <div className="flex flex-col gap-4">
-        <PaginationSuspense pagination={getPaginationData(data)} />
-        <EventsTable events={data.docs} />
+        <EventsTable events={data.docs} pagination={getPaginationData(data)} />
       </div>
     );
   } catch (error) {

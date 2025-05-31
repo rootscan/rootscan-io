@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { cn } from '@/lib/utils.ts';
 
 const Wrapper = ({ children }: { children?: ReactNode }) => {
-  return <div className="flex items-center gap-2">{children}</div>;
+  return <div className="flex gap-2">{children}</div>;
 };
 
 const Title = ({ children }: { children?: ReactNode }) => {
