@@ -7,12 +7,12 @@ import InOutBadge from '@/components/in-out-badge';
 import NFTMint from '@/components/nft-mint-comp';
 import { NftThumbnail } from '@/components/nft-thumbnail';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import TimeAgoDate from '@/components/time-ago-date';
 import TokenDisplay from '@/components/token-display';
 import Tooltip from '@/components/tooltip';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
@@ -44,11 +44,15 @@ export default async function Page({ params, searchParams }: PageProps) {
 
     return (
       <div className="flex flex-col gap-4">
-        <PaginationSuspense pagination={getPaginationData(data)} />
         {!transactions || transactions?.length === 0 ? (
           <NoData />
         ) : (
           <Table>
+            <TableCaption>
+              <TableNavigation pagination={getPaginationData(data)}>
+                {!data.skipFullCount && <p>A total of {data.totalDocs} native transfers found</p>}
+              </TableNavigation>
+            </TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead>Extrinsic ID</TableHead>
