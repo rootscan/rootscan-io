@@ -1,12 +1,11 @@
+import AddressDisplay from '@/components/address-display.tsx';
 import { ErrorAlert } from '@/components/error-alert';
-import LogsTable from '@/components/logs-table';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
+import CardDetail from '@/components/ui/card-detail.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { handleRequestResult } from '@/lib/utils';
-import { PaginationResponse } from '@/types/api-types';
 import { PageProps } from '@/types/page';
-import { Hash } from 'viem';
+import { Hash, getAddress } from 'viem';
 
 export default async function Page({ params }: PageProps) {
   try {
@@ -20,23 +19,57 @@ export default async function Page({ params }: PageProps) {
     const logs = data?.logs;
     if (!logs?.length) return <NoData />;
 
-    const paginationData: PaginationResponse<unknown> = {
-      docs: logs,
-      totalDocs: logs.length,
-      limit: logs.length,
-      totalPages: 1,
-      page: 1,
-      pagingCounter: 1,
-      hasPrevPage: false,
-      hasNextPage: false,
-      prevPage: null,
-      nextPage: null,
-    };
-
     return (
       <div className="flex flex-col gap-4">
-        <PaginationSuspense pagination={paginationData} />
-        <LogsTable logs={logs} />
+        {logs.map((log, _) => (
+          <div key={_} className="flex flex-col gap-5 rounded-[16px] bg-surface-container p-6">
+            <h4 className="text-[18px]/[28px] font-semibold">Log {log.logIndex}</h4>
+            <CardDetail.Wrapper>
+              <CardDetail.Title>Address</CardDetail.Title>
+              <CardDetail.Content>
+                <AddressDisplay address={getAddress(log.address)} />
+              </CardDetail.Content>
+            </CardDetail.Wrapper>
+            <CardDetail.Wrapper>
+              <CardDetail.Title>Event Name</CardDetail.Title>
+              <CardDetail.Content>{log.eventName || '-'}</CardDetail.Content>
+            </CardDetail.Wrapper>
+            <CardDetail.Wrapper>
+              <CardDetail.Title>Arguments</CardDetail.Title>
+              <CardDetail.Content>
+                {log.args ? (
+                  <div className="flex flex-col gap-1">
+                    {Object.entries(log.args).map(([key, value]) => (
+                      <div key={key}>
+                        {key}: {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  '-'
+                )}
+              </CardDetail.Content>
+            </CardDetail.Wrapper>
+            <CardDetail.Wrapper>
+              <CardDetail.Title>Topics</CardDetail.Title>
+              <CardDetail.Content>
+                {log.topics ? (
+                  <div className="flex flex-col gap-1">
+                    {log.topics.map((topic, i) => (
+                      <div key={i}>{topic}</div>
+                    ))}
+                  </div>
+                ) : (
+                  '-'
+                )}
+              </CardDetail.Content>
+            </CardDetail.Wrapper>
+            <CardDetail.Wrapper>
+              <CardDetail.Title>Data</CardDetail.Title>
+              <CardDetail.Content>{log.data || '-'}</CardDetail.Content>
+            </CardDetail.Wrapper>
+          </div>
+        ))}
       </div>
     );
   } catch (error) {
