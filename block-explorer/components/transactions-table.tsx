@@ -21,19 +21,21 @@ interface TransactionsTableProps {
   isAddressPage?: boolean;
   address?: Address;
   pagination?: Omit<PaginationResponse<unknown>, 'docs'>;
+  caption?: string;
 }
 export default function TransactionsTable({
   transactions,
   isAddressPage,
   address,
   pagination,
+  caption,
 }: TransactionsTableProps) {
   return (
     <Table>
       {!!pagination && (
         <TableCaption>
           <TableNavigation pagination={pagination}>
-            <p>Showing the last 500k records</p>
+            {caption ? caption : <p>Showing the last 500k records</p>}
           </TableNavigation>
         </TableCaption>
       )}
