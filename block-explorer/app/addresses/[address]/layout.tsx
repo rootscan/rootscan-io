@@ -135,51 +135,45 @@ export default async function Layout({ children, params }: LayoutProps) {
                 ) : (
                   <div className="flex flex-col gap-2">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-muted-foreground">Total</span>
-                      <span>
-                        {data?.balance?.freeFormatted ? (
-                          <TokenDisplay
-                            token={ROOT_TOKEN}
-                            amount={Number(BigInt(data?.balance?.free) + BigInt(data?.balance?.reserved || '0')) || 0}
-                            hideCopyButton
-                          />
-                        ) : (
-                          '0'
-                        )}
-                      </span>
+                      <span className="font-normal text-muted-foreground">Total</span>
+                      {data?.balance?.freeFormatted ? (
+                        <TokenDisplay
+                          token={ROOT_TOKEN}
+                          amount={Number(BigInt(data?.balance?.free) + BigInt(data?.balance?.reserved || '0')) || 0}
+                          hideCopyButton
+                        />
+                      ) : (
+                        '0'
+                      )}
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-muted-foreground">Available</span>
-                      <span>
-                        {data?.balance?.free ? (
-                          <TokenDisplay
-                            token={ROOT_TOKEN}
-                            amount={Number(
-                              BigInt(data?.balance?.free) -
-                                BigInt(
-                                  Math.max(
-                                    data?.balance?.frozen || 0,
-                                    data?.balance?.miscFrozen || 0,
-                                    data?.balance?.feeFrozen || 0,
-                                  ),
+                      <span className="font-normal text-muted-foreground">Available</span>
+                      {data?.balance?.free ? (
+                        <TokenDisplay
+                          token={ROOT_TOKEN}
+                          amount={Number(
+                            BigInt(data?.balance?.free) -
+                              BigInt(
+                                Math.max(
+                                  data?.balance?.frozen || 0,
+                                  data?.balance?.miscFrozen || 0,
+                                  data?.balance?.feeFrozen || 0,
                                 ),
-                            )}
-                            hideCopyButton
-                          />
-                        ) : (
-                          '0'
-                        )}
-                      </span>
+                              ),
+                          )}
+                          hideCopyButton
+                        />
+                      ) : (
+                        '0'
+                      )}
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-muted-foreground">Reserved</span>
-                      <span>
-                        {data?.balance?.reservedFormatted ? (
-                          <TokenDisplay token={ROOT_TOKEN} amount={data?.balance?.reserved || 0} hideCopyButton />
-                        ) : (
-                          '0'
-                        )}
-                      </span>
+                      <span className="font-normal text-muted-foreground">Reserved</span>
+                      {data?.balance?.reservedFormatted ? (
+                        <TokenDisplay token={ROOT_TOKEN} amount={data?.balance?.reserved || 0} hideCopyButton />
+                      ) : (
+                        '0'
+                      )}
                     </div>
                   </div>
                 )}
