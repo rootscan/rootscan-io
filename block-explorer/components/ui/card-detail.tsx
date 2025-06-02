@@ -11,7 +11,7 @@ const Title = ({ children }: { children?: ReactNode }) => {
 };
 
 const Content = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
-  return <div className={cn('flex font-semibold gap-2 items-center text-sm', className)} {...props} />;
+  return <div className={cn('flex flex-1 font-semibold gap-2 items-center text-sm w-full', className)} {...props} />;
 };
 
 const CardDetail = {
