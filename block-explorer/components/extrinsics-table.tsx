@@ -20,18 +20,23 @@ import { Badge } from './ui/badge';
 interface ExtrinsicsTableProps {
   extrinsics: IExtrinsic[];
   pagination?: Omit<PaginationResponse<unknown>, 'docs'>;
+  caption?: string;
 }
-export default function ExtrinsicsTable({ extrinsics, pagination }: ExtrinsicsTableProps) {
+export default function ExtrinsicsTable({ extrinsics, pagination, caption }: ExtrinsicsTableProps) {
   if (!extrinsics?.length) return <NoData />;
   return (
     <Table>
       {!!pagination && (
         <TableCaption>
           <TableNavigation pagination={pagination}>
-            <p>
-              Showing extrinsics between <strong>{extrinsics[0].extrinsicId}</strong> to{' '}
-              <strong>{extrinsics[extrinsics.length - 1].extrinsicId}</strong>
-            </p>
+            {caption ? (
+              caption
+            ) : (
+              <p>
+                Showing extrinsics between <strong>{extrinsics[0].extrinsicId}</strong> to{' '}
+                <strong>{extrinsics[extrinsics.length - 1].extrinsicId}</strong>
+              </p>
+            )}
           </TableNavigation>
         </TableCaption>
       )}

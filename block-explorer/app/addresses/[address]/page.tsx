@@ -42,76 +42,72 @@ export default async function Page({ params, searchParams }: PageProps) {
 
     const transactions = data.docs;
 
-    return (
-      <div className="flex flex-col gap-4">
-        {!transactions || transactions?.length === 0 ? (
-          <NoData />
-        ) : (
-          <Table>
-            <TableCaption>
-              <TableNavigation pagination={getPaginationData(data)}>
-                {!data.skipFullCount && <p>A total of {data.totalDocs} native transfers found</p>}
-              </TableNavigation>
-            </TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Extrinsic ID</TableHead>
-                <TableHead>Extrinsic Method</TableHead>
-                <TableHead />
-                <TableHead>Timestamp</TableHead>
-                <TableHead>Amount / TokenID(s)</TableHead>
-                <TableHead>From</TableHead>
-                <TableHead />
-                <TableHead>To</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transactions.map((tx, _) => {
-                const { method, section } = tx;
-                if (section === 'assets' && method === 'Transferred') {
-                  return <AssetsTransferred tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'assets' && method === 'ApprovedTransfer') {
-                  return <AssetsApprovedTransfer tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'assets' && method === 'Issued') {
-                  return <AssetsIssued tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'assets' && method === 'Burned') {
-                  return <AssetsBurned tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'balances' && method === 'Reserved') {
-                  return <BalancesReserved tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'balances' && method === 'Transfer') {
-                  return <BalancesTransfer tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'balances' && method === 'Unreserved') {
-                  return <BalancesUnreserved tx={tx} address={paramsObj.address} key={_} />;
-                }
+    return !transactions || transactions?.length === 0 ? (
+      <NoData />
+    ) : (
+      <Table>
+        <TableCaption>
+          <TableNavigation pagination={getPaginationData(data)}>
+            {!data.skipFullCount && <p>A total of {data.totalDocs} native transfers found</p>}
+          </TableNavigation>
+        </TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Extrinsic ID</TableHead>
+            <TableHead>Extrinsic Method</TableHead>
+            <TableHead />
+            <TableHead>Timestamp</TableHead>
+            <TableHead>Amount / TokenID(s)</TableHead>
+            <TableHead>From</TableHead>
+            <TableHead />
+            <TableHead>To</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {transactions.map((tx, _) => {
+            const { method, section } = tx;
+            if (section === 'assets' && method === 'Transferred') {
+              return <AssetsTransferred tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'assets' && method === 'ApprovedTransfer') {
+              return <AssetsApprovedTransfer tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'assets' && method === 'Issued') {
+              return <AssetsIssued tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'assets' && method === 'Burned') {
+              return <AssetsBurned tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'balances' && method === 'Reserved') {
+              return <BalancesReserved tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'balances' && method === 'Transfer') {
+              return <BalancesTransfer tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'balances' && method === 'Unreserved') {
+              return <BalancesUnreserved tx={tx} address={paramsObj.address} key={_} />;
+            }
 
-                if (section === 'nft' && method === 'Transfer') {
-                  return <NFTTransfer tx={tx} address={paramsObj.address} key={_} />;
-                }
+            if (section === 'nft' && method === 'Transfer') {
+              return <NFTTransfer tx={tx} address={paramsObj.address} key={_} />;
+            }
 
-                if (section === 'nft' && method === 'Mint') {
-                  return <NFTMint tx={tx} address={paramsObj.address} key={_} />;
-                }
+            if (section === 'nft' && method === 'Mint') {
+              return <NFTMint tx={tx} address={paramsObj.address} key={_} />;
+            }
 
-                if (section === 'sft' && method === 'Transfer') {
-                  return <SFTTransfer tx={tx} address={paramsObj.address} key={_} />;
-                }
+            if (section === 'sft' && method === 'Transfer') {
+              return <SFTTransfer tx={tx} address={paramsObj.address} key={_} />;
+            }
 
-                if (section === 'sft' && method === 'Mint') {
-                  return <SFTMint tx={tx} address={paramsObj.address} key={_} />;
-                }
+            if (section === 'sft' && method === 'Mint') {
+              return <SFTMint tx={tx} address={paramsObj.address} key={_} />;
+            }
 
-                return <Fragment key={_} />;
-              })}
-            </TableBody>
-          </Table>
-        )}
-      </div>
+            return <Fragment key={_} />;
+          })}
+        </TableBody>
+      </Table>
     );
   } catch (error) {
     return <ErrorAlert error={error instanceof Error ? error : new Error('An unexpected error occurred')} />;
