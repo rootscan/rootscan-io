@@ -5,7 +5,8 @@ repos:
     hooks:
       - id: prettier
         entry: prettier
-        language: system
+        language: node
+        additional_dependencies: [prettier@3.5.3]
         name: prettier https://prettier.io/docs/en/precommit.html .
         args: [ --ignore-unknown, --write ]
   - repo: https://github.com/jumanjihouse/pre-commit-hooks

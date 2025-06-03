@@ -38,8 +38,8 @@ export default function Breadcrumbs() {
                 {isAddress(item) || item?.startsWith('0x')
                   ? getShortenedHash(item)
                   : paths.includes('extrinsics') || paths.includes('events')
-                  ? item
-                  : item?.replaceAll('-', ' ')}
+                    ? item
+                    : item?.replaceAll('-', ' ')}
               </span>
             </Link>
           </Fragment>

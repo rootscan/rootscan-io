@@ -56,8 +56,8 @@ export default async function Page({ params }: PageProps) {
                   {transaction.functionName
                     ? camelCaseToWords(transaction.functionName)
                     : transaction.functionSignature
-                    ? transaction.functionSignature
-                    : '-'}
+                      ? transaction.functionSignature
+                      : '-'}
                 </Badge>
               </CardDetail.Content>
             </CardDetail.Wrapper>

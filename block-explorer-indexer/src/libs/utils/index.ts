@@ -106,8 +106,8 @@ export const extraArgsFromEvent = (event, api): { [key: string]: any } => {
       const name = names[index]
         ? names[index]
         : fieldsHuman[index]?.typeName
-        ? fieldsHuman[index]?.typeName
-        : fieldsHuman[index];
+          ? fieldsHuman[index]?.typeName
+          : fieldsHuman[index];
       args[name] = value;
     });
   }
