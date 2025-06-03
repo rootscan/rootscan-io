@@ -21,7 +21,7 @@ export default function SiteFooter() {
             <Link
               href="https://build.rootscan.io/"
               target="_blank"
-              className="link-overlay flex items-center gap-2 rounded-[7px] bg-white px-4 py-2 font-semibold hover:bg-api-portal-banner dark:bg-black"
+              className="link-overlay flex h-[38px] items-center justify-center gap-2 rounded-[7px] bg-white px-4 py-2 text-sm font-semibold hover:bg-api-portal-banner dark:bg-black"
             >
               API Portal
               <RiArrowRightUpLine className="size-5 transition-transform duration-300 ease-in-out group-hover:rotate-45" />
