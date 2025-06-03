@@ -25,7 +25,7 @@ export default function BridgeTransactions({ transactions, pagination, caption }
       <Table>
         {!!pagination && (
           <TableCaption>
-            <TableNavigation pagination={pagination}>{caption}</TableNavigation>
+            <TableNavigation pagination={pagination}>{!!caption && <p>{caption}</p>}</TableNavigation>
           </TableCaption>
         )}
         <TableHeader>
