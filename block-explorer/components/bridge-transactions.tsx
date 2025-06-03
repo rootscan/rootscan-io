@@ -17,14 +17,15 @@ import Link from 'next/link';
 interface BridgeTransactionsProps {
   transactions: IExtrinsic[];
   pagination?: Omit<PaginationResponse<unknown>, 'docs'>;
+  caption?: string;
 }
-export default function BridgeTransactions({ transactions, pagination }: BridgeTransactionsProps) {
+export default function BridgeTransactions({ transactions, pagination, caption }: BridgeTransactionsProps) {
   return (
     <Fragment>
       <Table>
         {!!pagination && (
           <TableCaption>
-            <TableNavigation pagination={pagination} />
+            <TableNavigation pagination={pagination}>{caption}</TableNavigation>
           </TableCaption>
         )}
         <TableHeader>
