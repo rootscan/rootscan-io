@@ -11,6 +11,7 @@ import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
+import { RiSortDesc } from '@remixicon/react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { Address } from 'viem';
@@ -46,7 +47,12 @@ export default async function Page({ searchParams }: PageProps) {
           <TableHeader>
             <TableRow>
               <TableHead>Extrinsic ID</TableHead>
-              <TableHead>Timestamp</TableHead>
+              <TableHead>
+                <div className="flex items-center gap-2">
+                  Timestamp
+                  <RiSortDesc className="size-4" />
+                </div>
+              </TableHead>
               <TableHead>Trader</TableHead>
               <TableHead>Token Amount (In)</TableHead>
               <TableHead>Token Amount (Out)</TableHead>

@@ -11,6 +11,7 @@ import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN, XRP_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
+import { RiSortDesc } from '@remixicon/react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -40,7 +41,12 @@ export default async function Page({ searchParams }: PageProps) {
           <TableHeader>
             <TableRow>
               <TableHead>Address</TableHead>
-              <TableHead>Root Balance</TableHead>
+              <TableHead>
+                <div className="flex items-center gap-2">
+                  Root Balance
+                  <RiSortDesc className="size-4" />
+                </div>
+              </TableHead>
               <TableHead>XRP Balance</TableHead>
             </TableRow>
           </TableHeader>

@@ -7,6 +7,7 @@ import { getShortenedHash } from '@/lib/constants/knownAddresses';
 import { camelCaseToWords, cn, formatNumber } from '@/lib/utils';
 import { PaginationResponse } from '@/types/api-types.ts';
 import { IEVMTransaction } from '@/types/models';
+import { RiSortDesc } from '@remixicon/react';
 import { AlertCircle, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Address } from 'viem';
@@ -44,7 +45,12 @@ export default function TransactionsTable({
           {!isAddressPage ? <TableHead>Status</TableHead> : null}
           <TableHead>Hash</TableHead>
           <TableHead>Method</TableHead>
-          <TableHead>Block</TableHead>
+          <TableHead>
+            <div className="flex items-center gap-2">
+              Block
+              <RiSortDesc className="size-4" />
+            </div>
+          </TableHead>
           <TableHead>Timestamp</TableHead>
           <TableHead>From</TableHead>
           <TableHead />
