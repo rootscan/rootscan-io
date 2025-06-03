@@ -214,7 +214,9 @@ export default async function Page({ params }: PageProps) {
                   Raw Arguments <CopyButton value={data?.args ? JSON.stringify(data.args) : ''} />
                 </div>
               </CardDetail.Title>
-              <CardDetail.Content>{data?.args ? <JsonViewer json={data.args} /> : null}</CardDetail.Content>
+              <CardDetail.Content>
+                {data?.args ? <JsonViewer json={data.args} className="w-full" /> : null}
+              </CardDetail.Content>
             </CardDetail.Wrapper>
           ) : null}
         </CardContent>
