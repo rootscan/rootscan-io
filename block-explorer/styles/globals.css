@@ -189,6 +189,15 @@
     --code-green: 172 227 53;
     --code-red: 255 160 122;
   }
+
+  /* Override font-weight for monospace/code sections */
+  .font-mono,
+  code,
+  pre,
+  .react-json-view,
+  .rjv-root {
+    font-weight: 400 !important;
+  }
 }
 
 * .dark {

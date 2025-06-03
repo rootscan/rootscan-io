@@ -14,12 +14,19 @@ export default function SiteFooter() {
           <h3 className="text-[20px]/[32px] font-semibold">
             Kickstart your development on The Root Network with Rootscan's API and RPC services
           </h3>
-          <Link href="https://build.rootscan.io/" target="_blank">
-            <Button variant="secondary" className="group shrink-0 gap-2">
+          <div
+            className="link-box group shrink-0 rounded-[8px] p-px"
+            style={{ background: 'linear-gradient(90deg, #8F9AE9 0%, #E0BC95 50%, #F78F50 100%)' }}
+          >
+            <Link
+              href="https://build.rootscan.io/"
+              target="_blank"
+              className="link-overlay flex h-[38px] items-center justify-center gap-2 rounded-[7px] bg-white px-4 py-2 text-sm font-semibold hover:bg-api-portal-banner dark:bg-black"
+            >
               API Portal
               <RiArrowRightUpLine className="size-5 transition-transform duration-300 ease-in-out group-hover:rotate-45" />
-            </Button>
-          </Link>
+            </Link>
+          </div>
         </div>
         <div className="aspect-[345/75] bg-footer-pattern-mobile bg-contain bg-center bg-no-repeat md:aspect-[724/75] md:bg-footer-pattern-tablet xl:aspect-[1334/75] xl:bg-footer-pattern-desktop" />
       </div>
@@ -64,7 +71,10 @@ export default function SiteFooter() {
           Rootscan is a Block Explorer tailored for The Root Network, an innovative decentralized network.
         </p>
         <div className="hidden xl:block xl:flex-1" />
-        <Link href="/policy" className="text-sm font-normal text-muted-foreground">
+        <Link
+          href="/policy"
+          className="text-sm font-normal text-muted-foreground hover:text-foreground dark:hover:text-text-light"
+        >
           Privacy Policy
         </Link>
         <div className="flex-1 xl:hidden" />

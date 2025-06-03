@@ -3,6 +3,7 @@ import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { camelCaseToWords } from '@/lib/utils';
 import { PaginationResponse } from '@/types/api-types.ts';
 import { IEvent } from '@/types/models';
+import { RiSortDesc } from '@remixicon/react';
 import Link from 'next/link';
 
 import TimeAgoDate from './time-ago-date';
@@ -28,7 +29,12 @@ export default function EventsTable({ events, pagination }: EventsTableProps) {
       <TableHeader>
         <TableRow>
           <TableHead>Event ID</TableHead>
-          <TableHead>Block</TableHead>
+          <TableHead>
+            <div className="flex items-center gap-2">
+              Block
+              <RiSortDesc className="size-4" />
+            </div>
+          </TableHead>
           <TableHead>Extrinsic ID</TableHead>
           <TableHead>Timestamp</TableHead>
           <TableHead>Pallet</TableHead>

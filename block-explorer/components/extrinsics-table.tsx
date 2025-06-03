@@ -7,6 +7,7 @@ import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { camelCaseToWords } from '@/lib/utils';
 import { PaginationResponse } from '@/types/api-types.ts';
 import { IExtrinsic } from '@/types/models';
+import { RiSortDesc } from '@remixicon/react';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
@@ -44,7 +45,12 @@ export default function ExtrinsicsTable({ extrinsics, pagination, caption }: Ext
         <TableRow>
           <TableHead>Status</TableHead>
           <TableHead>Extrinsic ID</TableHead>
-          <TableHead>Block</TableHead>
+          <TableHead>
+            <div className="flex items-center gap-2">
+              Block
+              <RiSortDesc className="size-4" />
+            </div>
+          </TableHead>
           <TableHead>Timestamp</TableHead>
           <TableHead>Pallet</TableHead>
           <TableHead>Method</TableHead>

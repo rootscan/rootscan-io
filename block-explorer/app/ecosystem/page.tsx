@@ -139,10 +139,10 @@ export default function Page() {
         {Object.keys(resources)?.map((section, _) => (
           <div key={_} className="space-y-6">
             <SectionTitle>{section}</SectionTitle>
-            <section className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
+            <section className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
               {resources[section].map((item, _) => (
-                <Link href={item?.url} key={`${section}_${_}`} target="_blank">
-                  <div className="flex h-full flex-col justify-between space-y-3 rounded-lg border bg-muted p-3">
+                <Link key={`${section}_${_}`} href={item?.url} target="_blank">
+                  <div className="flex h-full flex-col gap-4 rounded-[20px] border border-border-tertiary bg-surface-container p-3 lg:min-h-[424px]">
                     <Image
                       src={item?.logo}
                       width={500}
@@ -150,12 +150,14 @@ export default function Page() {
                       unoptimized
                       priority
                       alt="logo"
-                      className="aspect-square w-full rounded-lg"
+                      className="aspect-square w-full rounded-[8px]"
                     />
-                    <h3 className="shrink">{item?.title}</h3>
-                    <p className="grow text-xs text-muted-foreground">{item?.description}</p>
-                    <div>
-                      <Badge type="linear">{item?.category}</Badge>
+                    <div className="flex flex-1 flex-col items-start gap-2">
+                      <h3 className="shrink">{item?.title}</h3>
+                      <p className="grow text-xs text-muted-foreground">{item?.description}</p>
+                      <Badge type="linear" className="mt-auto rounded-[8px]">
+                        {item?.category}
+                      </Badge>
                     </div>
                   </div>
                 </Link>

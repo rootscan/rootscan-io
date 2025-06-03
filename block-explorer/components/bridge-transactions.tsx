@@ -11,6 +11,7 @@ import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ETH_TOKEN, XRP_TOKEN } from '@/lib/constants/tokens';
 import { PaginationResponse } from '@/types/api-types.ts';
 import { IExtrinsic } from '@/types/models';
+import { RiSortDesc } from '@remixicon/react';
 import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
@@ -31,7 +32,12 @@ export default function BridgeTransactions({ transactions, pagination, caption }
         <TableHeader>
           <TableRow>
             <TableHead>Type</TableHead>
-            <TableHead>Timestamp</TableHead>
+            <TableHead>
+              <div className="flex items-center gap-2">
+                Timestamp
+                <RiSortDesc className="size-4" />
+              </div>
+            </TableHead>
             <TableHead>Blockchain</TableHead>
             <TableHead>From</TableHead>
             <TableHead>Beneficiary</TableHead>

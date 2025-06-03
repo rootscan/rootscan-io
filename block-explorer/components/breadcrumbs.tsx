@@ -39,7 +39,11 @@ export default function Breadcrumbs() {
                   ? getShortenedHash(item)
                   : paths.includes('extrinsics') || paths.includes('events')
                     ? item
-                    : item?.replaceAll('-', ' ')}
+                    : item
+                        ?.replaceAll('-', ' ')
+                        ?.replaceAll('evm', 'EVM')
+                        ?.replaceAll('dex', 'DEX')
+                        ?.replaceAll('nft', 'NFT')}
               </span>
             </Link>
           </Fragment>

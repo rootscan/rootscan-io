@@ -163,7 +163,37 @@ const logos: { [key: number]: { [key: Address]: string } } = {
 };
 
 const getTokenLogo = (address: Address) => {
-  return logos?.[CHAIN_ID]?.[address] ? `${URL_BASE}${logos?.[CHAIN_ID]?.[address]}` : undefined;
-};
+  // Get the current chain ID, with fallback logic
+  let currentChainId = CHAIN_ID;
+
+  // If CHAIN_ID is not valid (undefined, 0, NaN), determine from environment or default to mainnet
+  if (!currentChainId || isNaN(currentChainId)) {
+    // Check if we're on porcini testnet based on URL or environment
+    if (typeof window !== 'undefined' && window.location.href.includes('porcini')) {
+      currentChainId = 7672;
+    } else if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+      // In development, default to testnet
+      currentChainId = 7672;
+    } else {
+      // Default to mainnet
+      currentChainId = 7668;
+    }
+  }
+
+  // First try the current chain ID
+  const logoFileName = logos?.[currentChainId]?.[address];
+  if (logoFileName) {
+    return `${URL_BASE}${logoFileName}`;
+  }
+
+  // Fallback: try both chains (useful for addresses that exist on both networks)
+  for (const chainId of [7668, 7672]) {
+    const fallbackLogoFileName = logos?.[chainId]?.[address];
+    if (fallbackLogoFileName) {
+      return `${URL_BASE}${fallbackLogoFileName}`;
+    }
+  }
+
+  return undefined;};
 
 export default getTokenLogo;

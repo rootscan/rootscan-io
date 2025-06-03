@@ -14,6 +14,7 @@ import { getAddressName } from '@/lib/constants/knownAddresses';
 import { getPaginationData } from '@/lib/utils';
 import { handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
+import { RiSortDesc } from '@remixicon/react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 
@@ -48,7 +49,12 @@ export default async function Page({ searchParams }: PageProps) {
           <TableHeader>
             <TableRow>
               <TableHead>Status</TableHead>
-              <TableHead>Block</TableHead>
+              <TableHead>
+                <div className="flex items-center gap-2">
+                  Block
+                  <RiSortDesc className="size-4" />
+                </div>
+              </TableHead>
               <TableHead>Age</TableHead>
               <TableHead>Validator</TableHead>
               <TableHead>Hash</TableHead>
