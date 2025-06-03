@@ -7,14 +7,23 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { RiCalendarLine } from '@remixicon/react';
 import { format, subDays } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
 import moment from 'moment';
 
-export function DatePickerWithRange({
-  className,
-  onChange,
-}: React.HTMLAttributes<HTMLDivElement> & { onChange: (date: DateRange | undefined) => void }) {
+interface DatePickerWithRangeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+  onChange: (date: DateRange | undefined) => void;
+}
+
+export function DatePickerWithRange(props: DatePickerWithRangeProps) {
+  const { className, onChange } = props;
+
+  const presets = [
+    [1, '1 month'],
+    [6, '6 months'],
+    [12, '1 year'],
+  ];
+
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: subDays(new Date(), 31),
     to: new Date(),
@@ -29,15 +38,18 @@ export function DatePickerWithRange({
   }, [date]);
 
   return (
-    <div className={cn('grid gap-2', className)}>
+    <div className={cn('flex gap-2 items-center', className)}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
             id="date"
-            variant={'outline'}
-            className={cn('w-[300px] justify-start text-left font-normal', !date && 'text-muted-foreground')}
+            variant="outline"
+            className={cn(
+              'border border-border-secondary max-w-[320px] justify-start text-left font-normal w-full',
+              !date && 'text-muted-foreground',
+            )}
           >
-            <CalendarIcon className="mr-2 size-4" />
+            <RiCalendarLine className="mr-2 size-4" />
             {date?.from ? (
               date.to ? (
                 <>
@@ -62,44 +74,20 @@ export function DatePickerWithRange({
           />
         </PopoverContent>
       </Popover>
-      <div className="flex items-center gap-2">
+      {presets.map(([months, label], _) => (
         <Button
-          size="sm"
-          variant="outline"
+          key={_}
+          variant="secondary"
           onClick={() => {
             setDate({
-              from: moment().subtract(1, 'month').toDate(),
+              from: moment().subtract(months, 'months').toDate(),
               to: moment().toDate(),
             });
           }}
         >
-          1 month
+          {label}
         </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            setDate({
-              from: moment().subtract(6, 'months').toDate(),
-              to: moment().toDate(),
-            });
-          }}
-        >
-          6 months
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            setDate({
-              from: moment().subtract(12, 'months').toDate(),
-              to: moment().toDate(),
-            });
-          }}
-        >
-          1 year
-        </Button>
-      </div>
+      ))}
     </div>
   );
 }

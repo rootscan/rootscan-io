@@ -1,6 +1,5 @@
 import { ErrorAlert } from '@/components/error-alert';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import TransactionsTable from '@/components/transactions-table';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
@@ -30,10 +29,13 @@ export default async function Page({ params, searchParams }: PageProps) {
     if (!data.docs?.length) return <NoData />;
 
     return (
-      <div className="flex flex-col gap-6">
-        <PaginationSuspense pagination={getPaginationData(data)} />
-        <TransactionsTable address={address} transactions={data.docs} isAddressPage />
-      </div>
+      <TransactionsTable
+        address={address}
+        transactions={data.docs}
+        isAddressPage
+        pagination={getPaginationData(data)}
+        caption={`A total of ${data.totalDocs} EVM transctions found`}
+      />
     );
   } catch (error) {
     return <ErrorAlert error={error instanceof Error ? error : new Error('An unexpected error occurred')} />;

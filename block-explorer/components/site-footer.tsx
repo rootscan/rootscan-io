@@ -12,12 +12,14 @@ export default function SiteFooter() {
       <div className="container flex flex-col gap-8 py-10">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <h3 className="text-[20px]/[32px] font-semibold">
-            Kickstart your development on The Root Network with Rootscan’s API and RPC services
+            Kickstart your development on The Root Network with Rootscan's API and RPC services
           </h3>
-          <Button variant="secondary" className="shrink-0 gap-2">
-            API Portal
-            <RiArrowRightUpLine className="size-5" />
-          </Button>
+          <Link href="https://build.rootscan.io/" target="_blank">
+            <Button variant="secondary" className="group shrink-0 gap-2">
+              API Portal
+              <RiArrowRightUpLine className="size-5 transition-transform duration-300 ease-in-out group-hover:rotate-45" />
+            </Button>
+          </Link>
         </div>
         <div className="aspect-[345/75] bg-footer-pattern-mobile bg-contain bg-center bg-no-repeat md:aspect-[724/75] md:bg-footer-pattern-tablet xl:aspect-[1334/75] xl:bg-footer-pattern-desktop" />
       </div>

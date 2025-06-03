@@ -3,9 +3,9 @@ import Breadcrumbs from '@/components/breadcrumbs';
 import Container from '@/components/container';
 import { ErrorAlert } from '@/components/error-alert';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import SectionTitle from '@/components/section-title';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
@@ -20,38 +20,45 @@ export default async function Page({ searchParams }: PageProps) {
     const searchParamsObj = await searchParams;
     const page = Number(searchParamsObj?.page) || 1;
 
+    const numberFormatter = new Intl.NumberFormat('en-US', { style: 'decimal' });
+
     const data = handleRequestResult(await request(ApiCommand.getVerifiedContracts, { page }));
     if (!data.docs?.length) return <NoData />;
 
     return (
-      <Container>
-        <div className="flex flex-col gap-4">
+      <Container className="flex flex-col gap-6">
+        <div className="space-y-4">
           <Breadcrumbs />
           <SectionTitle>Verified Contracts</SectionTitle>
-          <PaginationSuspense pagination={getPaginationData(data)} />
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Contract Address</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Deployer</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.docs.map((contract, _) => (
-                <TableRow key={_}>
-                  <TableCell>
-                    <AddressDisplay address={contract.address} />
-                  </TableCell>
-                  <TableCell>{contract.contractName}</TableCell>
-                  <TableCell>
-                    <AddressDisplay address={contract.deployer} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
         </div>
+
+        <Table>
+          <TableCaption>
+            <TableNavigation pagination={getPaginationData(data)}>
+              {!data.skipFullCount && <p>Showing {numberFormatter.format(data.totalDocs)} contracts</p>}
+            </TableNavigation>
+          </TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Contract Address</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Deployer</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.docs.map((contract, _) => (
+              <TableRow key={_}>
+                <TableCell>
+                  <AddressDisplay address={contract.address} />
+                </TableCell>
+                <TableCell>{contract.contractName}</TableCell>
+                <TableCell>
+                  <AddressDisplay address={contract.deployer} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </Container>
     );
   } catch (error) {

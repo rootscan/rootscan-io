@@ -3,15 +3,14 @@ import Breadcrumbs from '@/components/breadcrumbs';
 import Container from '@/components/container';
 import { ErrorAlert } from '@/components/error-alert';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import SectionTitle from '@/components/section-title';
 import TimeAgoDate from '@/components/time-ago-date';
 import TokenDisplay from '@/components/token-display';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
-import { SortDesc } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { Address } from 'viem';
@@ -35,56 +34,56 @@ export default async function Page({ searchParams }: PageProps) {
     if (!swaps?.length) return <NoData />;
 
     return (
-      <Container>
-        <div className="flex flex-col gap-4">
+      <Container className="flex flex-col gap-6">
+        <div className="space-y-4">
           <Breadcrumbs />
           <SectionTitle>DEX</SectionTitle>
-          <PaginationSuspense pagination={getPaginationData(data)} />
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Extrinsic ID</TableHead>
-                <TableHead>
-                  <div className="flex items-center gap-2">
-                    <SortDesc className="size-5" /> Timestamp
-                  </div>
-                </TableHead>
-                <TableHead>Trader</TableHead>
-                <TableHead>Token Amount (In)</TableHead>
-                <TableHead>Token Amount (Out)</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {swaps.map((swap) => (
-                <TableRow key={swap.eventId}>
-                  <TableCell>
-                    <Link href={`/extrinsics/${swap.extrinsicId}`}>{swap.extrinsicId}</Link>
-                  </TableCell>
-                  <TableCell>
-                    <TimeAgoDate date={swap.timestamp * 1000} />
-                  </TableCell>
-                  <TableCell>
-                    <AddressDisplay address={swap.args?.trader as Address} useShortenedAddress />
-                  </TableCell>
-                  <TableCell>
-                    <TokenDisplay
-                      token={swap.swapFromToken}
-                      amount={swap.args?.supply_Asset_amount as number}
-                      hideCopyButton
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TokenDisplay
-                      token={swap.swapToToken}
-                      amount={swap.args?.target_Asset_amount as number}
-                      hideCopyButton
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
         </div>
+        <Table>
+          <TableCaption>
+            <TableNavigation pagination={getPaginationData(data)} />
+          </TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Extrinsic ID</TableHead>
+              <TableHead>Timestamp</TableHead>
+              <TableHead>Trader</TableHead>
+              <TableHead>Token Amount (In)</TableHead>
+              <TableHead>Token Amount (Out)</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {swaps.map((swap) => (
+              <TableRow key={swap.eventId}>
+                <TableCell>
+                  <Link href={`/extrinsics/${swap.extrinsicId}`}>{swap.extrinsicId}</Link>
+                </TableCell>
+                <TableCell>
+                  <TimeAgoDate date={swap.timestamp * 1000} />
+                </TableCell>
+                <TableCell>
+                  <AddressDisplay address={swap.args?.trader as Address} useShortenedAddress />
+                </TableCell>
+                <TableCell>
+                  <TokenDisplay
+                    token={swap.swapFromToken}
+                    amount={swap.args?.supply_Asset_amount as number}
+                    hideCopyButton
+                    shortFormat
+                  />
+                </TableCell>
+                <TableCell>
+                  <TokenDisplay
+                    token={swap.swapToToken}
+                    amount={swap.args?.target_Asset_amount as number}
+                    hideCopyButton
+                    shortFormat
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </Container>
     );
   } catch (error) {

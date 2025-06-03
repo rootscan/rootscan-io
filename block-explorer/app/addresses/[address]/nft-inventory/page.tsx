@@ -1,9 +1,9 @@
 import { ErrorAlert } from '@/components/error-alert';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import TokenDisplay from '@/components/token-display';
 import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
@@ -30,37 +30,39 @@ export default async function Page({ params, searchParams }: PageProps) {
     if (!data.docs?.length) return <NoData />;
 
     return (
-      <div className="flex flex-col gap-4">
-        <PaginationSuspense pagination={getPaginationData(data)} />
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Collection</TableHead>
-              <TableHead>NFTs Owned</TableHead>
-              <TableHead />
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.docs.map((item) => (
-              <TableRow key={item.contractAddress}>
-                <TableCell>
-                  <TokenDisplay token={item.tokenLookUp} hideCopyButton overrideImageSizeClass="h-10 w-10 mr-2" />
-                </TableCell>
-                <TableCell>{item.count}</TableCell>
-                <TableCell>
-                  <div className="my-auto flex justify-end">
+      <Table>
+        <TableCaption>
+          <TableNavigation pagination={getPaginationData(data)}>
+            {!data.skipFullCount && `Showing ${data.totalDocs} collections`}
+          </TableNavigation>
+        </TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Collection</TableHead>
+            <TableHead>NFTs Owned</TableHead>
+            <TableHead />
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.docs.map((item) => (
+            <TableRow key={item.contractAddress}>
+              <TableCell>
+                <TokenDisplay token={item.tokenLookUp} hideCopyButton overrideImageSizeClass="h-10 w-10 mr-2" />
+              </TableCell>
+              <TableCell>{item.count}</TableCell>
+              <TableCell>
+                <div className="my-auto flex justify-end">
+                  <Button asChild variant="secondary">
                     <Link href={`/addresses/${paramsObj.address}/nft-inventory/${item.contractAddress}`}>
-                      <Button size="sm" variant="outline">
-                        {item.tokenLookUp.type === 'ERC1155' ? 'View SFTs' : 'View NFTs'}
-                      </Button>
+                      {item.tokenLookUp.type === 'ERC1155' ? 'View SFTs' : 'View NFTs'}
                     </Link>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     );
   } catch (error) {
     return <ErrorAlert error={error instanceof Error ? error : new Error('An unexpected error occurred')} />;

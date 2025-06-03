@@ -8,7 +8,7 @@ import SectionTitle from '@/components/section-title';
 import TimeAgoDate from '@/components/time-ago-date';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { getAddressName } from '@/lib/constants/knownAddresses';
 import { getPaginationData } from '@/lib/utils';
@@ -40,7 +40,8 @@ export default async function Page({ searchParams }: PageProps) {
           <TableCaption>
             <TableNavigation pagination={getPaginationData(blocks)}>
               <p>
-                Showing blocks between #{blocks.docs?.[0].number} to #{blocks.docs?.[blocks.docs.length - 1].number}
+                Showing blocks between <span className="font-semibold">{blocks.docs?.[0].number}</span> to{' '}
+                <span className="font-semibold">{blocks.docs?.[blocks.docs.length - 1].number}</span>
               </p>
             </TableNavigation>
           </TableCaption>

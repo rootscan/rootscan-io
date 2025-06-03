@@ -3,15 +3,14 @@ import Breadcrumbs from '@/components/breadcrumbs';
 import Container from '@/components/container';
 import { ErrorAlert } from '@/components/error-alert';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import SectionTitle from '@/components/section-title';
 import TokenDisplay from '@/components/token-display';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN, XRP_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
-import { SortDesc } from 'lucide-react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -28,42 +27,39 @@ export default async function Page({ searchParams }: PageProps) {
     if (!data.docs?.length) return <NoData />;
 
     return (
-      <Container>
-        <div className="flex flex-col gap-4">
+      <Container className="flex flex-col gap-6">
+        <div className="space-y-4">
           <Breadcrumbs />
           <SectionTitle>Addresses</SectionTitle>
-
-          <PaginationSuspense pagination={getPaginationData(data)} />
-
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Address</TableHead>
-                <TableHead>
-                  <div className="flex items-center gap-2">
-                    <SortDesc className="size-5" /> Root Balance
-                  </div>
-                </TableHead>
-                <TableHead>XRP Balance</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.docs.map((item) => (
-                <TableRow key={item.address}>
-                  <TableCell>
-                    <AddressDisplay address={item.address} useShortenedAddress />
-                  </TableCell>
-                  <TableCell>
-                    <TokenDisplay token={ROOT_TOKEN} amount={item.balance?.free} hideCopyButton />
-                  </TableCell>
-                  <TableCell>
-                    <TokenDisplay token={XRP_TOKEN} amount={item.xrpBalance || 0} hideCopyButton />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
         </div>
+
+        <Table>
+          <TableCaption>
+            <TableNavigation pagination={getPaginationData(data)} />
+          </TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Address</TableHead>
+              <TableHead>Root Balance</TableHead>
+              <TableHead>XRP Balance</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.docs.map((item) => (
+              <TableRow key={item.address}>
+                <TableCell>
+                  <AddressDisplay address={item.address} useShortenedAddress />
+                </TableCell>
+                <TableCell>
+                  <TokenDisplay token={ROOT_TOKEN} amount={item.balance?.free} hideCopyButton shortFormat={true} />
+                </TableCell>
+                <TableCell>
+                  <TokenDisplay token={XRP_TOKEN} amount={item.xrpBalance || 0} hideCopyButton shortFormat={true} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </Container>
     );
   } catch (error) {

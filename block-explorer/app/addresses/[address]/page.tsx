@@ -7,12 +7,12 @@ import InOutBadge from '@/components/in-out-badge';
 import NFTMint from '@/components/nft-mint-comp';
 import { NftThumbnail } from '@/components/nft-thumbnail';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import TimeAgoDate from '@/components/time-ago-date';
 import TokenDisplay from '@/components/token-display';
 import Tooltip from '@/components/tooltip';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
@@ -42,72 +42,72 @@ export default async function Page({ params, searchParams }: PageProps) {
 
     const transactions = data.docs;
 
-    return (
-      <div className="flex flex-col gap-4">
-        <PaginationSuspense pagination={getPaginationData(data)} />
-        {!transactions || transactions?.length === 0 ? (
-          <NoData />
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Extrinsic ID</TableHead>
-                <TableHead>Extrinsic Method</TableHead>
-                <TableHead />
-                <TableHead>Timestamp</TableHead>
-                <TableHead>Amount / TokenID(s)</TableHead>
-                <TableHead>From</TableHead>
-                <TableHead />
-                <TableHead>To</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transactions.map((tx, _) => {
-                const { method, section } = tx;
-                if (section === 'assets' && method === 'Transferred') {
-                  return <AssetsTransferred tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'assets' && method === 'ApprovedTransfer') {
-                  return <AssetsApprovedTransfer tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'assets' && method === 'Issued') {
-                  return <AssetsIssued tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'assets' && method === 'Burned') {
-                  return <AssetsBurned tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'balances' && method === 'Reserved') {
-                  return <BalancesReserved tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'balances' && method === 'Transfer') {
-                  return <BalancesTransfer tx={tx} address={paramsObj.address} key={_} />;
-                }
-                if (section === 'balances' && method === 'Unreserved') {
-                  return <BalancesUnreserved tx={tx} address={paramsObj.address} key={_} />;
-                }
+    return !transactions || transactions?.length === 0 ? (
+      <NoData />
+    ) : (
+      <Table>
+        <TableCaption>
+          <TableNavigation pagination={getPaginationData(data)}>
+            {!data.skipFullCount && <p>A total of {data.totalDocs} native transfers found</p>}
+          </TableNavigation>
+        </TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Extrinsic ID</TableHead>
+            <TableHead>Extrinsic Method</TableHead>
+            <TableHead />
+            <TableHead>Timestamp</TableHead>
+            <TableHead>Amount / TokenID(s)</TableHead>
+            <TableHead>From</TableHead>
+            <TableHead />
+            <TableHead>To</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {transactions.map((tx, _) => {
+            const { method, section } = tx;
+            if (section === 'assets' && method === 'Transferred') {
+              return <AssetsTransferred tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'assets' && method === 'ApprovedTransfer') {
+              return <AssetsApprovedTransfer tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'assets' && method === 'Issued') {
+              return <AssetsIssued tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'assets' && method === 'Burned') {
+              return <AssetsBurned tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'balances' && method === 'Reserved') {
+              return <BalancesReserved tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'balances' && method === 'Transfer') {
+              return <BalancesTransfer tx={tx} address={paramsObj.address} key={_} />;
+            }
+            if (section === 'balances' && method === 'Unreserved') {
+              return <BalancesUnreserved tx={tx} address={paramsObj.address} key={_} />;
+            }
 
-                if (section === 'nft' && method === 'Transfer') {
-                  return <NFTTransfer tx={tx} address={paramsObj.address} key={_} />;
-                }
+            if (section === 'nft' && method === 'Transfer') {
+              return <NFTTransfer tx={tx} address={paramsObj.address} key={_} />;
+            }
 
-                if (section === 'nft' && method === 'Mint') {
-                  return <NFTMint tx={tx} address={paramsObj.address} key={_} />;
-                }
+            if (section === 'nft' && method === 'Mint') {
+              return <NFTMint tx={tx} address={paramsObj.address} key={_} />;
+            }
 
-                if (section === 'sft' && method === 'Transfer') {
-                  return <SFTTransfer tx={tx} address={paramsObj.address} key={_} />;
-                }
+            if (section === 'sft' && method === 'Transfer') {
+              return <SFTTransfer tx={tx} address={paramsObj.address} key={_} />;
+            }
 
-                if (section === 'sft' && method === 'Mint') {
-                  return <SFTMint tx={tx} address={paramsObj.address} key={_} />;
-                }
+            if (section === 'sft' && method === 'Mint') {
+              return <SFTMint tx={tx} address={paramsObj.address} key={_} />;
+            }
 
-                return <Fragment key={_} />;
-              })}
-            </TableBody>
-          </Table>
-        )}
-      </div>
+            return <Fragment key={_} />;
+          })}
+        </TableBody>
+      </Table>
     );
   } catch (error) {
     return <ErrorAlert error={error instanceof Error ? error : new Error('An unexpected error occurred')} />;

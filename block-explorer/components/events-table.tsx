@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { camelCaseToWords } from '@/lib/utils';
 import { PaginationResponse } from '@/types/api-types.ts';
 import { IEvent } from '@/types/models';
@@ -19,7 +19,8 @@ export default function EventsTable({ events, pagination }: EventsTableProps) {
         <TableCaption>
           <TableNavigation pagination={pagination}>
             <p>
-              Showing events between #{events[0].eventId} to #{events[events.length - 1].eventId}
+              Showing events between <strong>{events[0].eventId}</strong> to{' '}
+              <strong>{events[events.length - 1].eventId}</strong>
             </p>
           </TableNavigation>
         </TableCaption>

@@ -21,14 +21,17 @@ export default async function Layout({ children, params }: LayoutProps) {
   const { extrinsicId } = await params;
 
   return (
-    <Container>
-      <div className="flex flex-col gap-4">
+    <Container className="flex flex-col gap-6">
+      <div className="space-y-4">
         <Breadcrumbs />
-        <Menu />
         <SectionTitle>Extrinsic {extrinsicId}</SectionTitle>
+      </div>
+
+      <div className="space-y-4">
+        <Menu />
         <TestnetWarning>
           <p className="text-sm text-red-500">
-            [ This is a <strong>Testnet</strong> extrinsic only ]
+            [This is a <strong>Testnet</strong> extrinsic only]
           </p>
         </TestnetWarning>
         {children}

@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import { CopyButton } from '@/components/copy-button';
 import { ErrorAlert } from '@/components/error-alert';
 import NftPlayer from '@/components/nft-player';
@@ -11,7 +13,7 @@ import { ApiCommand, request } from '@/lib/api';
 import { getShortenedHash } from '@/lib/constants/knownAddresses';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
-import { ChevronLeft } from 'lucide-react';
+import { RiArrowLeftLine } from '@remixicon/react';
 import Link from 'next/link';
 import { getAddress } from 'viem';
 
@@ -21,6 +23,8 @@ export default async function Page({ params, searchParams }: PageProps) {
     if (!paramsObj.address || !paramsObj.contractaddress) {
       throw new Error('Address and contract address are required');
     }
+
+    const numberFormatter = new Intl.NumberFormat('en-US', { style: 'decimal' });
 
     const searchParamsObj = await searchParams;
     const page = Number(searchParamsObj?.page) || 1;
@@ -34,46 +38,53 @@ export default async function Page({ params, searchParams }: PageProps) {
     );
 
     const tokens = data.docs;
-    if (!tokens?.length) return <NoData />;
+
+    if (!tokens?.length) {
+      return <NoData />;
+    }
 
     return (
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <Tooltip text="Back to collection" asChild>
-            <Link href={`/addresses/${paramsObj.address}/nft-inventory`}>
-              <Button size="pagination" variant="outline">
-                <ChevronLeft />
+      <Fragment>
+        <div className="flex flex-col gap-4 rounded-[16px] border border-surface-bg bg-surface-container px-5 py-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-4">
+            <Tooltip text="Back to collection" asChild>
+              <Button asChild size="sm" variant="secondary" className="p-2">
+                <Link href={`/addresses/${paramsObj.address}/nft-inventory`}>
+                  <RiArrowLeftLine className="size-4" />
+                </Link>
               </Button>
-            </Link>
-          </Tooltip>
-          {tokens?.length ? <PaginationSuspense pagination={getPaginationData(data)} /> : null}
-        </div>
-        {tokens?.length ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-            {tokens.map((item, _) => (
-              <Card key={`${item.contractAddress}_${item.tokenId}_${_}`} className="p-0">
-                <CardHeader className="p-0">
-                  <NftPlayer animation_url={item?.animation_url} image={item?.image} />
-                </CardHeader>
-                <CardContent className="flex flex-col gap-4 p-3">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-muted-foreground">TokenID</span>
-                    <div className="flex items-center gap-2">
-                      <span className="truncate">
-                        {item.tokenId.toString().length > 12 ? getShortenedHash(item.tokenId.toString()) : item.tokenId}
-                      </span>
-                      <CopyButton value={item.tokenId.toString()} />
-                      {item?.amount ? <Badge>x{item?.amount}</Badge> : null}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            </Tooltip>
+
+            <div className="space-y-0.5">
+              <p className="text-sm font-normal">Showing {numberFormatter.format(data.totalDocs)} NFTs</p>
+            </div>
           </div>
-        ) : (
-          <NoData />
-        )}
-      </div>
+
+          <PaginationSuspense pagination={getPaginationData(data)} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+          {tokens.map((item, _) => (
+            <Card key={`${item.contractAddress}_${item.tokenId}_${_}`} className="overflow-hidden rounded-[12px] p-0">
+              <CardHeader className="p-0">
+                <NftPlayer animation_url={item?.animation_url} image={item?.image} />
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4 p-3">
+                <div className="flex flex-col gap-2">
+                  <span className="text-xs font-semibold text-text-secondary">TokenID</span>
+                  <div className="flex items-center gap-1">
+                    <span className="truncate text-sm font-semibold">
+                      {item.tokenId.toString().length > 12 ? getShortenedHash(item.tokenId.toString()) : item.tokenId}
+                    </span>
+                    <CopyButton value={item.tokenId.toString()} />
+                    {item?.amount ? <Badge>x{item?.amount}</Badge> : null}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </Fragment>
     );
   } catch (error) {
     return <ErrorAlert error={error instanceof Error ? error : new Error('An unexpected error occurred')} />;

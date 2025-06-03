@@ -1,9 +1,12 @@
+'use client';
+
 import getTokenLogo from '@/lib/constants/tokenLogos';
 import { cn } from '@/lib/utils';
+import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { Address } from 'viem';
 
-export default async function TokenLogo({
+export default function TokenLogo({
   contractAddress,
   width,
   height,
@@ -14,14 +17,34 @@ export default async function TokenLogo({
   height: number;
   className?: string;
 }) {
-  const url = getTokenLogo(contractAddress);
-  if (!url) return <div />;
+  const { resolvedTheme } = useTheme();
+  const logoUrl = getTokenLogo(contractAddress);
+
+  // If we have a specific logo, use it
+  if (logoUrl) {
+    return (
+      <Image
+        src={logoUrl}
+        width={width}
+        height={height}
+        alt="token_logo"
+        unoptimized
+        priority
+        quality={100}
+        className={cn(['shrink-0 rounded-full', className ? className : ''])}
+      />
+    );
+  }
+
+  const placeholderSrc =
+    resolvedTheme === 'dark' ? '/logos/token-placeholder-dark.svg' : '/logos/token-placeholder-light.svg';
+
   return (
     <Image
-      src={url}
+      src={placeholderSrc}
       width={width}
       height={height}
-      alt="token_logo"
+      alt="token_placeholder"
       unoptimized
       priority
       quality={100}

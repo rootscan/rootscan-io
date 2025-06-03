@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { IEVMTransaction } from '@/types/models';
-import { ArrowLeftToLine, Blocks } from 'lucide-react';
+import { RiContractLeftLine, RiQrScan2Line } from '@remixicon/react';
 
 export default function InputData({ input, transaction }: { input: string; transaction: IEVMTransaction }) {
   const [decode, setDecode] = useState<boolean>(false);
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       {decode ? (
         <div>
           <Table>
@@ -51,17 +51,16 @@ export default function InputData({ input, transaction }: { input: string; trans
 
       <div className="flex items-center gap-2">
         {decode ? (
-          <Button size="sm" onClick={() => setDecode(!decode)} className="flex items-center gap-1">
-            <ArrowLeftToLine /> Switch Back
+          <Button className="gap-2" onClick={() => setDecode(!decode)}>
+            <RiContractLeftLine className="size-5" /> Switch Back
           </Button>
         ) : (
           <Button
-            size="sm"
-            onClick={() => setDecode(!decode)}
-            className="flex items-center gap-1"
+            className="gap-2"
             disabled={!transaction?.functionData || Object.keys(transaction?.functionData?.args)?.length === 0}
+            onClick={() => setDecode(!decode)}
           >
-            <Blocks /> Decode Input Data
+            <RiQrScan2Line className="size-5" /> Decode Input Data
           </Button>
         )}
       </div>

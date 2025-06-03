@@ -1,15 +1,17 @@
 import { ReactNode } from 'react';
 
+import { cn } from '@/lib/utils.ts';
+
 const Wrapper = ({ children }: { children?: ReactNode }) => {
-  return <div className="flex flex-col gap-1">{children}</div>;
+  return <div className="flex gap-2">{children}</div>;
 };
 
 const Title = ({ children }: { children?: ReactNode }) => {
-  return <span className="text-muted-foreground">{children}</span>;
+  return <div className="w-full max-w-[240px] text-sm text-text-secondary">{children}</div>;
 };
 
-const Content = ({ children }: { children?: ReactNode }) => {
-  return children;
+const Content = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+  return <div className={cn('flex flex-1 font-semibold gap-2 items-center text-sm w-full', className)} {...props} />;
 };
 
 const CardDetail = {

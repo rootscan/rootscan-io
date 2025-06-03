@@ -1,8 +1,8 @@
 import AddressDisplay from '@/components/address-display';
 import NoData from '@/components/no-data';
-import PaginationSuspense from '@/components/pagination-suspense';
 import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
 import { PageProps } from '@/types/page';
@@ -28,35 +28,37 @@ export default async function Page({ params, searchParams }: PageProps) {
   if (!futurepasses?.length) return <NoData />;
 
   return (
-    <div className="flex flex-col gap-4">
-      <PaginationSuspense pagination={getPaginationData(data)} />
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Futurepass</TableHead>
-            <TableHead />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {futurepasses.map((item) => {
-            const futurepassAddress = item?.args?.futurepass as Address;
-            return (
-              <TableRow key={item.eventId}>
-                <TableCell>
-                  <AddressDisplay address={futurepassAddress} />
-                </TableCell>
-                <TableCell className="flex justify-end">
-                  <Link href={`/address/${futurepassAddress}`}>
-                    <Button variant="outline" size="sm">
-                      View
-                    </Button>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div>
+    <Table>
+      <TableCaption>
+        <TableNavigation pagination={getPaginationData(data)}>
+          {!data.skipFullCount && <p>Showing {data.totalDocs} futurepasses</p>}
+        </TableNavigation>
+      </TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Futurepass</TableHead>
+          <TableHead />
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {futurepasses.map((item) => {
+          const futurepassAddress = item?.args?.futurepass as Address;
+          return (
+            <TableRow key={item.eventId}>
+              <TableCell>
+                <AddressDisplay address={futurepassAddress} />
+              </TableCell>
+              <TableCell className="flex justify-end">
+                <Link href={`/address/${futurepassAddress}`}>
+                  <Button variant="outline" size="sm">
+                    View
+                  </Button>
+                </Link>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
   );
 }

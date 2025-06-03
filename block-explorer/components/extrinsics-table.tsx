@@ -3,7 +3,7 @@
 import { Fragment } from 'react';
 
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { TableNavigation } from '@/components/ui/table-navigatio.tsx';
+import { TableNavigation } from '@/components/ui/table-navigation.tsx';
 import { camelCaseToWords } from '@/lib/utils';
 import { PaginationResponse } from '@/types/api-types.ts';
 import { IExtrinsic } from '@/types/models';
@@ -20,18 +20,23 @@ import { Badge } from './ui/badge';
 interface ExtrinsicsTableProps {
   extrinsics: IExtrinsic[];
   pagination?: Omit<PaginationResponse<unknown>, 'docs'>;
+  caption?: string;
 }
-export default function ExtrinsicsTable({ extrinsics, pagination }: ExtrinsicsTableProps) {
+export default function ExtrinsicsTable({ extrinsics, pagination, caption }: ExtrinsicsTableProps) {
   if (!extrinsics?.length) return <NoData />;
   return (
     <Table>
       {!!pagination && (
         <TableCaption>
           <TableNavigation pagination={pagination}>
-            <p>
-              Showing extrinsics between #{extrinsics[0].extrinsicId} to #
-              {extrinsics[extrinsics.length - 1].extrinsicId}
-            </p>
+            {caption ? (
+              caption
+            ) : (
+              <p>
+                Showing extrinsics between <strong>{extrinsics[0].extrinsicId}</strong> to{' '}
+                <strong>{extrinsics[extrinsics.length - 1].extrinsicId}</strong>
+              </p>
+            )}
           </TableNavigation>
         </TableCaption>
       )}

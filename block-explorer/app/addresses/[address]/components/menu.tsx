@@ -1,66 +1,69 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import { Check } from 'lucide-react';
-import Link from 'next/link';
-import { useParams, usePathname } from 'next/navigation';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
+import { RiCheckLine } from '@remixicon/react';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 
-export default function Menu({
-  isContract = false,
-  isVerified = false,
-}: {
+interface MenuProps {
   isContract?: boolean;
   isVerified?: boolean;
-}) {
+}
+export default function Menu(props: MenuProps) {
+  const { isContract = false, isVerified = false } = props;
+
   const { address } = useParams();
   const pathname = usePathname();
+  const router = useRouter();
+
+  const tabs = [
+    { title: 'Native Transfers', href: `/addresses/${address}` },
+    { title: 'Extrinsics', href: `/addresses/${address}/extrinsics` },
+    { title: 'EVM Transfers', href: `/addresses/${address}/evm-transfers` },
+    {
+      title: 'EVM Transactions',
+      href: `/addresses/${address}/evm-transactions`,
+    },
+    {
+      title: 'Contract',
+      hasCheckmark: isContract && isVerified,
+      href: `/addresses/${address}/contract`,
+    },
+    { title: 'Token Balances', href: `/addresses/${address}/balances` },
+    { title: 'NFT Inventory', href: `/addresses/${address}/nft-inventory` },
+    {
+      title: 'Bridge Transactions',
+      href: `/addresses/${address}/bridge-transactions`,
+    },
+    {
+      title: 'Futurepass',
+      href: `/addresses/${address}/futurepass`,
+    },
+    {
+      title: 'Reports',
+      href: `/addresses/${address}/reports`,
+    },
+  ];
+
   return (
-    <div className="flex items-center gap-4 overflow-auto">
-      {[
-        { title: 'Native Transfers', href: `/addresses/${address}` },
-        { title: 'Extrinsics', href: `/addresses/${address}/extrinsics` },
-        { title: 'EVM Transfers', href: `/addresses/${address}/evm-transfers` },
-        {
-          title: 'EVM Transactions',
-          href: `/addresses/${address}/evm-transactions`,
-        },
-        {
-          title: 'Contract',
-          hasCheckmark: isContract && isVerified,
-          href: `/addresses/${address}/contract`,
-        },
-        { title: 'Token Balances', href: `/addresses/${address}/balances` },
-        { title: 'NFT Inventory', href: `/addresses/${address}/nft-inventory` },
-        {
-          title: 'Bridge Transactions',
-          href: `/addresses/${address}/bridge-transactions`,
-        },
-        {
-          title: 'Futurepass',
-          href: `/addresses/${address}/futurepass`,
-        },
-        {
-          title: 'Reports',
-          href: `/addresses/${address}/reports`,
-        },
-      ].map((item, _) => {
-        if (!isContract && item?.title === 'Contract') return null;
-        return (
-          <Link href={item.href} key={_}>
-            {/*TODO: update according to the design*/}
-            <Badge size="md" type={pathname === item.href ? 'linear' : 'filled'}>
-              <div className="flex items-center gap-1">
-                <span>{item.title}</span>
-                {item.hasCheckmark ? (
-                  <div className="inline-flex size-4 rounded-full bg-green-600 dark:bg-green-400 dark:text-black">
-                    <Check className="m-auto size-3" />
-                  </div>
-                ) : null}
-              </div>
-            </Badge>
-          </Link>
-        );
-      })}
-    </div>
+    <Tabs size="sm" variant="pill" value={pathname} onValueChange={(newValue) => router.push(newValue)}>
+      <TabsList>
+        {tabs.map((tab, _) => {
+          if (!isContract && tab?.title === 'Contract') {
+            return null;
+          }
+
+          return (
+            <TabsTrigger key={_} value={tab.href} className="group">
+              {tab.title}
+              {tab.hasCheckmark ? (
+                <div className="inline-flex size-4 rounded-full bg-green-500 text-text-light group-data-[state=active]:text-foreground">
+                  <RiCheckLine className="m-auto size-3" />
+                </div>
+              ) : null}
+            </TabsTrigger>
+          );
+        })}
+      </TabsList>
+    </Tabs>
   );
 }

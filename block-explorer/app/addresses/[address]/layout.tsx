@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Fragment, Suspense } from 'react';
 
 import AddressDisplay from '@/components/address-display';
 import Breadcrumbs from '@/components/breadcrumbs';
@@ -7,8 +7,9 @@ import { ErrorAlert } from '@/components/error-alert';
 import OnlyMainnet from '@/components/layouts/only-mainnet';
 import TokenDisplay from '@/components/token-display';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import CardDetail from '@/components/ui/card-detail';
+import { Separator } from '@/components/ui/separator.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { ApiCommand, request } from '@/lib/api';
 import { ROOT_TOKEN } from '@/lib/constants/tokens';
@@ -69,147 +70,140 @@ export default async function Layout({ children, params }: LayoutProps) {
     }
 
     return (
-      <Container>
-        <div className="flex flex-col gap-4">
-          <Breadcrumbs />
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <div className="flex items-center gap-2">
-                  <div className="size-8">
-                    <Image
-                      src={generateAvatarURL(address)}
-                      width={50}
-                      height={50}
-                      priority
-                      unoptimized
-                      className="rounded-[5px]"
-                      alt="jazz"
-                    />
-                  </div>
-                  {data?.isContract ? 'EVM Smart Contract' : 'Overview'}
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-6">
-                {data?.nameTag ? (
-                  <CardDetail.Wrapper>
-                    <CardDetail.Title>Name Tag</CardDetail.Title>
-                    <CardDetail.Content>{data?.nameTag}</CardDetail.Content>
-                  </CardDetail.Wrapper>
-                ) : null}
-                <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:gap-12">
-                  <CardDetail.Wrapper>
-                    <CardDetail.Title>Address</CardDetail.Title>
-                    <CardDetail.Content>
-                      <div className="flex items-center gap-2">
-                        <AddressDisplay address={address} isTruncate />
-                        <QrCode address={address} />
-                      </div>
-                    </CardDetail.Content>
-                  </CardDetail.Wrapper>
-                  <CardDetail.Wrapper>
-                    <CardDetail.Title>RNS</CardDetail.Title>
-                    <Suspense fallback={<Skeleton className="h-6 w-10" />}>
-                      <RnsName address={address} />
-                    </Suspense>
-                  </CardDetail.Wrapper>
-                </div>
+      <Container className="flex flex-col gap-6">
+        <Breadcrumbs />
+
+        <Card>
+          <CardContent className="flex flex-col gap-5 rounded-[16px] p-6">
+            <div className="flex items-center gap-3">
+              <Image
+                src={generateAvatarURL(address)}
+                width={32}
+                height={32}
+                priority
+                unoptimized
+                className="rounded-[6px]"
+                alt="jazz"
+              />
+              <h3 className="text-[20px]/[32px] font-semibold">
+                {data?.isContract ? 'EVM Smart Contract' : 'Overview'}
+              </h3>
+            </div>
+            {data?.nameTag ? (
+              <Fragment>
                 <CardDetail.Wrapper>
-                  <CardDetail.Title>Root Balance</CardDetail.Title>
+                  <CardDetail.Title>Name Tag</CardDetail.Title>
+                  <CardDetail.Content>{data?.nameTag}</CardDetail.Content>
+                </CardDetail.Wrapper>
+                <Separator />
+              </Fragment>
+            ) : null}
+            <CardDetail.Wrapper>
+              <CardDetail.Title>Address</CardDetail.Title>
+              <CardDetail.Content>
+                <div className="flex items-center gap-2">
+                  <AddressDisplay address={address} isTruncate />
+                  <QrCode address={address} />
+                </div>
+              </CardDetail.Content>
+            </CardDetail.Wrapper>
+            <Separator />
+            <CardDetail.Wrapper>
+              <CardDetail.Title>RNS</CardDetail.Title>
+              <CardDetail.Content>
+                <Suspense fallback={<Skeleton className="h-6 w-10" />}>
+                  <RnsName address={address} />
+                </Suspense>
+              </CardDetail.Content>
+            </CardDetail.Wrapper>
+            <Separator />
+            <CardDetail.Wrapper>
+              <CardDetail.Title>Root Balance</CardDetail.Title>
+              <CardDetail.Content>
+                {!data?.balance?.reserved && data?.balance?.reserved?.toString() !== '0' ? (
+                  <div className="flex flex-col gap-2">
+                    <TokenDisplay token={ROOT_TOKEN} amount={data?.balance?.free || 0} hideCopyButton />
+                    <OnlyMainnet>
+                      {data?.balance?.freeFormatted && data?.rootPriceData?.price ? (
+                        <span className="text-xs text-muted-foreground">
+                          {formatNumberDollars(Number(data?.balance?.freeFormatted) * data.rootPriceData.price, 2)} @ (
+                          {formatNumberDollars(data.rootPriceData.price)}/ Root)
+                        </span>
+                      ) : null}
+                    </OnlyMainnet>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-normal text-muted-foreground">Total</span>
+                      {data?.balance?.freeFormatted ? (
+                        <TokenDisplay
+                          token={ROOT_TOKEN}
+                          amount={Number(BigInt(data?.balance?.free) + BigInt(data?.balance?.reserved || '0')) || 0}
+                          hideCopyButton
+                        />
+                      ) : (
+                        '0'
+                      )}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-normal text-muted-foreground">Available</span>
+                      {data?.balance?.free ? (
+                        <TokenDisplay
+                          token={ROOT_TOKEN}
+                          amount={Number(
+                            BigInt(data?.balance?.free) -
+                              BigInt(
+                                Math.max(
+                                  data?.balance?.frozen || 0,
+                                  data?.balance?.miscFrozen || 0,
+                                  data?.balance?.feeFrozen || 0,
+                                ),
+                              ),
+                          )}
+                          hideCopyButton
+                        />
+                      ) : (
+                        '0'
+                      )}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-normal text-muted-foreground">Reserved</span>
+                      {data?.balance?.reservedFormatted ? (
+                        <TokenDisplay token={ROOT_TOKEN} amount={data?.balance?.reserved || 0} hideCopyButton />
+                      ) : (
+                        '0'
+                      )}
+                    </div>
+                  </div>
+                )}
+              </CardDetail.Content>
+            </CardDetail.Wrapper>
+            {data?.token ? (
+              <Fragment>
+                <Separator />
+                <CardDetail.Wrapper>
+                  <CardDetail.Title>Token Tracker</CardDetail.Title>
                   <CardDetail.Content>
-                    {!data?.balance?.reserved && data?.balance?.reserved?.toString() !== '0' ? (
-                      <div className="flex flex-col gap-2">
-                        <TokenDisplay token={ROOT_TOKEN} amount={data?.balance?.free || 0} hideCopyButton />
-                        <OnlyMainnet>
-                          {data?.balance?.freeFormatted && data?.rootPriceData?.price ? (
-                            <span className="text-xs text-muted-foreground">
-                              {formatNumberDollars(Number(data?.balance?.freeFormatted) * data.rootPriceData.price, 2)}{' '}
-                              @ ({formatNumberDollars(data.rootPriceData.price)}/ Root)
-                            </span>
-                          ) : null}
-                        </OnlyMainnet>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-muted-foreground">Total</span>
-                          <span>
-                            {data?.balance?.freeFormatted ? (
-                              <TokenDisplay
-                                token={ROOT_TOKEN}
-                                amount={
-                                  Number(BigInt(data?.balance?.free) + BigInt(data?.balance?.reserved || '0')) || 0
-                                }
-                                hideCopyButton
-                              />
-                            ) : (
-                              '0'
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-muted-foreground">Available</span>
-                          <span>
-                            {data?.balance?.free ? (
-                              <TokenDisplay
-                                token={ROOT_TOKEN}
-                                amount={Number(
-                                  BigInt(data?.balance?.free) -
-                                    BigInt(
-                                      Math.max(
-                                        data?.balance?.frozen || 0,
-                                        data?.balance?.miscFrozen || 0,
-                                        data?.balance?.feeFrozen || 0,
-                                      ),
-                                    ),
-                                )}
-                                hideCopyButton
-                              />
-                            ) : (
-                              '0'
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-muted-foreground">Reserved</span>
-                          <span>
-                            {data?.balance?.reservedFormatted ? (
-                              <TokenDisplay token={ROOT_TOKEN} amount={data?.balance?.reserved || 0} hideCopyButton />
-                            ) : (
-                              '0'
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    )}
+                    <TokenDisplay token={data?.token} isTokenTracker hideCopyButton />
                   </CardDetail.Content>
                 </CardDetail.Wrapper>
-                {data?.token ? (
-                  <div className="max-w-md">
-                    <CardDetail.Wrapper>
-                      <CardDetail.Title>Token Tracker</CardDetail.Title>
-                      <CardDetail.Content>
-                        <TokenDisplay token={data?.token} isTokenTracker hideCopyButton />
-                      </CardDetail.Content>
-                    </CardDetail.Wrapper>
-                  </div>
-                ) : null}
-                {tags?.length ? (
-                  <CardDetail.Wrapper>
-                    <CardDetail.Title>Tags</CardDetail.Title>
-                    <CardDetail.Content>
-                      <div className="mt-2 flex gap-2">{tags?.map((tag, _) => <Badge key={_}>{tag}</Badge>)}</div>
-                    </CardDetail.Content>
-                  </CardDetail.Wrapper>
-                ) : null}
-              </div>
-            </CardContent>
-          </Card>
-          <div className="flex items-center justify-between gap-4">
-            <Menu isContract={data?.isContract} isVerified={!!data?.isVerifiedContract} />
-          </div>
+              </Fragment>
+            ) : null}
+            {tags?.length ? (
+              <Fragment>
+                <Separator />
+                <CardDetail.Wrapper>
+                  <CardDetail.Title>Tags</CardDetail.Title>
+                  <CardDetail.Content>{tags?.map((tag, _) => <Badge key={_}>{tag}</Badge>)}</CardDetail.Content>
+                </CardDetail.Wrapper>
+              </Fragment>
+            ) : null}
+          </CardContent>
+        </Card>
+
+        <div className="flex flex-col gap-4">
+          <Menu isContract={data?.isContract} isVerified={!!data?.isVerifiedContract} />
           {children}
         </div>
       </Container>

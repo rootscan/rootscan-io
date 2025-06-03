@@ -31,45 +31,68 @@ export default function Pagination({ pagination }: { pagination?: Omit<Paginatio
     };
   }, [pathname, searchParams]);
 
-  const currentPage = searchParams.get('page') || 1;
+  const currentPage = Number(searchParams.get('page') || 1);
 
   return (
     <div className="flex items-center justify-end gap-4">
       {isLoading ? <RiLoader4Line className="size-5 animate-spin text-muted-foreground" /> : null}
       <div className="flex items-center justify-end gap-6">
-        {!pagination?.skipFullCount ? (
-          <span className="text-sm text-muted-foreground">
-            Page {pagination?.page} of {pagination?.totalPages}
-          </span>
-        ) : null}
         <div className="flex items-center gap-1">
+          {!pagination?.skipFullCount && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                router.push(pathname + '?' + createQueryString('page', String(1)));
+              }}
+              disabled={currentPage === 1}
+            >
+              First
+            </Button>
+          )}
           <Button
             variant="secondary"
             size="sm"
             className="px-2"
             onClick={() => {
               router.push(
-                pathname +
-                  '?' +
-                  createQueryString('page', String(Number(currentPage) - 1 >= 1 ? Number(currentPage) - 1 : 1)),
+                pathname + '?' + createQueryString('page', String(currentPage - 1 >= 1 ? currentPage - 1 : 1)),
               );
             }}
             disabled={!pagination?.hasPrevPage}
           >
             <RiArrowLeftSLine className="size-4" />
           </Button>
-          <p className="px-3">Page {currentPage}</p>
+          {!pagination?.skipFullCount ? (
+            <p className="px-3">
+              Page {pagination?.page} of {pagination?.totalPages}
+            </p>
+          ) : (
+            <p className="px-3">Page {currentPage}</p>
+          )}
           <Button
             variant="secondary"
             size="sm"
             className="px-2"
             onClick={() => {
-              router.push(pathname + '?' + createQueryString('page', String(Number(currentPage) + 1)));
+              router.push(pathname + '?' + createQueryString('page', String(currentPage + 1)));
             }}
             disabled={!pagination?.hasNextPage}
           >
             <RiArrowRightSLine className="size-4" />
           </Button>
+          {!pagination?.skipFullCount && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                router.push(pathname + '?' + createQueryString('page', String(pagination!.totalPages)));
+              }}
+              disabled={currentPage === pagination!.totalPages}
+            >
+              Last
+            </Button>
+          )}
         </div>
       </div>
     </div>
