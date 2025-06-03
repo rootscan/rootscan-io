@@ -49,7 +49,7 @@ export default async function TokenDisplay(props: TokenDisplayProps) {
           address={token?.contractAddress}
           nameTag={
             shortFormat
-              ? (token?.symbol ?? token?.name ?? '')
+              ? token?.symbol ?? token?.name ?? ''
               : `${token?.name} ${token?.symbol ? `(${token?.symbol})` : ''}`
           }
           hideCopyButton={hideCopyButton}
