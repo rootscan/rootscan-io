@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 import Tooltip from '@/components/tooltip';
 import { Button } from '@/components/ui/button.tsx';
@@ -13,6 +13,27 @@ type DataItemCardProps = {
   children: ReactNode;
   summary: Array<[string, string | number | ReactNode]>;
 };
+
+const TruncatedValue = ({ value }: { value: string | number }) => {
+  const [isTruncated, setIsTruncated] = useState(false);
+  const textRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const element = textRef.current;
+    if (element) {
+      setIsTruncated(element.scrollWidth > element.clientWidth);
+    }
+  }, [value]);
+
+  const content = (
+    <p ref={textRef} className="min-w-0 max-w-[120px] truncate text-xs font-semibold">
+      {value}
+    </p>
+  );
+
+  return isTruncated ? <Tooltip text={String(value)}>{content}</Tooltip> : content;
+};
+
 export const DataItemCard = (props: DataItemCardProps) => {
   const { iconSrc, summary, children } = props;
 
@@ -44,11 +65,9 @@ export const DataItemCard = (props: DataItemCardProps) => {
           <div key={i} className="flex items-center justify-between gap-4">
             <p className="shrink-0 text-xs text-[#737373]">{label}</p>
             {typeof value === 'string' || typeof value === 'number' ? (
-              <Tooltip text={String(value)}>
-                <p className="min-w-0 truncate text-xs font-semibold">{value}</p>
-              </Tooltip>
+              <TruncatedValue value={value} />
             ) : (
-              <div className="min-w-0 truncate">{value}</div>
+              <div className="min-w-0 max-w-[120px] truncate">{value}</div>
             )}
           </div>
         ))}

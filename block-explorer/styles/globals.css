@@ -258,4 +258,14 @@
   .link-overlay {
     @apply before:absolute before:left-0 before:top-0 before:z-0 before:block before:size-full before:cursor-[inherit] before:content-[''];
   }
+
+  /* Hide scrollbars for horizontal scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
