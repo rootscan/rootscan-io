@@ -1,6 +1,5 @@
-import Image from 'next/image';
-
 import { camelCaseToWords } from '@/lib/utils';
+import Image from 'next/image';
 
 import { Badge } from './ui/badge';
 
@@ -14,13 +13,7 @@ export default function ExtrinsicMethod({ tx, hideExtrinsic = false }) {
         <div className="flex items-start gap-0.5">
           {/* Arrow icon positioned to span both badges */}
           <div className="shrink-0">
-            <Image
-              src="/arrow-connector.svg"
-              width={16}
-              height={44}
-              alt="Connected method"
-              className="h-11 w-4"
-            />
+            <Image src="/arrow-connector.svg" width={16} height={44} alt="Connected method" className="h-11 w-4" />
           </div>
           {/* Badges column */}
           <div className="flex flex-col items-start gap-1">

@@ -2,9 +2,9 @@
 
 import { ReactNode, useState } from 'react';
 
+import Tooltip from '@/components/tooltip';
 import { Button } from '@/components/ui/button.tsx';
 import { CardContent } from '@/components/ui/v2/card.tsx';
-import Tooltip from '@/components/tooltip';
 import { cn } from '@/lib/utils.ts';
 import { RiArrowDownSLine } from '@remixicon/react';
 
