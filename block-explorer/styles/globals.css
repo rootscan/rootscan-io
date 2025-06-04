@@ -246,6 +246,9 @@
 
   .h-stack {
     @apply [&>div:last-of-type]:border-b-0 [&>div]:border-b [&>div]:border-[#F1F1F1] dark:[&>div]:border-[#1C1C1C];
+    /* Prevent layout shifts and automatic scrolling */
+    contain: layout;
+    overflow-anchor: auto;
   }
 
   .link-box {

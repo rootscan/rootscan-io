@@ -32,7 +32,7 @@ export default function AddToMetamask() {
   return (
     <Button size="default" variant="default" onClick={() => add()}>
       <Image
-        src="/site-logos/metamask_logo.webp"
+        src="/site-logos/metamask_logo.svg"
         width={50}
         height={50}
         unoptimized

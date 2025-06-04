@@ -54,7 +54,7 @@ export default async function Page({ params, searchParams }: PageProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Extrinsic ID</TableHead>
-            <TableHead>Extrinsic Method</TableHead>
+            <TableHead className="pl-[32px]">Extrinsic Method</TableHead>
             <TableHead />
             <TableHead>Timestamp</TableHead>
             <TableHead>Amount / TokenID(s)</TableHead>

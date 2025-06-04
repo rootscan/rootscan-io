@@ -153,7 +153,7 @@ export default function Page() {
                       className="aspect-square w-full rounded-[8px]"
                     />
                     <div className="flex flex-1 flex-col items-start gap-2">
-                      <h3 className="shrink">{item?.title}</h3>
+                      <h3 className="text-sm font-semibold">{item?.title}</h3>
                       <p className="grow text-xs text-muted-foreground">{item?.description}</p>
                       <Badge type="linear" className="mt-auto rounded-[8px]">
                         {item?.category}

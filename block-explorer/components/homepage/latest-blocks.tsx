@@ -18,14 +18,14 @@ export const LatestBlocks = (props: LatestBlocksProps) => {
   const { latestBlocks } = props;
 
   return (
-    <Card>
+    <Card style={{ overflowAnchor: 'none' }}>
       <CardHeader className="flex-row items-center justify-between">
         <CardTitle className="text-[18px]/[28px] font-semibold">Blocks</CardTitle>
         <Button asChild variant="secondary" size="sm">
           <Link href="/blocks">View All</Link>
         </Button>
       </CardHeader>
-      <div className="h-stack">
+      <div className="h-stack" style={{ overflowAnchor: 'auto' }}>
         {latestBlocks?.map((block) => {
           const summary: Array<[string, string | number | ReactNode]> = [
             ['Events', block.eventsCount],
