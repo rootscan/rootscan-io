@@ -73,7 +73,7 @@ export default function SiteFooter() {
         <div className="hidden xl:block xl:flex-1" />
         <Link
           href="/policy"
-          className="text-sm font-normal text-muted-foreground hover:text-foreground dark:hover:text-text-light"
+          className="text-sm font-normal text-muted-foreground hover:text-foreground dark:hover:text-white"
         >
           Privacy Policy
         </Link>

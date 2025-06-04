@@ -4,6 +4,7 @@ import { ReactNode, useState } from 'react';
 
 import { Button } from '@/components/ui/button.tsx';
 import { CardContent } from '@/components/ui/v2/card.tsx';
+import Tooltip from '@/components/tooltip';
 import { cn } from '@/lib/utils.ts';
 import { RiArrowDownSLine } from '@remixicon/react';
 
@@ -41,11 +42,13 @@ export const DataItemCard = (props: DataItemCardProps) => {
       >
         {summary.map(([label, value], i) => (
           <div key={i} className="flex items-center justify-between gap-4">
-            <p className="text-xs text-[#737373]">{label}</p>
+            <p className="shrink-0 text-xs text-[#737373]">{label}</p>
             {typeof value === 'string' || typeof value === 'number' ? (
-              <p className="text-xs font-semibold">{value}</p>
+              <Tooltip text={String(value)}>
+                <p className="min-w-0 truncate text-xs font-semibold">{value}</p>
+              </Tooltip>
             ) : (
-              value
+              <div className="min-w-0 truncate">{value}</div>
             )}
           </div>
         ))}
