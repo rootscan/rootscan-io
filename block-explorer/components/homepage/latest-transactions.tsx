@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/v2/car
 import { IEVMTransaction } from '@/types/models';
 import { generateAvatarURL } from '@cfx-kit/wallet-avatar';
 import { RiArrowRightSLine } from '@remixicon/react';
+import { Check } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getAddress } from 'viem';
@@ -50,7 +51,13 @@ export const TransactionCard = (props: TransactionCardProps) => {
           {tag}
         </Badge>
       ))}
-      {transaction.status === 'success' ? <Badge color="green">Confirmed</Badge> : null}
+      {transaction.status === 'success' ? (
+        <Badge color="green">
+          <div className="flex items-center gap-1">
+            <Check className="size-4" /> Confirmed
+          </div>
+        </Badge>
+      ) : null}
     </div>
   );
 

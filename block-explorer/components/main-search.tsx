@@ -25,7 +25,8 @@ export default function MainSearch() {
   };
 
   const handleFocus = (event?: KeyboardEvent) => {
-    if (event && document.activeElement !== document.body) return;
+    // Allow focus from any element except input fields to prevent interference with typing
+    if (event && document.activeElement && document.activeElement.tagName === 'INPUT') return;
     event?.preventDefault();
     event?.stopPropagation();
     setTimeout(() => inputRef.current?.focus());

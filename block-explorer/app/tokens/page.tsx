@@ -89,7 +89,9 @@ export default async function Page({ searchParams }: PageProps) {
                         {token?.priceData?.percent_change_24h ? token?.priceData?.percent_change_24h.toFixed(2) : '-'}%
                       </span>
                     </div>
-                  ) : null}
+                  ) : (
+                    '-'
+                  )}
                 </OnlyMainnet>
               </TableCell>
               <TableCell>

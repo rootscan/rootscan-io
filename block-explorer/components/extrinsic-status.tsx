@@ -1,4 +1,5 @@
 import { IExtrinsic } from '@/types/models';
+import { Check } from 'lucide-react';
 
 import { Badge } from './ui/badge';
 
@@ -19,7 +20,11 @@ export default function ExtrinsicStatus({
           {showErrorInfo ? <Badge type="linear">Reason: {extrinsic?.errorInfo || 'Unknown'}</Badge> : null}
         </div>
       ) : (
-        <Badge color="green">Success</Badge>
+        <Badge color="green">
+          <div className="flex items-center gap-1">
+            <Check className="size-4" /> Success
+          </div>
+        </Badge>
       )}
     </div>
   );

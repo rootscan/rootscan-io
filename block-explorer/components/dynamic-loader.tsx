@@ -9,6 +9,7 @@ import { useTheme } from 'next-themes';
 export default function Loader() {
   const { resolvedTheme } = useTheme();
   const [animationData, setAnimationData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadAnimation = async () => {
@@ -25,6 +26,8 @@ export default function Loader() {
       } catch (error) {
         // Fallback: animation files don't exist yet
         console.log('Animation files not found, using fallback');
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -36,7 +39,10 @@ export default function Loader() {
       <CardContent className="grid h-[33vh] select-none place-items-center py-10 text-center">
         <div className="flex flex-col items-center gap-4">
           <div className="flex size-12 items-center justify-center">
-            {animationData ? (
+            {isLoading ? (
+              // Show nothing while loading to prevent flash
+              <div className="size-10" />
+            ) : animationData ? (
               <Lottie animationData={animationData} loop={true} style={{ width: '100%', height: '100%' }} />
             ) : (
               // Fallback: Simple CSS spinner when Lottie animations aren't available

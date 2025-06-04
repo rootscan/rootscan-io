@@ -26,7 +26,7 @@ const TruncatedValue = ({ value }: { value: string | number }) => {
   }, [value]);
 
   const content = (
-    <p ref={textRef} className="min-w-0 max-w-[120px] truncate text-xs font-semibold">
+    <p ref={textRef} className="min-w-0 max-w-[112px] truncate text-xs font-semibold">
       {value}
     </p>
   );
@@ -67,7 +67,7 @@ export const DataItemCard = (props: DataItemCardProps) => {
             {typeof value === 'string' || typeof value === 'number' ? (
               <TruncatedValue value={value} />
             ) : (
-              <div className="min-w-0 max-w-[120px] truncate">{value}</div>
+              <div className="min-w-0 max-w-[112px] truncate">{value}</div>
             )}
           </div>
         ))}
