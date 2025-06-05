@@ -28,17 +28,16 @@ const getData = async () => {
 
 export default async function IndexPage() {
   const { latestBlocks, latestExtrinsics, latestTransactions, chainSummary } = await getData();
-
   const stats = [
     { title: 'Target Block Time', value: '4s', icon: RiTimerLine },
     {
-      title: 'Signed Extrinsics',
-      value: Number(chainSummary?.signedExtrinsics || 0),
+      title: 'Transfers 24h',
+      value: Number(chainSummary?.transfers24h || 0),
       icon: RiPencilLine,
     },
     {
-      title: 'Total Transactions',
-      value: Number(chainSummary?.evmTransactions || 0),
+      title: 'Total Transfers',
+      value: Number(chainSummary?.totalTransfers || 0),
       icon: RiArrowLeftRightLine,
     },
     {

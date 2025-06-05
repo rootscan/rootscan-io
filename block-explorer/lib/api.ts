@@ -216,7 +216,7 @@ type ApiCommandMap = {
     >
   >;
   [ApiCommand.getFuturepasses]: ApiIO<PaginationParams & { address: Address }, PaginationResponse<IEvent>>;
-  [ApiCommand.getChainSummary]: ApiIO<never, { addresses: number; signedExtrinsics: number; evmTransactions: number }>;
+  [ApiCommand.getChainSummary]: ApiIO<never, { addresses: number; totalTransfers: number; transfers24h: number }>;
   [ApiCommand.getStakingValidators]: ApiIO<PaginationParams, PaginationResponse<IStakingValidator>>;
   [ApiCommand.getDex]: ApiIO<
     PaginationParams,

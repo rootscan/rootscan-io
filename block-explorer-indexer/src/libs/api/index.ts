@@ -1160,9 +1160,13 @@ app.post('/getRootPrice', async (req: Request, res: Response) => {
 app.post('/getChainSummary', async (req: Request, res: Response) => {
   try {
     const addresses = await DB.Address.find().estimatedDocumentCount();
-    const signedExtrinsics = await DB.Extrinsic.find({ isSigned: true }).estimatedDocumentCount();
-    const evmTransactions = await DB.EvmTransaction.find().estimatedDocumentCount();
-    return res.json({ addresses, signedExtrinsics, evmTransactions });
+    const totalTransfers = await DB.Event.countDocuments({ method: 'Transfer', section: 'balances' });
+    const transfers24h = await DB.Event.countDocuments({
+      method: 'Transfer',
+      section: 'balances',
+      timestamp: { $gte: new Date(Date.now() / 1000 - 24 * 60 * 60) },
+    });
+    return res.json({ addresses, totalTransfers, transfers24h });
   } catch (e) {
     processError(e, res);
   }
