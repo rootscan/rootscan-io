@@ -22,10 +22,9 @@ export const SiteTopBar = ({ rootPrice }: SiteTopBarProps) => {
         >
           {rootPrice}
           {isHomePage && <div className="flex-1" />}
-          <div className="flex items-center gap-1 md:gap-2">
-            <RiGasStationLine className="size-4 text-muted-foreground" />
-            <span className="hidden font-normal text-muted-foreground sm:inline">EVM Gas:</span>
-            <span className="font-normal text-muted-foreground sm:hidden">EVM Gas:</span>
+          <div className="flex items-center gap-1">
+            <RiGasStationLine className="size-4 text-text-secondary" />
+            <span className="font-normal text-text-secondary">EVM Gas:</span>
             <span className="font-semibold text-foreground">7500 Gwei</span>
           </div>
         </div>
