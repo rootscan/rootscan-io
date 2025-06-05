@@ -79,7 +79,7 @@ export default async function Page({ params }: PageProps) {
                 <Link href={`/blocks/${transaction.blockNumber}`}>{transaction.blockNumber}</Link>
               </CardDetail.Content>
             </CardDetail.Wrapper>
-            <CardDetail.Content>
+            <CardDetail.Wrapper>
               <CardDetail.Title>From</CardDetail.Title>
               <CardDetail.Content>
                 <AddressDisplay
@@ -87,9 +87,10 @@ export default async function Page({ params }: PageProps) {
                   nameTag={transaction.fromLookup?.nameTag}
                   rnsName={transaction.fromLookup?.rns}
                   isContract={transaction.fromLookup?.isContract}
+                  isTruncate={true}
                 />
               </CardDetail.Content>
-            </CardDetail.Content>
+            </CardDetail.Wrapper>
             <CardDetail.Wrapper>
               <CardDetail.Title>To</CardDetail.Title>
               <CardDetail.Content>
@@ -101,6 +102,7 @@ export default async function Page({ params }: PageProps) {
                     nameTag={transaction.toLookup?.nameTag}
                     rnsName={transaction.toLookup?.rns}
                     isContract={transaction.toLookup?.isContract}
+                    isTruncate={true}
                   />
                 )}
                 {transaction.status === 'reverted' ? (

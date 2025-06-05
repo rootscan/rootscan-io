@@ -7,7 +7,7 @@ const Wrapper = ({ children }: { children?: ReactNode }) => {
 };
 
 const Title = ({ children }: { children?: ReactNode }) => {
-  return <div className="w-full max-w-[200px] text-sm text-text-secondary">{children}</div>;
+  return <div className="w-full max-w-[200px] shrink-0 text-sm text-text-secondary">{children}</div>;
 };
 
 const Content = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {

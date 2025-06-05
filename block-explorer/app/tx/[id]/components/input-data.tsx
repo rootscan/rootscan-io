@@ -27,7 +27,7 @@ export default function InputData({ input, transaction }: { input: string; trans
                 <TableRow key={_}>
                   <TableCell>{item?.name}</TableCell>
                   <TableCell>{item?.type}</TableCell>
-                  <TableCell>
+                  <TableCell style={{ whiteSpace: 'break-spaces', wordBreak: 'break-all' }}>
                     {typeof transaction?.functionData?.args?.[item?.name] !== 'undefined'
                       ? String(transaction?.functionData?.args?.[item?.name])
                       : ''}

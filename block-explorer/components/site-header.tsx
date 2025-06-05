@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
 
+import OnlyMainnet from '@/components/layouts/only-mainnet.tsx';
+import { RootPrice } from '@/components/root-price.tsx';
 import { SiteTopBar } from '@/components/site-top-bar.tsx';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,7 +14,13 @@ export function SiteHeader() {
   return (
     <Fragment>
       <header className="z-40 flex w-full flex-col bg-white dark:bg-black">
-        <SiteTopBar />
+        <SiteTopBar
+          rootPrice={
+            <OnlyMainnet>
+              <RootPrice />
+            </OnlyMainnet>
+          }
+        />
         <div className="container flex items-center justify-between gap-4 space-x-4 py-4 sm:space-x-0">
           <Link href="/" className="flex items-center gap-2">
             <Image

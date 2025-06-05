@@ -1,12 +1,15 @@
 'use client';
 
-import OnlyMainnet from '@/components/layouts/only-mainnet.tsx';
+import React from 'react';
+
 import MainSearch from '@/components/main-search.tsx';
-import { RootPrice } from '@/components/root-price.tsx';
 import { RiGasStationLine } from '@remixicon/react';
 import { usePathname } from 'next/navigation';
 
-export const SiteTopBar = () => {
+interface SiteTopBarProps {
+  rootPrice: React.ReactElement;
+}
+export const SiteTopBar = ({ rootPrice }: SiteTopBarProps) => {
   const pathname = usePathname();
 
   const isHomePage = pathname === '/';
@@ -17,10 +20,8 @@ export const SiteTopBar = () => {
         <div
           className={`${isHomePage ? 'flex' : 'hidden lg:flex'} w-full select-none items-center gap-2 text-xs md:gap-4`}
         >
-          <OnlyMainnet>
-            <RootPrice />
-          </OnlyMainnet>
-          {isHomePage && <div className="hidden lg:flex-1" />}
+          {rootPrice}
+          {isHomePage && <div className="flex-1" />}
           <div className="flex items-center gap-1 md:gap-2">
             <RiGasStationLine className="size-4 text-muted-foreground" />
             <span className="hidden font-normal text-muted-foreground sm:inline">EVM Gas:</span>

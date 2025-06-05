@@ -49,7 +49,7 @@ export default async function IndexPage() {
   ];
 
   return (
-    <div style={{ background: `url('/home-page-background.png') top / 100% no-repeat` }}>
+    <div className="bg-home-page-hero-section-mobile bg-contain bg-top bg-no-repeat sm:bg-home-page-hero-section-tablet lg:bg-home-page-hero-section-desktop">
       <Container className="grid grid-cols-2 gap-4 pt-8 md:gap-6 md:pt-10 xl:pt-8">
         <section className="col-span-2 flex flex-col gap-6 xl:flex-row xl:items-center xl:gap-0 xl:py-4">
           <div className="flex flex-1 flex-col gap-4">
