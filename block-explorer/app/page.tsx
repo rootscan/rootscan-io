@@ -31,12 +31,12 @@ export default async function IndexPage() {
   const stats = [
     { title: 'Target Block Time', value: '4s', icon: RiTimerLine },
     {
-      title: 'Transfers 24h',
+      title: 'Transactions 24h',
       value: Number(chainSummary?.transfers24h || 0),
       icon: RiPencilLine,
     },
     {
-      title: 'Total Transfers',
+      title: 'Total Transactions',
       value: Number(chainSummary?.totalTransfers || 0),
       icon: RiArrowLeftRightLine,
     },
