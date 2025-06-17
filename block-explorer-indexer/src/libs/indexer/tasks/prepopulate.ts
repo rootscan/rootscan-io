@@ -120,7 +120,7 @@ export const updateStakingValidators = async () => {
   const validatorsOps: IBulkWriteUpdateOp[] = [];
 
   exposures.forEach(([key, exposure]) => {
-    const keyArgs = key?.args?.map((k) => k.toHuman());
+    const keyArgs = key?.args?.map((k) => k.toJSON());
     const era = Number(keyArgs?.[0]);
     const validator = keyArgs?.[1] as Address;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
