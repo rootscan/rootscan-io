@@ -18,7 +18,7 @@ module.exports = {
         'footer-pattern-desktop': "url('/footer-pattern-desktop.png')",
         'footer-pattern-tablet': "url('/footer-pattern-tablet.png')",
         'footer-pattern-mobile': "url('/footer-pattern-mobile.png')",
-        'home-page-hero-section-desktop': "url('/home-page-hero-section-desktop.png')",
+        'home-page-hero-section-desktop': "url('/home-page-hero-section-desktop.webp')",
         'home-page-hero-section-tablet': "url('/home-page-hero-section-tablet.png')",
         'home-page-hero-section-mobile': "url('/home-page-hero-section-mobile.png')",
       },
