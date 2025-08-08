@@ -14,8 +14,16 @@ const getData = async ({ contractAddress, tokenId }: { contractAddress: Address;
 
 const size = `h-12 w-12`;
 
-export async function NftThumbnail({ contractAddress, tokenId }) {
-  if (!contractAddress) {
+export async function NftThumbnail({
+  contractAddress,
+  tokenId,
+  image,
+}: {
+  contractAddress?: Address;
+  tokenId?: number | string;
+  image?: string;
+}) {
+  if (!contractAddress && !image) {
     return (
       <div className={cn([size, `bg-muted text-muted-foreground grid select-none place-items-center rounded-xl`])}>
         <div>NFT</div>
@@ -23,9 +31,12 @@ export async function NftThumbnail({ contractAddress, tokenId }) {
     );
   }
 
-  const data = await getData({ contractAddress, tokenId });
+  if (contractAddress && tokenId && !image) {
+    const data = await getData({ contractAddress, tokenId });
+    image = data?.image;
+  }
 
-  if (!data?.image) {
+  if (!image) {
     return (
       <div className={cn([size, `bg-muted text-muted-foreground grid select-none place-items-center rounded-xl`])}>
         <div>NFT</div>
@@ -35,7 +46,7 @@ export async function NftThumbnail({ contractAddress, tokenId }) {
 
   return (
     <SkeletonImage
-      src={data?.image}
+      src={image}
       width={250}
       height={250}
       priority

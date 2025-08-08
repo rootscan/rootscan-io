@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import React from 'react';
 
 import AddressDisplay from '@/components/address-display';
 import { ErrorAlert } from '@/components/error-alert';
@@ -371,10 +372,10 @@ const NFTTransfer = ({ tx, address }) => {
       <TableCell>
         <div className="flex flex-wrap items-center gap-2">
           {tokensIds.map((tokenId, _) => (
-            <>
-              <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
+            <React.Fragment key={tokenId}>
+              <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
               {tokenId}
-            </>
+            </React.Fragment>
           ))}
         </div>
       </TableCell>
@@ -416,10 +417,11 @@ const SFTTransfer = ({ tx, address }) => {
       <TableCell>
         <div className="flex flex-wrap items-center gap-2">
           {tokensIds.map((tokenId, _) => (
-            <>
-              <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
+            <React.Fragment key={tokenId}>
+              <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
               {tokenId}
-            </>
+              {<Badge>x {tx?.args?.balances?.[_]}</Badge>}
+            </React.Fragment>
           ))}
         </div>
       </TableCell>
@@ -457,10 +459,11 @@ const SFTMint = ({ tx, address }) => {
       <TableCell>
         <div className="flex flex-wrap items-center gap-2">
           {tokensIds.map((tokenId, _) => (
-            <>
-              <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
+            <React.Fragment key={tokenId}>
+              <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
               {tokenId}
-            </>
+              {<Badge>x {tx?.args?.balances?.[_]}</Badge>}
+            </React.Fragment>
           ))}
         </div>
       </TableCell>

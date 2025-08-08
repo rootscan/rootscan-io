@@ -8,7 +8,7 @@ import CardDetail from '@/components/ui/card-detail';
 import { ApiCommand, request } from '@/lib/api';
 import { formatNumber, formatNumberDollars, handleRequestResult } from '@/lib/utils';
 import { IToken } from '@/types/models';
-import { getAddress } from 'viem';
+import { getAddress, isAddress } from 'viem';
 
 import Menu from './components/menu';
 
@@ -24,9 +24,14 @@ export default async function Layout({ params, children }: LayoutProps) {
       throw new Error('Address is required');
     }
 
+    const collectionQuery = {
+      collectionId: isAddress(paramsObj.address) ? undefined : parseInt(paramsObj.address),
+      contractAddress: isAddress(paramsObj.address) ? getAddress(paramsObj.address) : undefined,
+    };
+
     const data = handleRequestResult(
       await request(ApiCommand.getToken, {
-        contractAddress: getAddress(paramsObj.address),
+        ...collectionQuery,
       }),
     );
 
@@ -102,7 +107,7 @@ export default async function Layout({ params, children }: LayoutProps) {
               </CardContent>
             </Card>
           </div>
-          <Menu />
+          <Menu tokenType={data.type} />
           {children}
         </div>
       </Container>
