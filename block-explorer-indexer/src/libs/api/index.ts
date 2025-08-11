@@ -485,13 +485,16 @@ app.post('/getNftCollectionEvents', async (req: Request, res: Response) => {
       lean: true,
     };
 
-    const query = {
+    const query: Mongoose.FilterQuery<IEvent> = {
       'args.collectionId': token.collectionId,
       section: token.type === 'ERC721' ? 'nft' : 'sft',
       method: { $in: ['Mint', 'Transfer', 'BridgedMint'] },
     };
     if (req.body.tokenId) {
-      query[token.type === 'ERC721' ? 'args.tokenId' : 'args.serialNumbers'] = parseInt(req.body.tokenId);
+      query.$or = [
+        { 'args.tokenId': parseInt(req.body.tokenId) },
+        { 'args.serialNumbers': parseInt(req.body.tokenId) },
+      ];
     }
 
     const data = await DB.Event.paginate(query, options);

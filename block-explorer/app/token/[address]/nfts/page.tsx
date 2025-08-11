@@ -10,7 +10,8 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ApiCommand, request } from '@/lib/api';
 import { getShortenedHash } from '@/lib/constants/knownAddresses';
 import { getPaginationData, handleRequestResult } from '@/lib/utils';
-import { getAddress, isAddress } from 'viem';
+import Link from 'next/link';
+import { getAddress } from 'viem';
 
 export interface PageProps {
   params: Promise<{
@@ -34,14 +35,11 @@ export default async function Page({ params, searchParams }: PageProps) {
     const searchParamsObj = await searchParams;
     const page = Number(searchParamsObj?.page) || 1;
 
-    const collectionQuery = {
-      collectionId: isAddress(paramsObj.address) ? undefined : parseInt(paramsObj.address),
-      contractAddress: isAddress(paramsObj.address) ? getAddress(paramsObj.address) : undefined,
-    };
+    const address = getAddress(paramsObj.address);
 
     const data = handleRequestResult(
       await request(ApiCommand.getNftsForCollection, {
-        ...collectionQuery,
+        contractAddress: address,
         page,
       }),
     );
@@ -68,7 +66,9 @@ export default async function Page({ params, searchParams }: PageProps) {
           {tokens.map((item, _) => (
             <Card key={`${item.contractAddress}_${item.tokenId}_${_}`} className="overflow-hidden rounded-[12px] p-0">
               <CardHeader className="p-0">
-                <NftPlayer animation_url={item?.animation_url} image={item?.image} />
+                <Link href={`/token/${address}/${item.tokenId}`}>
+                  <NftPlayer animation_url={item?.animation_url} image={item?.image} />
+                </Link>
               </CardHeader>
               <CardContent className="flex flex-col gap-4 p-3">
                 <div className="flex flex-col gap-2">

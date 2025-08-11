@@ -4,10 +4,10 @@ import { ErrorAlert } from '@/components/error-alert';
 import NoData from '@/components/no-data';
 import { ApiCommand, request } from '@/lib/api';
 import { handleRequestResult } from '@/lib/utils';
-import { PageProps } from '@/types/page';
-import { getAddress, isAddress } from 'viem';
+import { getAddress } from 'viem';
 
-import NftTransactions from '../components/nft-transactions';
+import NftTransactions from '../../../../token/[address]/components/nft-transactions';
+import { PageProps } from '../components/types';
 
 export default async function Page({ params, searchParams }: PageProps) {
   try {
@@ -21,8 +21,8 @@ export default async function Page({ params, searchParams }: PageProps) {
 
     const data = handleRequestResult(
       await request(ApiCommand.getNftCollectionEvents, {
-        collectionId: isAddress(paramsObj.address) ? undefined : parseInt(paramsObj.address),
-        contractAddress: isAddress(paramsObj.address) ? getAddress(paramsObj.address) : undefined,
+        contractAddress: getAddress(paramsObj.address),
+        tokenId: paramsObj.tokenId,
         page,
       }),
     );
