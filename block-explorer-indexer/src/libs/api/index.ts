@@ -158,10 +158,7 @@ app.post('/getExtrinsic', async (req: Request, res: Response) => {
 
 app.post('/getToken', async (req: Request, res: Response) => {
   try {
-    const contractAddress = await parseNftContractAddress(
-      req.body.contractAddress.toString(),
-      req.body.collectionId.toString(),
-    );
+    const contractAddress = await parseNftContractAddress(req.body.contractAddress, req.body.collectionId);
 
     const data: (IToken & { holders?: number }) | null = await DB.Token.findOne({
       contractAddress,
@@ -183,10 +180,7 @@ app.post('/getToken', async (req: Request, res: Response) => {
 
 app.post('/getNftCollection', async (req: Request, res: Response) => {
   try {
-    const contractAddress = await parseNftContractAddress(
-      req.body.contractAddress.toString(),
-      req.body.collectionId.toString(),
-    );
+    const contractAddress = await parseNftContractAddress(req.body.contractAddress, req.body.collectionId);
     const data = await DB.Token.findOne({ contractAddress }).lean();
     return res.json(data);
   } catch (e) {
@@ -427,10 +421,7 @@ app.post('/getNftCollectionsForAddress', async (req: Request, res: Response) => 
 
 app.post('/getNftsForCollection', async (req: Request, res: Response) => {
   try {
-    const contractAddress = await parseNftContractAddress(
-      req.body.contractAddress.toString(),
-      req.body.collectionId.toString(),
-    );
+    const contractAddress = await parseNftContractAddress(req.body.contractAddress, req.body.collectionId);
 
     const options = {
       ...getPageAndLimit(req.body),
@@ -757,6 +748,9 @@ async function parseNftContractAddress(contractAddress: string, collectionId: st
   if (isAddress(contractAddress)) {
     contractAddress = getAddress(contractAddress).toString();
   } else {
+    if (!/^[a-zA-Z0-9_-]+$/.test(collectionId)) {
+      throw new Error('Invalid collectionId');
+    }
     const token = await DB.Token.findOne({ collectionId: parseInt(collectionId) }).lean();
     if (!token) {
       throw new Error(`Token with collectionId ${collectionId} not found`);
@@ -771,11 +765,7 @@ app.post('/getNft', async (req: Request, res: Response) => {
     if (!Number.isInteger(Number(req.body.tokenId))) {
       throw new Error('tokenId is required');
     }
-
-    const contractAddress = await parseNftContractAddress(
-      req.body.contractAddress.toString(),
-      req.body.collectionId.toString(),
-    );
+    const contractAddress = await parseNftContractAddress(req.body.contractAddress, req.body.collectionId);
 
     const tokenId = Number(req.body.tokenId);
 
