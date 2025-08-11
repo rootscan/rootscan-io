@@ -11,8 +11,8 @@ export default function Menu({ tokenType }: { tokenType?: TTokenType }) {
   return (
     <div className="flex items-center gap-4 overflow-auto">
       {[
-        { title: 'Nfts', href: `/token/${address}/nfts`, visible: tokenType === 'ERC721' || tokenType === 'ERC1155' },
         { title: 'Holders', href: `/token/${address}`, visible: true },
+        { title: 'Nfts', href: `/token/${address}/nfts`, visible: tokenType === 'ERC721' || tokenType === 'ERC1155' },
         { title: 'Transactions', href: `/token/${address}/transactions`, visible: tokenType !== 'ERC20' },
         {
           title: 'Contract',
