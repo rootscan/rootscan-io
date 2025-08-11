@@ -338,7 +338,7 @@ app.post('/getNftOwners', async (req: Request, res: Response) => {
   try {
     let collectionId = req.body.collectionId;
     if (isAddress(req.body.contractAddress)) {
-      const token = await DB.Token.findOne({ contractAddress: req.body.contractAddress }).lean();
+      const token = await DB.Token.findOne({ contractAddress: { $eq: req.body.contractAddress } }).lean();
       if (token) {
         collectionId = token.collectionId;
       }
@@ -468,9 +468,9 @@ app.post('/getNftCollectionEvents', async (req: Request, res: Response) => {
     const isContractAddress = isAddress(req.body.contractAddress);
 
     const token = await DB.Token.findOne({
-      [isContractAddress ? 'contractAddress' : 'collectionId']: isContractAddress
-        ? req.body.contractAddress
-        : req.body.collectionId,
+      [isContractAddress ? 'contractAddress' : 'collectionId']: {
+        $eq: isContractAddress ? req.body.contractAddress : req.body.collectionId,
+      },
     }).lean();
 
     if (!token) {
