@@ -17,9 +17,9 @@ import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 import moment from 'moment';
 import Mongoose, { FilterQuery, PaginateOptions } from 'mongoose';
-import { Hash, formatUnits, getAddress } from 'viem';
+import { Hash, formatUnits, getAddress, isAddress } from 'viem';
 
-import { processError } from './utils';
+import { fillEventsWithNftImages, processError } from './utils';
 
 function getPageAndLimit(body: Record<string, unknown>): { page: number; limit: number } {
   return {
@@ -158,7 +158,7 @@ app.post('/getExtrinsic', async (req: Request, res: Response) => {
 
 app.post('/getToken', async (req: Request, res: Response) => {
   try {
-    const contractAddress = getAddress(req.body.contractAddress).toString();
+    const contractAddress = await parseNftContractAddress(req.body.contractAddress, req.body.collectionId);
 
     const data: (IToken & { holders?: number }) | null = await DB.Token.findOne({
       contractAddress,
@@ -172,6 +172,16 @@ app.post('/getToken', async (req: Request, res: Response) => {
         data.holders = holders?.length;
       }
     }
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
+});
+
+app.post('/getNftCollection', async (req: Request, res: Response) => {
+  try {
+    const contractAddress = await parseNftContractAddress(req.body.contractAddress, req.body.collectionId);
+    const data = await DB.Token.findOne({ contractAddress }).lean();
     return res.json(data);
   } catch (e) {
     processError(e, res);
@@ -324,6 +334,39 @@ app.post('/getNftsForAddress', async (req: Request, res: Response) => {
   }
 });
 
+app.post('/getNftOwners', async (req: Request, res: Response) => {
+  try {
+    let collectionId = req.body.collectionId;
+    if (isAddress(req.body.contractAddress)) {
+      const token = await DB.Token.findOne({ contractAddress: { $eq: req.body.contractAddress } }).lean();
+      if (token) {
+        collectionId = token.collectionId;
+      }
+    }
+
+    if (!collectionId) {
+      throw new Error('CollectionId is required');
+    }
+
+    const options = {
+      ...getPageAndLimit(req.body),
+      allowDiskUse: true,
+      sort: '-amount',
+      lean: true,
+    };
+
+    const query: Record<string, unknown> = { collectionId };
+    if (req.body.tokenId) {
+      query.tokenId = Number(req.body.tokenId);
+    }
+
+    const data = await DB.NftOwner.paginate(query, options);
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
+});
+
 app.post('/getNftCollectionsForAddress', async (req: Request, res: Response) => {
   try {
     const address = getAddress(req.body.address).toString();
@@ -370,6 +413,93 @@ app.post('/getNftCollectionsForAddress', async (req: Request, res: Response) => 
     // @ts-expect-error aggregatePipeline does exist
     const data = await DB.NftOwner.aggregatePaginate(pipeline, options);
 
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
+});
+
+app.post('/getNftsForCollection', async (req: Request, res: Response) => {
+  try {
+    const contractAddress = await parseNftContractAddress(req.body.contractAddress, req.body.collectionId);
+
+    const options = {
+      ...getPageAndLimit(req.body),
+      sort: 'tokenId',
+      allowDiskUse: true,
+    };
+
+    const pipeline = DB.NftOwner.aggregate([
+      {
+        $match: { contractAddress },
+      },
+      {
+        $group: {
+          _id: {
+            tokenId: '$tokenId',
+            contractAddress: '$contractAddress',
+          },
+          totalAmount: { $sum: '$amount' },
+          tokenId: { $first: '$tokenId' },
+          contractAddress: { $first: '$contractAddress' },
+          owner: { $first: '$owner' },
+          image: { $first: '$image' },
+          animation_url: { $first: '$animation_url' },
+          attributes: { $first: '$attributes' },
+          blockNumber: { $first: '$blockNumber' },
+          eventId: { $first: '$eventId' },
+          timestamp: { $first: '$timestamp' },
+          type: { $first: '$type' },
+        },
+      },
+    ]);
+
+    // @ts-expect-error aggregatePipeline does exist
+    const data = await DB.NftOwner.aggregatePaginate(pipeline, options);
+
+    return res.json(data);
+  } catch (e) {
+    processError(e, res);
+  }
+});
+
+app.post('/getNftCollectionEvents', async (req: Request, res: Response) => {
+  try {
+    const isContractAddress = isAddress(req.body.contractAddress);
+
+    const token = await DB.Token.findOne({
+      [isContractAddress ? 'contractAddress' : 'collectionId']: {
+        $eq: isContractAddress ? req.body.contractAddress : req.body.collectionId,
+      },
+    }).lean();
+
+    if (!token) {
+      throw new Error('Token not found');
+    }
+
+    const options = {
+      ...getPageAndLimit(req.body),
+      sort: '-blockNumber',
+      paginate: true,
+      allowDiskUse: true,
+      lean: true,
+    };
+
+    const query: Mongoose.FilterQuery<IEvent> = {
+      'args.collectionId': token.collectionId,
+      section: token.type === 'ERC721' ? 'nft' : 'sft',
+      method: { $in: ['Mint', 'Transfer', 'BridgedMint'] },
+    };
+    if (req.body.tokenId) {
+      query.$or = [
+        { 'args.tokenId': parseInt(req.body.tokenId) },
+        { 'args.serialNumbers': parseInt(req.body.tokenId) },
+      ];
+    }
+
+    const data = await DB.Event.paginate(query, options);
+
+    await fillEventsWithNftImages(data.docs);
     return res.json(data);
   } catch (e) {
     processError(e, res);
@@ -474,14 +604,7 @@ app.post('/getNativeTransfersForAddress', async (req: Request, res: Response) =>
       options,
     );
 
-    // calc contractAddress from collectionId if needed
-    const foundCollectionIds = data.docs.filter((i) => !!i.args?.collectionId).map((i) => i.args.collectionId);
-    if (foundCollectionIds.length) {
-      const tokens = await DB.Token.find({ collectionId: { $in: foundCollectionIds } });
-      data.docs.forEach((i) => {
-        i.args.contractAddress = tokens.find((t) => t.collectionId === i.args.collectionId)?.contractAddress;
-      });
-    }
+    await fillEventsWithNftImages(data.docs);
 
     // logger.info('getNativeTransfersForAddress: data', data);
     return res.json(data);
@@ -619,9 +742,34 @@ app.post('/getTransaction', async (req: Request, res: Response) => {
   }
 });
 
+async function parseNftContractAddress(contractAddress: string, collectionId: string): Promise<string> {
+  if (!(contractAddress || collectionId)) {
+    throw new Error('contractAddress or collectionId and tokenId are required');
+  }
+
+  // let contractAddress;
+  if (isAddress(contractAddress)) {
+    contractAddress = getAddress(contractAddress).toString();
+  } else {
+    if (!/^[a-zA-Z0-9_-]+$/.test(collectionId)) {
+      throw new Error('Invalid collectionId');
+    }
+    const token = await DB.Token.findOne({ collectionId: parseInt(collectionId) }).lean();
+    if (!token) {
+      throw new Error(`Token with collectionId ${collectionId} not found`);
+    }
+    contractAddress = token?.contractAddress.toString();
+  }
+  return contractAddress;
+}
+
 app.post('/getNft', async (req: Request, res: Response) => {
   try {
-    const contractAddress = getAddress(req.body.contractAddress).toString();
+    if (!Number.isInteger(Number(req.body.tokenId))) {
+      throw new Error('tokenId is required');
+    }
+    const contractAddress = await parseNftContractAddress(req.body.contractAddress, req.body.collectionId);
+
     const tokenId = Number(req.body.tokenId);
 
     const data = await DB.NftOwner.findOne({ contractAddress, tokenId }).populate('nftCollection').lean();

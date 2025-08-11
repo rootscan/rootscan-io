@@ -136,7 +136,11 @@ export enum ApiCommand {
   // Nfts
   getNft,
   getNftCollectionsForAddress,
+  getNftCollectionEvents,
   getNftsForAddress,
+  getNftsForCollection,
+  getNftCollection,
+  getNftOwners,
   getVerifiedContracts,
   getFuturepasses,
   getChainSummary,
@@ -175,7 +179,10 @@ type ApiCommandMap = {
   [ApiCommand.getAddress]: ApiIO<{ address: Address }, (IAddress & { rootPriceData: IToken['priceData'] }) | null>;
   [ApiCommand.getAddresses]: ApiIO<PaginationParams, PaginationResponse<{ xrpBalance?: number } & IAddress>>;
   // Tokens
-  [ApiCommand.getToken]: ApiIO<{ contractAddress: Address }, (IToken & { holders: number }) | null>;
+  [ApiCommand.getToken]: ApiIO<
+    { contractAddress?: Address; collectionId?: number },
+    (IToken & { holders: number }) | null
+  >;
   [ApiCommand.getTokens]: ApiIO<PaginationParams & { type: string }, PaginationResponse<IToken>>;
   [ApiCommand.getTokenHolders]: ApiIO<
     PaginationParams & { contractAddress: Address },
@@ -184,11 +191,28 @@ type ApiCommandMap = {
   [ApiCommand.getTokenBalances]: ApiIO<PaginationParams & { address: Address }, PaginationResponse<IBalance>>;
   // Nfts
   [ApiCommand.getNft]: ApiIO<
-    { contractAddress: Address; tokenId: number | string },
+    { contractAddress?: Address; collectionId?: number | string; tokenId: number | string },
     INftOwner & {
       nftCollection?: IAddress;
     }
   >;
+  [ApiCommand.getNftCollectionEvents]: ApiIO<
+    PaginationParams & { contractAddress?: Address; collectionId?: number | string; tokenId?: number | string },
+    PaginationResponse<IEvent>
+  >;
+  [ApiCommand.getNftOwners]: ApiIO<
+    PaginationParams & { contractAddress?: Address; collectionId?: number | string; tokenId?: number | string },
+    PaginationResponse<INftOwner>
+  >;
+  [ApiCommand.getNftsForCollection]: ApiIO<
+    { contractAddress?: Address; collectionId?: number | string } & PaginationParams,
+    PaginationResponse<
+      INftOwner & {
+        nftCollection?: IAddress;
+      }
+    >
+  >;
+  [ApiCommand.getNftCollection]: ApiIO<{ contractAddress?: Address; collectionId?: number | string }, IToken>;
   [ApiCommand.getNftCollectionsForAddress]: ApiIO<
     PaginationParams & { address: Address },
     PaginationResponse<{

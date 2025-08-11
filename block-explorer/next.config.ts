@@ -111,6 +111,26 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/token/:address/transactions',
+        destination: '/token/:address/transactions',
+      },
+      {
+        source: '/token/:address/nfts',
+        destination: '/token/:address/nfts',
+      },
+      {
+        source: '/token/:address/:tokenId',
+        destination: '/tokenId/:address/:tokenId',
+      },
+      {
+        source: '/token/:address/:tokenId/transactions',
+        destination: '/tokenId/:address/:tokenId/transactions',
+      },
+    ];
+  },
 };
 
 export default withSentryConfig(nextConfig, {

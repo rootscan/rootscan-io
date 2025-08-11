@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import React from 'react';
 
 import AddressDisplay from '@/components/address-display';
 import { ErrorAlert } from '@/components/error-alert';
@@ -371,10 +372,12 @@ const NFTTransfer = ({ tx, address }) => {
       <TableCell>
         <div className="flex flex-wrap items-center gap-2">
           {tokensIds.map((tokenId, _) => (
-            <>
-              <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
-              {tokenId}
-            </>
+            <React.Fragment key={tokenId}>
+              <Link href={`/nft/${tx.args.collectionId}/${tokenId}`}>
+                <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
+                {tokenId}
+              </Link>
+            </React.Fragment>
           ))}
         </div>
       </TableCell>
@@ -416,10 +419,13 @@ const SFTTransfer = ({ tx, address }) => {
       <TableCell>
         <div className="flex flex-wrap items-center gap-2">
           {tokensIds.map((tokenId, _) => (
-            <>
-              <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
-              {tokenId}
-            </>
+            <React.Fragment key={tokenId}>
+              <Link href={`/nft/${tx.args.collectionId}/${tokenId}`}>
+                <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
+                {tokenId}
+              </Link>
+              {<Badge>x {tx?.args?.balances?.[_]}</Badge>}
+            </React.Fragment>
           ))}
         </div>
       </TableCell>
@@ -457,10 +463,13 @@ const SFTMint = ({ tx, address }) => {
       <TableCell>
         <div className="flex flex-wrap items-center gap-2">
           {tokensIds.map((tokenId, _) => (
-            <>
-              <NftThumbnail key={_} tokenId={tokenId} contractAddress={tx?.args?.contractAddress} />
-              {tokenId}
-            </>
+            <React.Fragment key={tokenId}>
+              <Link href={`/nft/${tx.args.collectionId}/${tokenId}`}>
+                <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
+                {tokenId}
+              </Link>
+              {<Badge>x {tx?.args?.balances?.[_]}</Badge>}
+            </React.Fragment>
           ))}
         </div>
       </TableCell>

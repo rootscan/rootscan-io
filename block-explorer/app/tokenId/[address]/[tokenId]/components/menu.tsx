@@ -6,19 +6,13 @@ import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 
 export default function Menu({ tokenType }: { tokenType?: TTokenType }) {
-  const { address } = useParams();
+  const { address, tokenId } = useParams();
   const pathname = usePathname();
   return (
     <div className="flex items-center gap-4 overflow-auto">
       {[
-        { title: 'Holders', href: `/token/${address}`, visible: true },
-        { title: 'Nfts', href: `/token/${address}/nfts`, visible: tokenType === 'ERC721' || tokenType === 'ERC1155' },
-        { title: 'Transactions', href: `/token/${address}/transactions`, visible: tokenType !== 'ERC20' },
-        {
-          title: 'Contract',
-          href: `/addresses/${address}/contract`,
-          visible: true,
-        },
+        { title: 'Holders', href: `/token/${address}/${tokenId}`, visible: tokenType !== 'ERC20' },
+        { title: 'Transactions', href: `/token/${address}/${tokenId}/transactions`, visible: tokenType !== 'ERC20' },
       ]
         .filter((i) => i.visible)
         .map((item, _) => {

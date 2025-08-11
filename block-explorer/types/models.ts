@@ -167,6 +167,7 @@ export interface INftOwner {
   animation_url?: string;
   attributes?: object;
   transactionHash?: string;
+  totalAmount?: number;
 }
 
 export interface INativeBalance {
