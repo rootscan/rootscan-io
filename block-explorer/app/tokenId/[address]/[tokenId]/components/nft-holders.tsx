@@ -9,7 +9,7 @@ export default function NftHolders({ data }) {
     <Table>
       <TableCaption>
         <TableNavigation pagination={getPaginationData(data)}>
-          {!data.skipFullCount && <p>A total of {data.totalDocs} native transfers found</p>}
+          {!data.skipFullCount && <p>A total of {data.totalDocs} holders found</p>}
         </TableNavigation>
       </TableCaption>
       <TableHeader>
