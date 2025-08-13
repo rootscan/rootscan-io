@@ -375,8 +375,8 @@ const NFTTransfer = ({ tx, address }) => {
             <React.Fragment key={tokenId}>
               <Link href={`/nft/${tx.args.collectionId}/${tokenId}`}>
                 <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
-                {tokenId}
               </Link>
+              {tokenId}
             </React.Fragment>
           ))}
         </div>
@@ -422,8 +422,8 @@ const SFTTransfer = ({ tx, address }) => {
             <React.Fragment key={tokenId}>
               <Link href={`/nft/${tx.args.collectionId}/${tokenId}`}>
                 <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
-                {tokenId}
               </Link>
+              {tokenId}
               {<Badge>x {tx?.args?.balances?.[_]}</Badge>}
             </React.Fragment>
           ))}
@@ -466,8 +466,8 @@ const SFTMint = ({ tx, address }) => {
             <React.Fragment key={tokenId}>
               <Link href={`/nft/${tx.args.collectionId}/${tokenId}`}>
                 <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
-                {tokenId}
               </Link>
+              {tokenId}
               {<Badge>x {tx?.args?.balances?.[_]}</Badge>}
             </React.Fragment>
           ))}
