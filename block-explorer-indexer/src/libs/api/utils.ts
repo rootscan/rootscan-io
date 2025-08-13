@@ -34,11 +34,12 @@ export async function fillEventsWithNftImages(events: IEvent[]) {
       },
     ]);
     events.forEach((event) => {
-      event.args.image = res.find(
-        (n) =>
-          n.collectionId === event.args?.collectionId &&
-          (event.args?.tokenIds || event.args?.serialNumbers || []).includes(n.tokenId),
-      )?.image;
+      event.args.images = {};
+      (event.args?.tokenIds || event.args?.serialNumbers || []).forEach((tokenId) => {
+        event.args.images[tokenId] = res.find(
+          (n) => n.collectionId === event.args?.collectionId && n.tokenId === tokenId,
+        )?.image;
+      });
     });
   }
 }

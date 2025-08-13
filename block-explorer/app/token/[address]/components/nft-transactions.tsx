@@ -96,7 +96,7 @@ const NFTTransfer = ({ tx, address }) => {
         <div className="flex flex-wrap items-center gap-2">
           {tokensIds.map((tokenId, _) => (
             <React.Fragment key={tokenId}>
-              <NftThumbnail key={_} image={tx?.args?.image} />
+              <NftThumbnail key={_} image={tx?.args?.images?.[tokenId]} />
               {tokenId}
             </React.Fragment>
           ))}
@@ -141,7 +141,7 @@ const SFTTransfer = ({ tx, address }) => {
         <div className="flex flex-wrap items-center gap-2">
           {tokensIds.map((tokenId, _) => (
             <React.Fragment key={tokenId}>
-              <NftThumbnail key={_} image={tx?.args.image} />
+              <NftThumbnail key={_} image={tx?.args?.images?.[tokenId]} />
               {tokenId}
               {<Badge>x {tx?.args?.balances?.[_]}</Badge>}
             </React.Fragment>
@@ -183,7 +183,7 @@ const SFTMint = ({ tx, address }) => {
         <div className="flex flex-wrap items-center gap-2">
           {tokensIds.map((tokenId, _) => (
             <React.Fragment key={tokenId}>
-              <NftThumbnail key={_} image={tx?.args.image} />
+              <NftThumbnail key={_} image={tx?.args?.images?.[tokenId]} />
               {tokenId}
               {<Badge>x {tx?.args?.balances?.[_]}</Badge>}
             </React.Fragment>

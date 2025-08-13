@@ -374,7 +374,7 @@ const NFTTransfer = ({ tx, address }) => {
           {tokensIds.map((tokenId, _) => (
             <React.Fragment key={tokenId}>
               <Link href={`/nft/${tx.args.collectionId}/${tokenId}`}>
-                <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
+                <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.images?.[tokenId]} />
               </Link>
               {tokenId}
             </React.Fragment>
@@ -421,7 +421,7 @@ const SFTTransfer = ({ tx, address }) => {
           {tokensIds.map((tokenId, _) => (
             <React.Fragment key={tokenId}>
               <Link href={`/nft/${tx.args.collectionId}/${tokenId}`}>
-                <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
+                <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.images?.[tokenId]} />
               </Link>
               {tokenId}
               {<Badge>x {tx?.args?.balances?.[_]}</Badge>}
@@ -465,7 +465,7 @@ const SFTMint = ({ tx, address }) => {
           {tokensIds.map((tokenId, _) => (
             <React.Fragment key={tokenId}>
               <Link href={`/nft/${tx.args.collectionId}/${tokenId}`}>
-                <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.image} />
+                <NftThumbnail key={_} tokenId={tokenId} image={tx?.args?.images?.[tokenId]} />
               </Link>
               {tokenId}
               {<Badge>x {tx?.args?.balances?.[_]}</Badge>}
