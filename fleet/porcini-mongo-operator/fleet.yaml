@@ -1,0 +1,8 @@
+defaultNamespace: rootscan-porcini-mongo
+helm:
+  repo: https://percona.github.io/percona-helm-charts/
+  chart: psmdb-operator
+  releaseName: porcini-mongo-operator
+  version: 1.16.2
+  values:
+    disableTelemetry: true
